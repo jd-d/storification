@@ -1229,7 +1229,7 @@
     });
 
     document.addEventListener('keydown', (e) => {
-      if (!state.started) return;
+      if (!state.started || e.target === userAnswer) return;
       if (e.key === 'ArrowRight') {
         nextBtn.click();
       } else if (e.key === 'ArrowLeft') {
