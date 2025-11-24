@@ -1135,13 +1135,14 @@
 
     function checkCompletion() {
       const allDone = state.questions.every(q => q.attempted);
-      if (allDone && state.revealMode === 'end') {
-        showSummary();
-      }
-      if (allDone && state.revealMode === 'immediate') {
-        summaryCard.classList.remove('hidden');
-        summaryText.textContent = 'Je hebt alle begrippen getest. Je kunt de resultaten bekijken of opnieuw beginnen.';
-        fillResultTable();
+      if (allDone) {
+        if (state.revealMode === 'end') {
+          showSummary();
+        } else if (state.revealMode === 'immediate') {
+          summaryCard.classList.remove('hidden');
+          summaryText.textContent = 'Je hebt alle begrippen getest. Je kunt de resultaten bekijken of opnieuw beginnen.';
+          fillResultTable();
+        }
       }
     }
 
