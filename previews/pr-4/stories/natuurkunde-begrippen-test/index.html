@@ -1189,25 +1189,25 @@
       summaryCard.classList.add('hidden');
     });
 
+    function syncRevealMode(newMode) {
+      state.revealMode = newMode;
+      liveRevealRadios.forEach(r => { r.checked = r.value === newMode; });
+      revealRadios.forEach(r => { r.checked = r.value === newMode; });
+      if (newMode === 'immediate') {
+        state.questions.forEach(q => { if (q.attempted) q.revealed = true; });
+      }
+      renderQuestion();
+    }
+
     liveRevealRadios.forEach(radio => {
       radio.addEventListener('change', () => {
-        state.revealMode = radio.value;
-        revealRadios.forEach(r => { r.checked = r.value === state.revealMode; });
-        if (state.revealMode === 'immediate') {
-          state.questions.forEach(q => { if (q.attempted) q.revealed = true; });
-        }
-        renderQuestion();
+        syncRevealMode(radio.value);
       });
     });
 
     revealRadios.forEach(radio => {
       radio.addEventListener('change', () => {
-        state.revealMode = radio.value;
-        liveRevealRadios.forEach(r => { r.checked = r.value === state.revealMode; });
-        if (state.revealMode === 'immediate') {
-          state.questions.forEach(q => { if (q.attempted) q.revealed = true; });
-          renderQuestion();
-        }
+        syncRevealMode(radio.value);
       });
     });
 
