@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Storification – Verhalen Collectie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="template.png" type="image/png">
+  <link rel="apple-touch-icon" href="template.png">
+  <style>
+    :root {
+      --bg: #f5f6fb;
+      --fg: #222;
+      --accent: #3056a3;
+      --accent-soft: #dbe3ff;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(120deg, #24428c, #3565c5);
+      color: #fff;
+      padding: 2rem 1.2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 1.05rem;
+      opacity: 0.95;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .story-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .story-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
+    }
+
+    .story-card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .story-card-content {
+      padding: 1.5rem;
+    }
+
+    .story-card h2 {
+      margin: 0 0 0.5rem 0;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .story-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .stories-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Storification – Verhalen Collectie</h1>
+    <p>Ontdek meeslepende verhalen, stap voor stap verteld</p>
+  </header>
+
+  <main>
+    <div class="stories-grid">
+      <a href="stories/koningskind/index.html" class="story-card">
+        <img src="stories/koningskind/A.png" alt="Koningskind verhaal" class="story-card-image">
+        <div class="story-card-content">
+          <h2>Koningskind</h2>
+          <p>Een studiegids voor leerlingen – het verhaal van Lydia, Zissel en koning Salomo. Ontdek het onbekende verhaal achter het beroemde Salomonsoordeel.</p>
+        </div>
+      </a>
+      <a href="stories/natuurkunde-begrippen-test/index.html" class="story-card">
+        <img src="template.png" alt="Natuurkunde begrippen test" class="story-card-image">
+        <div class="story-card-content">
+          <h2>Natuurkunde begrippen test</h2>
+          <p>Alle begrippen uit de elektriciteitsthema's in één toets. Kies je vraagsoort, houd je voortgang bij en beslis zelf wanneer je de antwoorden wilt zien.</p>
+        </div>
+      </a>
+      <a href="stories/hektor-andromache/index.html" class="story-card">
+        <img src="stories/hektor-andromache/A.png" alt="Hektor & Andromache verhaal" class="story-card-image">
+        <div class="story-card-content">
+          <h2>Hektor & Andromache</h2>
+          <p>Hektor kiest <em>Legacy</em> boven <em>Safety</em>, Andromache heeft mega verlatingsangst door Achilles, en de baby is bang voor helmen. 🛡️👶😭</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Storification. Klik op een kaart om een verhaal te beginnen.</p>
+  </footer>
+</body>
+
+</html>
