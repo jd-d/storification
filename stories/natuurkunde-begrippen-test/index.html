@@ -1033,10 +1033,20 @@
     function buildQuestions() {
       const chosenMode = state.mode;
       const base = shuffle(concepts).map((concept, idx) => {
-        let type = 'termToDescription';
-        if (chosenMode === 'description') type = 'descriptionToTerm';
-        if (chosenMode === 'alternate') type = idx % 2 === 0 ? 'termToDescription' : 'descriptionToTerm';
-        if (chosenMode === 'mixed') type = Math.random() > 0.5 ? 'termToDescription' : 'descriptionToTerm';
+        let type;
+        switch (chosenMode) {
+          case 'description':
+            type = 'descriptionToTerm';
+            break;
+          case 'alternate':
+            type = idx % 2 === 0 ? 'termToDescription' : 'descriptionToTerm';
+            break;
+          case 'mixed':
+            type = Math.random() > 0.5 ? 'termToDescription' : 'descriptionToTerm';
+            break;
+          default: // 'term'
+            type = 'termToDescription';
+        }
 
         const prompt = type === 'termToDescription' ? pickRandom(concept.termQuestions) : pickRandom(concept.descriptionQuestions);
         const answer = type === 'termToDescription' ? concept.description : concept.term;
