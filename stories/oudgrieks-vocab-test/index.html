@@ -247,6 +247,12 @@
       padding-right: 0.2rem;
     }
 
+    .import-area {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+
     .known-item {
       display: flex;
       flex-direction: column;
@@ -305,6 +311,14 @@
     .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
     .setup-card:first-of-type { border: 1px dashed #cbd5e1; box-shadow: none; background: #f8fafc; }
     .setup-primary { border: 2px solid var(--accent); background: #fff; }
+
+    .section-title {
+      margin-top: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+      font-size: 1.05rem;
+      text-align: left;
+    }
 
     #startBtn {
       width: 100%;
@@ -381,6 +395,15 @@
           <button type="button" id="backToTestBtn">Terug naar toets</button>
         </div>
         <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
+        <h3 class="section-title">Export / import onbekende woorden</h3>
+        <p class="hint">Formaat: één regel per woord, met TAB tussen Grieks en Nederlands.</p>
+        <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
+        <div class="controls">
+          <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
+          <button type="button" id="importUnknownBtn">Importeer onbekend</button>
+          <button type="button" id="importKnownBtn">Importeer bekend</button>
+        </div>
+        <p class="hint" id="importStatus"></p>
       </article>
 
       <article class="card setup-card">
@@ -497,6 +520,11 @@
     const knownCount = document.getElementById("knownCount");
     const knownList = document.getElementById("knownList");
     const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const exportUnknownBtn = document.getElementById("exportUnknownBtn");
+    const importUnknownBtn = document.getElementById("importUnknownBtn");
+    const importKnownBtn = document.getElementById("importKnownBtn");
+    const importArea = document.getElementById("importArea");
+    const importStatus = document.getElementById("importStatus");
     const backToTestBtn = document.getElementById("backToTestBtn");
     const testArea = document.getElementById("testArea");
     const summaryCard = document.getElementById("summaryCard");
@@ -653,6 +681,137 @@
     function buildActiveIds(includeKnown) {
       if (includeKnown) return vocab.map((item) => item.id);
       return vocab.filter((item) => !knownIds.has(item.id)).map((item) => item.id);
+    }
+
+    function buildUnknownList() {
+      return vocab.filter((item) => !knownIds.has(item.id));
+    }
+
+    function exportUnknowns() {
+      const unknowns = buildUnknownList();
+      const lines = unknowns.map((item) => `${item.greek}\t${item.translations.join(", ")}`);
+      importArea.value = lines.join("\n");
+      importStatus.textContent = `Geëxporteerd: ${unknowns.length} onbekende woorden.`;
+    }
+
+    function parseImportLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      return lines.map((line) => {
+        const splitIndex = line.indexOf("\t");
+        if (splitIndex === -1) return null;
+        const greek = line.slice(0, splitIndex).trim();
+        const dutch = line.slice(splitIndex + 1).trim();
+        if (!greek || !dutch) return null;
+        return { greek, translations: dutch.split(",").map((part) => part.trim()).filter(Boolean) };
+      }).filter(Boolean);
+    }
+
+    function importUnknowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      let items = [];
+      if (text.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            items = parsed.map((entry) => ({
+              greek: String(entry.greek || "").trim(),
+              translations: Array.isArray(entry.translations) ? entry.translations : [String(entry.translation || "").trim()]
+            })).filter((entry) => entry.greek);
+          }
+        } catch (error) {
+          items = [];
+        }
+      }
+
+      if (items.length === 0) {
+        items = parseImportLines(text);
+      }
+
+      if (items.length === 0) {
+        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        return;
+      }
+
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (knownIds.has(id)) {
+          knownIds.delete(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar onbekend.`;
+    }
+
+    function importKnowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      let items = [];
+      if (text.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            items = parsed.map((entry) => ({
+              greek: String(entry.greek || "").trim(),
+              translations: Array.isArray(entry.translations) ? entry.translations : [String(entry.translation || "").trim()]
+            })).filter((entry) => entry.greek);
+          }
+        } catch (error) {
+          items = [];
+        }
+      }
+
+      if (items.length === 0) {
+        items = parseImportLines(text);
+      }
+
+      if (items.length === 0) {
+        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        return;
+      }
+
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!knownIds.has(id)) {
+          knownIds.add(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend.`;
     }
 
     function getRevealMode() {
@@ -1132,6 +1291,18 @@
 
     clearKnownBtn.addEventListener("click", () => {
       resetSession(false);
+    });
+
+    exportUnknownBtn.addEventListener("click", () => {
+      exportUnknowns();
+    });
+
+    importUnknownBtn.addEventListener("click", () => {
+      importUnknowns();
+    });
+
+    importKnownBtn.addEventListener("click", () => {
+      importKnowns();
     });
 
     manageKnownBtn.addEventListener("click", () => {

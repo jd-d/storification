@@ -6,6 +6,8 @@
 - [ ] Convert entire site into Wiki (see detailed plan below)
 - [x] Add Oudgrieks → Nederlands vocabtoets component
 - [x] Verbeter layout/UX Oudgrieks vocabtoets
+- [x] Oudgrieks vocab import bekende woorden
+- [x] Oudgrieks vocab export/import onbekende woorden
 - [x] Oudgrieks vocab: bekende woorden toegankelijk tijdens toets
 - [x] UX alignment polish Oudgrieks vocabtoets (settings flow)
 - [x] UX tweaks Oudgrieks vocabtoets (alignment, settings flow, start CTA)
