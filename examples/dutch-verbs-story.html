@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Werkwoordspelling Oefenen</title>
+    <link rel="stylesheet" href="../../styles.css" />
+    <style>
+        .verb-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-display {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .sentence-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .infinitive {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .tense-hint {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #1565c0;
+        }
+
+        .answer-section {
+            margin-bottom: 20px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .answer-input.correct {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+
+        .answer-input.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+
+        .nav-btn.primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            background: #1976D2;
+        }
+
+        .nav-btn.secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .nav-btn.secondary:hover {
+            background: #bdbdbd;
+        }
+
+        .nav-btn.finish {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .nav-btn.finish:hover {
+            background: #388E3C;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .q-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .q-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .q-dot.current {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+        }
+
+        .q-dot.answered {
+            background: #e3f2fd;
+        }
+
+        .q-dot.correct {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .q-dot.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .results-detail {
+            color: #666;
+        }
+
+        .wrong-answer {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .wrong-answer .sentence {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .wrong-answer .your-answer {
+            color: #c62828;
+        }
+
+        .wrong-answer .correct-answer {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="verb-container">
+        <a href="../../index.html" class="back-link">← Terug naar verhalen</a>
+
+        <h1>Werkwoordspelling Oefenen</h1>
+
+        <!-- Quiz View -->
+        <div id="quiz-view">
+            <div class="question-header">
+                <span id="question-number">Vraag 1/53</span>
+                <span class="score-display" id="score-display">Score: 0/0</span>
+            </div>
+
+            <div class="sentence-box" id="sentence-box">
+                Ik ........ elke dag naar school.
+            </div>
+
+            <div class="infinitive" id="infinitive">
+                Infinitief: <strong>fietsen</strong>
+            </div>
+
+            <div class="tense-hint" id="tense-hint">
+                Tijd: <strong>tegenwoordige tijd</strong>
+            </div>
+
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer-input" placeholder="Typ hier het werkwoord..."
+                    autocomplete="off" autocapitalize="off" />
+                <div class="feedback hidden" id="feedback"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" id="prev-btn" disabled>← Vorige</button>
+                <button class="nav-btn primary" id="next-btn">Volgende →</button>
+                <button class="nav-btn secondary" id="reset-btn">Reset</button>
+                <button class="nav-btn finish" id="finish-btn">Klaar</button>
+            </div>
+
+            <details>
+                <summary style="cursor: pointer; margin-bottom: 10px;">Overzicht (klik om te openen)</summary>
+                <div class="question-grid" id="question-grid"></div>
+            </details>
+        </div>
+
+        <!-- Results View -->
+        <div id="results-view" class="hidden">
+            <div class="results-header">
+                <div class="results-score" id="final-score">0/53</div>
+                <div class="results-detail" id="results-detail">0 goed, 0 fout, 0 niet ingevuld</div>
+            </div>
+
+            <h2>Foute of lege antwoorden:</h2>
+            <div id="wrong-answers"></div>
+
+            <div class="nav-buttons" style="margin-top: 30px;">
+                <button class="nav-btn primary" id="retry-btn">Opnieuw proberen</button>
+                <button class="nav-btn secondary" id="back-to-quiz-btn">Terug naar quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const QUESTIONS = [
+            // Tegenwoordige tijd (pv), inversie, enkelvoud/meervoud
+            { sentence: "Ik ........ elke dag naar school.", inf: "fietsen", answer: "fiets", tense: "tegenwoordige tijd" },
+            { sentence: "Jij ........ meestal op tijd.", inf: "komen", answer: "komt", tense: "tegenwoordige tijd" },
+            { sentence: "Hij ........ zijn huiswerk direct.", inf: "maken", answer: "maakt", tense: "tegenwoordige tijd" },
+            { sentence: "Zij ........ vaak om zeven uur.", inf: "slapen", answer: "slaapt", tense: "tegenwoordige tijd (enkelvoud)" },
+            { sentence: "Wij ........ altijd samen.", inf: "werken", answer: "werken", tense: "tegenwoordige tijd" },
+            { sentence: "Jullie ........ te snel!", inf: "fietsen", answer: "fietsen", tense: "tegenwoordige tijd" },
+            { sentence: "Zij ........ elke dag wel twintig kilometer.", inf: "fietsen", answer: "fietst", tense: "tegenwoordige tijd (enkelvoud, zij = ze)" },
+            { sentence: "........ je niet moe van de hele dag gamen?", inf: "worden", answer: "Word", tense: "tegenwoordige tijd (inversie met jij)" },
+            { sentence: "........ je broer niet moe van de hele dag gamen?", inf: "worden", answer: "Wordt", tense: "tegenwoordige tijd (inversie, niet jij)" },
+            { sentence: "Waar ........ jij morgen heen?", inf: "gaan", answer: "ga", tense: "tegenwoordige tijd (inversie met jij)" },
+            { sentence: "........ hij die som al?", inf: "snappen", answer: "Snapt", tense: "tegenwoordige tijd" },
+            { sentence: "........ jullie het antwoord?", inf: "weten", answer: "Weten", tense: "tegenwoordige tijd" },
+
+            // d/t in pv
+            { sentence: "Hij ........ altijd netjes.", inf: "antwoorden", answer: "antwoordt", tense: "tegenwoordige tijd" },
+            { sentence: "Zij ........ hard in de klas.", inf: "praten", answer: "praat", tense: "tegenwoordige tijd (enkelvoud)" },
+            { sentence: "Iedereen ........ op de bus.", inf: "wachten", answer: "wacht", tense: "tegenwoordige tijd" },
+            { sentence: "De hond ........ aan de deur.", inf: "krabben", answer: "krabt", tense: "tegenwoordige tijd" },
+
+            // Verleden tijd (ovt), zwakke ww
+            { sentence: "Ik ........ langzaam naar huis.", inf: "fietsen", answer: "fietste", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Het ........ vanmorgen.", inf: "misten", answer: "miste", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Het ........ de hele dag.", inf: "regenen", answer: "regende", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Het onweer ........ los.", inf: "barsten", answer: "barstte", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "We ........ ons kapot.", inf: "lachen", answer: "lachten", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Ze ........ geduldig af.", inf: "wachten", answer: "wachtten", tense: "verleden tijd (o.v.t., meervoud)" },
+            { sentence: "We ........ het goed.", inf: "bedoelen", answer: "bedoelden", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "We ........ in het water.", inf: "belanden", answer: "belandden", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Jij ........ gisteren laat.", inf: "werken", answer: "werkte", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Hij ........ de hele middag.", inf: "spelen", answer: "speelde", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "De leraar ........ rustig.", inf: "praten", answer: "praatte", tense: "verleden tijd (o.v.t.)" },
+
+            // Verleden tijd (ovt), sterke/ onregelmatige ww
+            { sentence: "Ik ........ nog nooit zo ver.", inf: "lopen", answer: "liep", tense: "verleden tijd (o.v.t., sterk werkwoord)" },
+            { sentence: "Gisteren ........ we naar oma.", inf: "gaan", answer: "gingen", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Zij ........ het antwoord meteen.", inf: "weten", answer: "wisten", tense: "verleden tijd (o.v.t., meervoud)" },
+            { sentence: "Hij ........ de bal heel ver.", inf: "gooien", answer: "gooide", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Wij ........ niets van dat verhaal.", inf: "geloven", answer: "geloofden", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "De wind ........ harder dan verwacht.", inf: "waaien", answer: "waaide", tense: "verleden tijd (o.v.t.)" },
+            { sentence: "Ik ........ dat boek gisteren uit.", inf: "lezen", answer: "las", tense: "verleden tijd (o.v.t., sterk werkwoord)" },
+            { sentence: "Ze ........ de toets goed.", inf: "doen", answer: "deden", tense: "verleden tijd (o.v.t., meervoud)" },
+
+            // Voltooid deelwoord (vtt), losse pv vs vd
+            { sentence: "Heb je al in je tas ........?", inf: "kijken", answer: "gekeken", tense: "voltooid deelwoord" },
+            { sentence: "Ik heb nog nooit zo ver .........", inf: "lopen", answer: "gelopen", tense: "voltooid deelwoord" },
+            { sentence: "Vannacht zijn er twee bomen .........", inf: "omwaaien", answer: "omgewaaid", tense: "voltooid deelwoord" },
+            { sentence: "Het dak heeft .........", inf: "lekken", answer: "gelekt", tense: "voltooid deelwoord" },
+            { sentence: "Ze hebben de hele vloer ........", inf: "schrobben", answer: "geschrobd", tense: "voltooid deelwoord" },
+            { sentence: "Ze hadden alles in hun tas ........", inf: "proppen", answer: "gepropt", tense: "voltooid deelwoord" },
+            { sentence: "Hij is gisteren ........ met zijn werk.", inf: "stoppen", answer: "gestopt", tense: "voltooid deelwoord" },
+            { sentence: "We hebben de hond .........", inf: "voeren", answer: "gevoerd", tense: "voltooid deelwoord" },
+            { sentence: "Ik ben mijn sleutel .........", inf: "vergeten", answer: "vergeten", tense: "voltooid deelwoord" },
+            { sentence: "Ze heeft haar telefoon .........", inf: "vinden", answer: "gevonden", tense: "voltooid deelwoord" },
+
+            // Passief / persoonsvorm vs voltooid deelwoord
+            { sentence: "De oorlog ........ het land.", inf: "verscheuren", answer: "verscheurt", tense: "tegenwoordige tijd" },
+            { sentence: "Het land wordt ........ door oorlog.", inf: "verscheuren", answer: "verscheurd", tense: "voltooid deelwoord (lijdende vorm)" },
+
+            // Lastige participia / leenwerkwoorden / scheidbare ww
+            { sentence: "Moet werkwoordspelling volgens jou worden ........?", inf: "afschaffen", answer: "afgeschaft", tense: "voltooid deelwoord" },
+            { sentence: "Die opmerking heeft hem nogal .........", inf: "ergeren", answer: "geërgerd", tense: "voltooid deelwoord" },
+            { sentence: "We hebben het plan meteen .........", inf: "uitvoeren", answer: "uitgevoerd", tense: "voltooid deelwoord" },
+            { sentence: "Hij heeft de computer .........", inf: "opstarten", answer: "opgestart", tense: "voltooid deelwoord" },
+            { sentence: "Ze heeft de lamp .........", inf: "uitdoen", answer: "uitgedaan", tense: "voltooid deelwoord" },
+            { sentence: "Ik ben de afspraak helemaal .........", inf: "vergeten", answer: "vergeten", tense: "voltooid deelwoord" },
+        ];
+
+        let answers = new Array(QUESTIONS.length).fill(null);
+        let currentIndex = 0;
+
+        // DOM elements
+        const quizView = document.getElementById('quiz-view');
+        const resultsView = document.getElementById('results-view');
+        const questionNumber = document.getElementById('question-number');
+        const scoreDisplay = document.getElementById('score-display');
+        const sentenceBox = document.getElementById('sentence-box');
+        const infinitive = document.getElementById('infinitive');
+        const tenseHint = document.getElementById('tense-hint');
+        const answerInput = document.getElementById('answer-input');
+        const feedback = document.getElementById('feedback');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const questionGrid = document.getElementById('question-grid');
+        const finalScore = document.getElementById('final-score');
+        const resultsDetail = document.getElementById('results-detail');
+        const wrongAnswers = document.getElementById('wrong-answers');
+        const retryBtn = document.getElementById('retry-btn');
+        const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+
+        function stripDiacritics(s) {
+            return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
+        function normalize(s) {
+            return stripDiacritics(s.trim()).toLowerCase();
+        }
+
+        function isCorrect(index) {
+            const a = answers[index];
+            if (a === null) return false;
+            return normalize(a) === normalize(QUESTIONS[index].answer);
+        }
+
+        function getScore() {
+            let correct = 0;
+            let answered = 0;
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                if (answers[i] !== null) {
+                    answered++;
+                    if (isCorrect(i)) correct++;
+                }
+            }
+            return { correct, answered };
+        }
+
+        function buildQuestionGrid() {
+            questionGrid.innerHTML = '';
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'q-dot';
+                dot.textContent = i + 1;
+
+                if (i === currentIndex) dot.classList.add('current');
+                if (answers[i] !== null) {
+                    dot.classList.add('answered');
+                    if (isCorrect(i)) {
+                        dot.classList.add('correct');
+                    } else {
+                        dot.classList.add('incorrect');
+                    }
+                }
+
+                dot.addEventListener('click', () => {
+                    goToQuestion(i);
+                });
+
+                questionGrid.appendChild(dot);
+            }
+        }
+
+        function updateDisplay() {
+            const q = QUESTIONS[currentIndex];
+            const { correct, answered } = getScore();
+
+            questionNumber.textContent = `Vraag ${currentIndex + 1}/${QUESTIONS.length}`;
+            scoreDisplay.textContent = `Score: ${correct}/${answered}`;
+            sentenceBox.textContent = q.sentence;
+            infinitive.innerHTML = `Infinitief: <strong>${q.inf}</strong>`;
+            tenseHint.innerHTML = `Tijd: <strong>${q.tense}</strong>`;
+
+            // Update input
+            answerInput.value = answers[currentIndex] || '';
+            answerInput.className = 'answer-input';
+            feedback.className = 'feedback hidden';
+            feedback.textContent = '';
+
+            if (answers[currentIndex] !== null) {
+                if (isCorrect(currentIndex)) {
+                    answerInput.classList.add('correct');
+                    feedback.className = 'feedback correct';
+                    feedback.textContent = '✓ Goed!';
+                } else {
+                    answerInput.classList.add('incorrect');
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = `✗ Fout. Het juiste antwoord is: ${q.answer}`;
+                }
+            }
+
+            // Update nav buttons
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.textContent = currentIndex === QUESTIONS.length - 1 ? 'Klaar' : 'Volgende →';
+
+            buildQuestionGrid();
+        }
+
+        function goToQuestion(index) {
+            if (index >= 0 && index < QUESTIONS.length) {
+                currentIndex = index;
+                updateDisplay();
+                answerInput.focus();
+            }
+        }
+
+        function submitAnswer() {
+            const value = answerInput.value.trim();
+            if (value) {
+                answers[currentIndex] = value;
+                updateDisplay();
+            }
+        }
+
+        function showResults() {
+            const { correct, answered } = getScore();
+            const unanswered = QUESTIONS.length - answered;
+            const wrong = answered - correct;
+
+            quizView.classList.add('hidden');
+            resultsView.classList.remove('hidden');
+
+            finalScore.textContent = `${correct}/${QUESTIONS.length}`;
+            resultsDetail.textContent = `${correct} goed, ${wrong} fout, ${unanswered} niet ingevuld`;
+
+            wrongAnswers.innerHTML = '';
+            let anyWrong = false;
+
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                if (answers[i] === null || !isCorrect(i)) {
+                    anyWrong = true;
+                    const q = QUESTIONS[i];
+                    const div = document.createElement('div');
+                    div.className = 'wrong-answer';
+                    div.innerHTML = `
+            <div class="sentence"><strong>${i + 1}.</strong> ${q.sentence} <em>(${q.inf})</em></div>
+            <div>Tijd: ${q.tense}</div>
+            <div class="your-answer">Jouw antwoord: ${answers[i] || '[leeg]'}</div>
+            <div class="correct-answer">Goed: ${q.answer}</div>
+          `;
+                    wrongAnswers.appendChild(div);
+                }
+            }
+
+            if (!anyWrong) {
+                wrongAnswers.innerHTML = '<p style="color: #2e7d32; font-weight: bold;">🎉 Alles goed! Fantastisch!</p>';
+            }
+        }
+
+        // Event listeners
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                submitAnswer();
+                if (currentIndex < QUESTIONS.length - 1) {
+                    goToQuestion(currentIndex + 1);
+                }
+            }
+        });
+
+        answerInput.addEventListener('input', () => {
+            // Clear feedback styling while typing
+            if (answers[currentIndex] !== null) {
+                // Keep showing result
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            submitAnswer();
+            goToQuestion(currentIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            submitAnswer();
+            if (currentIndex < QUESTIONS.length - 1) {
+                goToQuestion(currentIndex + 1);
+            } else {
+                showResults();
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            answers[currentIndex] = null;
+            updateDisplay();
+            answerInput.focus();
+        });
+
+        finishBtn.addEventListener('click', () => {
+            submitAnswer();
+            showResults();
+        });
+
+        retryBtn.addEventListener('click', () => {
+            answers = new Array(QUESTIONS.length).fill(null);
+            currentIndex = 0;
+            resultsView.classList.add('hidden');
+            quizView.classList.remove('hidden');
+            updateDisplay();
+            answerInput.focus();
+        });
+
+        backToQuizBtn.addEventListener('click', () => {
+            resultsView.classList.add('hidden');
+            quizView.classList.remove('hidden');
+            updateDisplay();
+            answerInput.focus();
+        });
+
+        // Initialize
+        updateDisplay();
+        answerInput.focus();
+    </script>
+</body>
+
+</html>
