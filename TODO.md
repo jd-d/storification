@@ -4,6 +4,8 @@
 - [x] Left hand side slide navigation for each story for easy navigation between story chapters/ slides
 - [x] Fix annoying bug where pressing Next or Previous nav buttons hides the buttons behind blue title panel
 - [ ] Convert entire site into Wiki (see detailed plan below)
+- [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
+- [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 
 ## Wiki Implementation Plan
 

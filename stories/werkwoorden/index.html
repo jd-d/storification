@@ -5,12 +5,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Werkwoordspelling Oefenen</title>
-    <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
     <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: #f8fafc;
+            color: #111827;
+        }
+
         .verb-container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        .title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .home-link {
+            font-weight: 700;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+        }
+
+        .progress-note {
+            margin: 0 0 20px;
+            font-size: 0.9em;
+            color: #4b5563;
         }
 
         .question-header {
@@ -24,11 +56,11 @@
 
         .score-display {
             font-size: 0.9em;
-            color: #666;
+            color: #374151;
         }
 
         .sentence-box {
-            background: #f5f5f5;
+            background: #f3f4f6;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -37,18 +69,18 @@
         }
 
         .infinitive {
-            color: #666;
+            color: #374151;
             font-style: italic;
             margin-bottom: 15px;
         }
 
         .tense-hint {
-            background: #e3f2fd;
+            background: #dbeafe;
             padding: 8px 12px;
             border-radius: 4px;
             margin-bottom: 15px;
             font-size: 0.9em;
-            color: #1565c0;
+            color: #1e3a8a;
         }
 
         .answer-section {
@@ -66,7 +98,12 @@
 
         .answer-input:focus {
             outline: none;
-            border-color: #2196F3;
+            border-color: #2563eb;
+        }
+
+        .answer-input::placeholder {
+            color: #6b7280;
+            opacity: 1;
         }
 
         .answer-input.correct {
@@ -113,30 +150,39 @@
         }
 
         .nav-btn.primary {
-            background: #2196F3;
+            background: #2563eb;
             color: white;
         }
 
         .nav-btn.primary:hover {
-            background: #1976D2;
+            background: #1d4ed8;
         }
 
         .nav-btn.secondary {
-            background: #e0e0e0;
+            background: #e5e7eb;
             color: #333;
         }
 
         .nav-btn.secondary:hover {
-            background: #bdbdbd;
+            background: #d1d5db;
         }
 
         .nav-btn.finish {
-            background: #4CAF50;
+            background: #16a34a;
             color: white;
         }
 
         .nav-btn.finish:hover {
-            background: #388E3C;
+            background: #15803d;
+        }
+
+        .nav-btn.danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .nav-btn.danger:hover {
+            background: #b91c1c;
         }
 
         .nav-btn:disabled {
@@ -160,8 +206,9 @@
             justify-content: center;
             font-size: 0.8em;
             cursor: pointer;
-            border: 2px solid #ddd;
+            border: 2px solid #cbd5e1;
             background: white;
+            color: #111827;
             transition: all 0.2s;
         }
 
@@ -170,12 +217,12 @@
         }
 
         .q-dot.current {
-            border-color: #2196F3;
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
         }
 
         .q-dot.answered {
-            background: #e3f2fd;
+            background: #e0f2fe;
         }
 
         .q-dot.correct {
@@ -200,11 +247,11 @@
         .results-score {
             font-size: 3em;
             font-weight: bold;
-            color: #2196F3;
+            color: #2563eb;
         }
 
         .results-detail {
-            color: #666;
+            color: #4b5563;
         }
 
         .wrong-answer {
@@ -229,17 +276,6 @@
             font-weight: bold;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2196F3;
-            text-decoration: none;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
         .hidden {
             display: none;
         }
@@ -248,9 +284,13 @@
 
 <body>
     <div class="verb-container">
-        <a href="../../index.html" class="back-link">← Terug naar verhalen</a>
+        <div class="title-bar">
+            <a href="../../index.html" class="home-link" id="home-link">Storification</a>
+            <button class="nav-btn danger" id="reset-all-btn" type="button">Reset hele quiz</button>
+        </div>
 
         <h1>Werkwoordspelling Oefenen</h1>
+        <p class="progress-note">Je voortgang wordt automatisch opgeslagen.</p>
 
         <!-- Quiz View -->
         <div id="quiz-view">
@@ -280,7 +320,7 @@
             <div class="nav-buttons">
                 <button class="nav-btn secondary" id="prev-btn" disabled>← Vorige</button>
                 <button class="nav-btn primary" id="next-btn">Volgende →</button>
-                <button class="nav-btn secondary" id="reset-btn">Reset</button>
+                <button class="nav-btn secondary" id="reset-btn">Wis antwoord</button>
                 <button class="nav-btn finish" id="finish-btn">Klaar</button>
             </div>
 
@@ -307,78 +347,51 @@
         </div>
     </div>
 
+    <script src="questions.js"></script>
     <script>
-        const QUESTIONS = [
-            // Tegenwoordige tijd (pv), inversie, enkelvoud/meervoud
-            { sentence: "Ik ........ elke dag naar school.", inf: "fietsen", answer: "fiets", tense: "tegenwoordige tijd" },
-            { sentence: "Jij ........ meestal op tijd.", inf: "komen", answer: "komt", tense: "tegenwoordige tijd" },
-            { sentence: "Hij ........ zijn huiswerk direct.", inf: "maken", answer: "maakt", tense: "tegenwoordige tijd" },
-            { sentence: "Zij ........ vaak om zeven uur.", inf: "slapen", answer: "slaapt", tense: "tegenwoordige tijd (enkelvoud)" },
-            { sentence: "Wij ........ altijd samen.", inf: "werken", answer: "werken", tense: "tegenwoordige tijd" },
-            { sentence: "Jullie ........ te snel!", inf: "fietsen", answer: "fietsen", tense: "tegenwoordige tijd" },
-            { sentence: "Zij ........ elke dag wel twintig kilometer.", inf: "fietsen", answer: "fietst", tense: "tegenwoordige tijd (enkelvoud, zij = ze)" },
-            { sentence: "........ je niet moe van de hele dag gamen?", inf: "worden", answer: "Word", tense: "tegenwoordige tijd (inversie met jij)" },
-            { sentence: "........ je broer niet moe van de hele dag gamen?", inf: "worden", answer: "Wordt", tense: "tegenwoordige tijd (inversie, niet jij)" },
-            { sentence: "Waar ........ jij morgen heen?", inf: "gaan", answer: "ga", tense: "tegenwoordige tijd (inversie met jij)" },
-            { sentence: "........ hij die som al?", inf: "snappen", answer: "Snapt", tense: "tegenwoordige tijd" },
-            { sentence: "........ jullie het antwoord?", inf: "weten", answer: "Weten", tense: "tegenwoordige tijd" },
-
-            // d/t in pv
-            { sentence: "Hij ........ altijd netjes.", inf: "antwoorden", answer: "antwoordt", tense: "tegenwoordige tijd" },
-            { sentence: "Zij ........ hard in de klas.", inf: "praten", answer: "praat", tense: "tegenwoordige tijd (enkelvoud)" },
-            { sentence: "Iedereen ........ op de bus.", inf: "wachten", answer: "wacht", tense: "tegenwoordige tijd" },
-            { sentence: "De hond ........ aan de deur.", inf: "krabben", answer: "krabt", tense: "tegenwoordige tijd" },
-
-            // Verleden tijd (ovt), zwakke ww
-            { sentence: "Ik ........ langzaam naar huis.", inf: "fietsen", answer: "fietste", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Het ........ vanmorgen.", inf: "misten", answer: "miste", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Het ........ de hele dag.", inf: "regenen", answer: "regende", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Het onweer ........ los.", inf: "barsten", answer: "barstte", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "We ........ ons kapot.", inf: "lachen", answer: "lachten", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Ze ........ geduldig af.", inf: "wachten", answer: "wachtten", tense: "verleden tijd (o.v.t., meervoud)" },
-            { sentence: "We ........ het goed.", inf: "bedoelen", answer: "bedoelden", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "We ........ in het water.", inf: "belanden", answer: "belandden", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Jij ........ gisteren laat.", inf: "werken", answer: "werkte", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Hij ........ de hele middag.", inf: "spelen", answer: "speelde", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "De leraar ........ rustig.", inf: "praten", answer: "praatte", tense: "verleden tijd (o.v.t.)" },
-
-            // Verleden tijd (ovt), sterke/ onregelmatige ww
-            { sentence: "Ik ........ nog nooit zo ver.", inf: "lopen", answer: "liep", tense: "verleden tijd (o.v.t., sterk werkwoord)" },
-            { sentence: "Gisteren ........ we naar oma.", inf: "gaan", answer: "gingen", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Zij ........ het antwoord meteen.", inf: "weten", answer: "wisten", tense: "verleden tijd (o.v.t., meervoud)" },
-            { sentence: "Hij ........ de bal heel ver.", inf: "gooien", answer: "gooide", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Wij ........ niets van dat verhaal.", inf: "geloven", answer: "geloofden", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "De wind ........ harder dan verwacht.", inf: "waaien", answer: "waaide", tense: "verleden tijd (o.v.t.)" },
-            { sentence: "Ik ........ dat boek gisteren uit.", inf: "lezen", answer: "las", tense: "verleden tijd (o.v.t., sterk werkwoord)" },
-            { sentence: "Ze ........ de toets goed.", inf: "doen", answer: "deden", tense: "verleden tijd (o.v.t., meervoud)" },
-
-            // Voltooid deelwoord (vtt), losse pv vs vd
-            { sentence: "Heb je al in je tas ........?", inf: "kijken", answer: "gekeken", tense: "voltooid deelwoord" },
-            { sentence: "Ik heb nog nooit zo ver .........", inf: "lopen", answer: "gelopen", tense: "voltooid deelwoord" },
-            { sentence: "Vannacht zijn er twee bomen .........", inf: "omwaaien", answer: "omgewaaid", tense: "voltooid deelwoord" },
-            { sentence: "Het dak heeft .........", inf: "lekken", answer: "gelekt", tense: "voltooid deelwoord" },
-            { sentence: "Ze hebben de hele vloer ........", inf: "schrobben", answer: "geschrobd", tense: "voltooid deelwoord" },
-            { sentence: "Ze hadden alles in hun tas ........", inf: "proppen", answer: "gepropt", tense: "voltooid deelwoord" },
-            { sentence: "Hij is gisteren ........ met zijn werk.", inf: "stoppen", answer: "gestopt", tense: "voltooid deelwoord" },
-            { sentence: "We hebben de hond .........", inf: "voeren", answer: "gevoerd", tense: "voltooid deelwoord" },
-            { sentence: "Ik ben mijn sleutel .........", inf: "vergeten", answer: "vergeten", tense: "voltooid deelwoord" },
-            { sentence: "Ze heeft haar telefoon .........", inf: "vinden", answer: "gevonden", tense: "voltooid deelwoord" },
-
-            // Passief / persoonsvorm vs voltooid deelwoord
-            { sentence: "De oorlog ........ het land.", inf: "verscheuren", answer: "verscheurt", tense: "tegenwoordige tijd" },
-            { sentence: "Het land wordt ........ door oorlog.", inf: "verscheuren", answer: "verscheurd", tense: "voltooid deelwoord (lijdende vorm)" },
-
-            // Lastige participia / leenwerkwoorden / scheidbare ww
-            { sentence: "Moet werkwoordspelling volgens jou worden ........?", inf: "afschaffen", answer: "afgeschaft", tense: "voltooid deelwoord" },
-            { sentence: "Die opmerking heeft hem nogal .........", inf: "ergeren", answer: "geërgerd", tense: "voltooid deelwoord" },
-            { sentence: "We hebben het plan meteen .........", inf: "uitvoeren", answer: "uitgevoerd", tense: "voltooid deelwoord" },
-            { sentence: "Hij heeft de computer .........", inf: "opstarten", answer: "opgestart", tense: "voltooid deelwoord" },
-            { sentence: "Ze heeft de lamp .........", inf: "uitdoen", answer: "uitgedaan", tense: "voltooid deelwoord" },
-            { sentence: "Ik ben de afspraak helemaal .........", inf: "vergeten", answer: "vergeten", tense: "voltooid deelwoord" },
-        ];
+        const QUESTIONS = window.QUESTIONS || [];
 
         let answers = new Array(QUESTIONS.length).fill(null);
         let currentIndex = 0;
+        let isFinished = false;
+        const STORAGE_KEY = "werkwoorden-quiz-state-v1";
+
+        function saveState() {
+            if (isFinished || QUESTIONS.length === 0) return;
+            const state = {
+                answers,
+                currentIndex,
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function clearState() {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+
+        function loadState() {
+            if (QUESTIONS.length === 0) return;
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            try {
+                const state = JSON.parse(raw);
+                if (!state || !Array.isArray(state.answers)) {
+                    clearState();
+                    return;
+                }
+                if (state.answers.length !== QUESTIONS.length) {
+                    clearState();
+                    return;
+                }
+                answers = state.answers.map((value) => (value === null ? null : String(value)));
+                const idx = Number(state.currentIndex);
+                if (Number.isInteger(idx)) {
+                    currentIndex = Math.min(Math.max(idx, 0), QUESTIONS.length - 1);
+                }
+            } catch (error) {
+                clearState();
+            }
+        }
 
         // DOM elements
         const quizView = document.getElementById('quiz-view');
@@ -400,6 +413,8 @@
         const wrongAnswers = document.getElementById('wrong-answers');
         const retryBtn = document.getElementById('retry-btn');
         const backToQuizBtn = document.getElementById('back-to-quiz-btn');
+        const resetAllBtn = document.getElementById('reset-all-btn');
+        const homeLink = document.getElementById('home-link');
 
         function stripDiacritics(s) {
             return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -485,6 +500,7 @@
             nextBtn.textContent = currentIndex === QUESTIONS.length - 1 ? 'Klaar' : 'Volgende →';
 
             buildQuestionGrid();
+            saveState();
         }
 
         function goToQuestion(index) {
@@ -497,10 +513,7 @@
 
         function submitAnswer() {
             const value = answerInput.value.trim();
-            if (value) {
-                answers[currentIndex] = value;
-                updateDisplay();
-            }
+            answers[currentIndex] = value ? value : null;
         }
 
         function showResults() {
@@ -536,6 +549,20 @@
             if (!anyWrong) {
                 wrongAnswers.innerHTML = '<p style="color: #2e7d32; font-weight: bold;">🎉 Alles goed! Fantastisch!</p>';
             }
+
+            isFinished = true;
+            clearState();
+        }
+
+        function resetAllQuiz() {
+            answers = new Array(QUESTIONS.length).fill(null);
+            currentIndex = 0;
+            isFinished = false;
+            clearState();
+            resultsView.classList.add('hidden');
+            quizView.classList.remove('hidden');
+            updateDisplay();
+            answerInput.focus();
         }
 
         // Event listeners
@@ -544,6 +571,8 @@
                 submitAnswer();
                 if (currentIndex < QUESTIONS.length - 1) {
                     goToQuestion(currentIndex + 1);
+                } else {
+                    showResults();
                 }
             }
         });
@@ -581,12 +610,7 @@
         });
 
         retryBtn.addEventListener('click', () => {
-            answers = new Array(QUESTIONS.length).fill(null);
-            currentIndex = 0;
-            resultsView.classList.add('hidden');
-            quizView.classList.remove('hidden');
-            updateDisplay();
-            answerInput.focus();
+            resetAllQuiz();
         });
 
         backToQuizBtn.addEventListener('click', () => {
@@ -596,7 +620,24 @@
             answerInput.focus();
         });
 
+        resetAllBtn.addEventListener('click', () => {
+            if (confirm('Weet je zeker dat je alles wilt resetten?')) {
+                resetAllQuiz();
+            }
+        });
+
+        homeLink.addEventListener('click', () => {
+            submitAnswer();
+            saveState();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            submitAnswer();
+            saveState();
+        });
+
         // Initialize
+        loadState();
         updateDisplay();
         answerInput.focus();
     </script>
