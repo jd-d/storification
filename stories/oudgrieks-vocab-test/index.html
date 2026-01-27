@@ -404,6 +404,14 @@
           <button type="button" id="importKnownBtn">Importeer bekend</button>
         </div>
         <p class="hint" id="importStatus"></p>
+        <h3 class="section-title">Masterlijst (volledige overwrite)</h3>
+        <p class="hint">Let op: dit vervangt de hele vocab-lijst. TAB tussen Grieks en Nederlands.</p>
+        <textarea class="import-area" id="masterArea" placeholder="Plak hier de volledige lijst..."></textarea>
+        <div class="controls">
+          <button type="button" id="importMasterBtn">Importeer masterlijst</button>
+          <button type="button" id="resetMasterBtn">Herstel standaardlijst</button>
+        </div>
+        <p class="hint" id="masterStatus"></p>
       </article>
 
       <article class="card setup-card">
@@ -477,8 +485,7 @@
 
   <script src="vocab-data.js"></script>
   <script>
-    const RAW_VOCAB = window.RAW_VOCAB || "";
-
+    const MASTER_VOCAB_KEY = "oudgrieks-vocab-master-v1";
     const FACTS = [
       "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
       "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
@@ -506,6 +513,20 @@
     const KNOWN_KEY = "oudgrieks-vocab-known-v1";
     const AUTO_REMOVE_KEY = "oudgrieks-vocab-auto-remove-v1";
 
+    function loadMasterVocab() {
+      return localStorage.getItem(MASTER_VOCAB_KEY);
+    }
+
+    function saveMasterVocab(text) {
+      localStorage.setItem(MASTER_VOCAB_KEY, text);
+    }
+
+    function clearMasterVocab() {
+      localStorage.removeItem(MASTER_VOCAB_KEY);
+    }
+
+    const RAW_VOCAB = loadMasterVocab() || window.RAW_VOCAB || "";
+
     const vocab = parseVocab(RAW_VOCAB);
     const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
 
@@ -525,6 +546,10 @@
     const importKnownBtn = document.getElementById("importKnownBtn");
     const importArea = document.getElementById("importArea");
     const importStatus = document.getElementById("importStatus");
+    const importMasterBtn = document.getElementById("importMasterBtn");
+    const resetMasterBtn = document.getElementById("resetMasterBtn");
+    const masterArea = document.getElementById("masterArea");
+    const masterStatus = document.getElementById("masterStatus");
     const backToTestBtn = document.getElementById("backToTestBtn");
     const testArea = document.getElementById("testArea");
     const summaryCard = document.getElementById("summaryCard");
@@ -637,7 +662,8 @@
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[()\[\]]/g, "")
-        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/-/g, "")
+        .replace(/[^a-z0-9\s]/g, "")
         .replace(/\s+/g, " ")
         .trim();
     }
@@ -704,6 +730,18 @@
         if (!greek || !dutch) return null;
         return { greek, translations: dutch.split(",").map((part) => part.trim()).filter(Boolean) };
       }).filter(Boolean);
+    }
+
+    function parseMasterLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      const validLines = lines.filter((line) => {
+        const splitIndex = line.indexOf("\t");
+        if (splitIndex === -1) return false;
+        const left = line.slice(0, splitIndex).trim();
+        const right = line.slice(splitIndex + 1).trim();
+        return Boolean(left && right);
+      });
+      return validLines;
     }
 
     function importUnknowns() {
@@ -812,6 +850,46 @@
       }
 
       importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend.`;
+    }
+
+    function importMasterList() {
+      const text = masterArea.value.trim();
+      if (!text) {
+        masterStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const validLines = parseMasterLines(text);
+      if (validLines.length === 0) {
+        masterStatus.textContent = "Geen geldige regels gevonden. Gebruik TAB tussen Grieks en Nederlands.";
+        return;
+      }
+
+      const confirmMessage = `Je gaat ${validLines.length} regels importeren. Dit vervangt de volledige vocab-lijst en wist je voortgang en bekende woorden. Doorgaan?`;
+      if (!confirm(confirmMessage)) return;
+
+      saveMasterVocab(validLines.join("\n"));
+      knownIds.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Masterlijst opgeslagen. Pagina wordt herladen...";
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    function resetMasterList() {
+      if (!confirm("Standaardlijst herstellen? Dit wist je aangepaste masterlijst en reset je voortgang.")) {
+        return;
+      }
+      clearMasterVocab();
+      knownIds.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Standaardlijst hersteld. Pagina wordt herladen...";
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
     }
 
     function getRevealMode() {
@@ -1264,13 +1342,17 @@
     userAnswer.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
+        if (!session || session.activeIds.length === 0) return;
         const autoRemoved = handleSave();
-        if (!autoRemoved && session && session.activeIds.length > 0) {
-          if (session.currentIndex === session.activeIds.length - 1) {
-            showSummary();
-          } else {
-            goToRelative(1);
-          }
+        if (autoRemoved) return;
+        if (session.revealMode === "immediate") {
+          nextBtn.focus();
+          return;
+        }
+        if (session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
         }
       }
     });
@@ -1303,6 +1385,14 @@
 
     importKnownBtn.addEventListener("click", () => {
       importKnowns();
+    });
+
+    importMasterBtn.addEventListener("click", () => {
+      importMasterList();
+    });
+
+    resetMasterBtn.addEventListener("click", () => {
+      resetMasterList();
     });
 
     manageKnownBtn.addEventListener("click", () => {

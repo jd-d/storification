@@ -6,14 +6,17 @@
 - [ ] Convert entire site into Wiki (see detailed plan below)
 - [x] Add Oudgrieks → Nederlands vocabtoets component
 - [x] Verbeter layout/UX Oudgrieks vocabtoets
+- [x] Oudgrieks vocab masterlijst import (volledige overwrite)
 - [x] Oudgrieks vocab import bekende woorden
 - [x] Oudgrieks vocab export/import onbekende woorden
 - [x] Oudgrieks vocab: bekende woorden toegankelijk tijdens toets
+- [x] Oudgrieks vocab: Enter-gedrag voor "Na elke vraag" (toon antwoord, focus op Volgende)
 - [x] UX alignment polish Oudgrieks vocabtoets (settings flow)
 - [x] UX tweaks Oudgrieks vocabtoets (alignment, settings flow, start CTA)
 - [x] UX polish Oudgrieks vocabtoets (leesbaarheid, focus, mobile flow)
 - [x] Verbeter contrast header-tekst Oudgrieks vocabtoets
 - [x] Oudgrieks vocab: auto-remove bij goed antwoord + toggle
+- [x] Oudgrieks vocab: antwoordcontrole negeert hoofdletters + interpunctie
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 
