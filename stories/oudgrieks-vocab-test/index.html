@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="../../assets/css/style.css" />
   <style>
     :root {
-      --bg: #f8fafc;
-      --fg: #111827;
-      --accent: #1d4ed8;
+      --bg: #f3f4f6;
+      --fg: #1f2937;
+      --accent: #2563eb;
       --accent-soft: #dbeafe;
       --card-bg: #ffffff;
       --muted: #4b5563;
@@ -22,7 +22,7 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+      background: var(--bg);
       color: var(--fg);
       line-height: 1.6;
     }
@@ -81,13 +81,18 @@
       background: var(--card-bg);
       border-radius: 14px;
       padding: 1.2rem 1.3rem 1rem;
-      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-align: left !important;
     }
 
     h2 { margin-top: 0; color: var(--accent); font-size: 1.25rem; }
+    .card h2, .card h1 { text-align: center; margin-bottom: 1.5rem; }
     p { margin: 0.3rem 0 0.7rem; }
 
     .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .mini-controls { align-items: center; }
+    .mini-controls .hint { margin: 0; }
 
     button {
       border-radius: 12px;
@@ -112,6 +117,23 @@
     button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
 
     label { cursor: pointer; }
+    .setup-card label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.6rem;
+    }
+
+    .option-row label { margin-bottom: 0; }
     input[type="text"], input[type="number"] {
       width: 100%;
       padding: 0.6rem 0.7rem;
@@ -125,6 +147,28 @@
       font-size: 0.9rem;
       color: var(--muted);
       margin-top: 0.3rem;
+    }
+
+    .setup-card ul {
+      text-align: left;
+      display: block;
+      margin: 0 0 1.5rem;
+      max-width: 600px;
+      padding-left: 1.5rem;
+    }
+
+    .setup-card p {
+      max-width: 600px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    #intervalInput {
+      width: 70px !important;
+      display: inline-block !important;
+      margin: 0 10px !important;
+      vertical-align: middle;
+      text-align: center;
     }
 
     .auto-notice {
@@ -261,6 +305,18 @@
     .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
     .setup-card:first-of-type { border: 1px dashed #cbd5e1; box-shadow: none; background: #f8fafc; }
     .setup-primary { border: 2px solid var(--accent); background: #fff; }
+
+    #startBtn {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 20px auto 0;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   </style>
 </head>
 <body>
@@ -291,15 +347,15 @@
         <h2>Instellingen</h2>
         <div>
           <p><strong>Antwoorden tonen</strong></p>
-          <div>
+          <div class="option-row">
             <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
           </div>
-          <div>
+          <div class="option-row">
             <label><input type="radio" name="revealMode" value="interval"> Om de</label>
             <input type="number" id="intervalInput" min="1" value="5">
             <span>vragen (max. totaal)</span>
           </div>
-          <div>
+          <div class="option-row">
             <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
           </div>
           <p class="hint" id="intervalHint"></p>
@@ -315,12 +371,14 @@
         </div>
       </article>
 
-      <article class="card setup-card">
+      <article class="card setup-card" id="knownCard">
         <h2>Bekende woorden</h2>
+        <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer verdergaan.</p>
         <p id="knownCount"></p>
         <div class="known-list" id="knownList"></div>
         <div class="controls">
           <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
+          <button type="button" id="backToTestBtn">Terug naar toets</button>
         </div>
         <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
       </article>
@@ -345,6 +403,10 @@
           <section class="card question-card">
             <div class="meta" id="progressDisplay"></div>
             <div class="status-chip" id="revealStatus"></div>
+            <div class="controls mini-controls">
+              <button type="button" id="manageKnownBtn">Bekende woorden beheren</button>
+              <span class="hint">Je voortgang wordt automatisch opgeslagen.</span>
+            </div>
 
             <div class="fact-box" id="factBox">
               <strong>Weetje:</strong>
@@ -435,6 +497,7 @@
     const knownCount = document.getElementById("knownCount");
     const knownList = document.getElementById("knownList");
     const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const backToTestBtn = document.getElementById("backToTestBtn");
     const testArea = document.getElementById("testArea");
     const summaryCard = document.getElementById("summaryCard");
     const navList = document.getElementById("navList");
@@ -465,6 +528,9 @@
     const autoRemoveToggle = document.getElementById("autoRemoveToggle");
     const autoNotice = document.getElementById("autoNotice");
     const setupCards = Array.from(document.querySelectorAll(".setup-card"));
+    const manageKnownBtn = document.getElementById("manageKnownBtn");
+    const knownCard = document.getElementById("knownCard");
+    const knownNotice = document.getElementById("knownNotice");
 
     function parseVocab(raw) {
       const lines = raw.trim().split("\n");
@@ -616,6 +682,7 @@
       knownList.innerHTML = "";
       const knownItems = vocab.filter((item) => knownIds.has(item.id));
       knownCount.textContent = `Bekende woorden: ${knownItems.length} / ${vocab.length}`;
+      knownNotice.classList.toggle("hidden", !session);
 
       if (knownItems.length === 0) {
         const empty = document.createElement("p");
@@ -837,7 +904,7 @@
           updateDisplay();
         }
         showAutoNotice("✅ Juist! Dit woord verdwijnt uit deze ronde.");
-        return;
+        return true;
       }
 
       if (session.revealMode === "immediate") {
@@ -855,6 +922,7 @@
       maybeRotateFact();
       updateNav();
       saveSession();
+      return false;
     }
 
     function handleRevealNow() {
@@ -894,6 +962,7 @@
       testArea.classList.add("hidden");
       summaryCard.classList.remove("hidden");
       setSetupVisibility(false);
+      knownNotice.classList.add("hidden");
 
       const answeredCount = session ? session.attempts.length : 0;
       const knownCountValue = knownIds.size;
@@ -931,11 +1000,13 @@
         resultTable.innerHTML = "";
         summaryCard.classList.remove("hidden");
         testArea.classList.add("hidden");
+        knownNotice.classList.add("hidden");
         return;
       }
       summaryCard.classList.add("hidden");
       testArea.classList.remove("hidden");
       updateDisplay();
+      knownNotice.classList.add("hidden");
     }
 
     function resetSession(keepKnown) {
@@ -953,6 +1024,7 @@
       summaryCard.classList.add("hidden");
       testArea.classList.add("hidden");
       renderKnownList();
+      knownNotice.classList.add("hidden");
       updateStartButtons();
     }
 
@@ -985,6 +1057,25 @@
       setupCards.forEach((card) => {
         card.classList.toggle("hidden", !show);
       });
+      if (!show) {
+        knownNotice.classList.add("hidden");
+      }
+    }
+
+    function openKnownManager() {
+      if (session) {
+        saveSession();
+      }
+      setSetupVisibility(true);
+      knownNotice.classList.remove("hidden");
+      knownCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function returnToTest() {
+      if (!session) return;
+      setSetupVisibility(false);
+      testArea.scrollIntoView({ behavior: "smooth", block: "start" });
+      updateDisplay();
     }
 
     startBtn.addEventListener("click", () => {
@@ -1014,7 +1105,14 @@
     userAnswer.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        handleSave();
+        const autoRemoved = handleSave();
+        if (!autoRemoved && session && session.activeIds.length > 0) {
+          if (session.currentIndex === session.activeIds.length - 1) {
+            showSummary();
+          } else {
+            goToRelative(1);
+          }
+        }
       }
     });
     revealNow.addEventListener("click", handleRevealNow);
@@ -1034,6 +1132,14 @@
 
     clearKnownBtn.addEventListener("click", () => {
       resetSession(false);
+    });
+
+    manageKnownBtn.addEventListener("click", () => {
+      openKnownManager();
+    });
+
+    backToTestBtn.addEventListener("click", () => {
+      returnToTest();
     });
 
     retryUnknown.addEventListener("click", () => {
