@@ -294,6 +294,32 @@
     .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
     .result-table th { color: var(--accent); }
 
+    .mnemonic-block {
+      margin-top: 0.9rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid #fcd34d;
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .mnemonic-block h4 {
+      margin: 0 0 0.4rem;
+      color: #92400e;
+    }
+
+    .mnemonic-block ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .mnemonic-input {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
     .hidden { display: none; }
 
     @media (max-width: 980px) {
@@ -379,6 +405,11 @@
           <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
           <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
         </div>
+        <div>
+          <p><strong>Volgorde</strong></p>
+          <label><input type="checkbox" id="shuffleToggle"> Schud de woorden bij start</label>
+          <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
+        </div>
         <div class="controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
           <button id="resumeBtn" type="button" class="hidden">Doorgaan waar je was</button>
@@ -396,11 +427,13 @@
         </div>
         <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
         <h3 class="section-title">Export / import onbekende woorden</h3>
-        <p class="hint">Formaat: één regel per woord, met TAB tussen Grieks en Nederlands.</p>
+        <p class="hint">Formaat: één regel per woord, met TAB tussen Grieks en Nederlands. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
         <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
         <div class="controls">
           <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
+          <label><input type="checkbox" id="includeMnemonicsToggle"> Neem mijn ezelsbruggetjes mee</label>
           <button type="button" id="importUnknownBtn">Importeer onbekend</button>
+          <button type="button" id="importUnknownKnownRestBtn">Importeer onbekend + rest bekend</button>
           <button type="button" id="importKnownBtn">Importeer bekend</button>
         </div>
         <p class="hint" id="importStatus"></p>
@@ -436,6 +469,7 @@
             <div class="status-chip" id="revealStatus"></div>
             <div class="controls mini-controls">
               <button type="button" id="manageKnownBtn">Bekende woorden beheren</button>
+              <button type="button" id="shuffleBtn">Schud volgorde</button>
               <span class="hint">Je voortgang wordt automatisch opgeslagen.</span>
             </div>
 
@@ -457,6 +491,9 @@
               <button id="prevBtn" type="button">← Vorige</button>
               <button id="nextBtn" type="button">Volgende →</button>
             </div>
+            <div class="controls">
+              <button id="mnemonicBtn" type="button">Ezelsbruggetjes</button>
+            </div>
 
             <div class="toggle-row">
               <label><input type="checkbox" id="knownToggle"> Ik weet dit woord (niet meer tonen)</label>
@@ -465,6 +502,15 @@
             <p class="auto-notice hidden" id="autoNotice"></p>
 
             <div id="answerBlock" class="answer-block hidden"></div>
+            <div id="mnemonicBlock" class="mnemonic-block hidden">
+              <h4>Ezelsbruggetjes</h4>
+              <ul id="mnemonicList"></ul>
+              <div class="mnemonic-input">
+                <label for="mnemonicInput"><strong>Jouw ezelsbruggetje</strong></label>
+                <input type="text" id="mnemonicInput" placeholder="Typ jouw ezelsbruggetje...">
+                <button type="button" id="saveMnemonicBtn">Opslaan</button>
+              </div>
+            </div>
             <div id="intervalBlock" class="interval-summary hidden"></div>
           </section>
         </div>
@@ -512,6 +558,7 @@
     const STORAGE_KEY = "oudgrieks-vocab-session-v1";
     const KNOWN_KEY = "oudgrieks-vocab-known-v1";
     const AUTO_REMOVE_KEY = "oudgrieks-vocab-auto-remove-v1";
+    const MNEMONIC_KEY = "oudgrieks-vocab-mnemonics-v1";
 
     function loadMasterVocab() {
       return localStorage.getItem(MASTER_VOCAB_KEY);
@@ -531,6 +578,7 @@
     const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
 
     const knownIds = loadKnown();
+    const userMnemonics = loadUserMnemonics();
 
     let session = null;
 
@@ -543,9 +591,11 @@
     const clearKnownBtn = document.getElementById("clearKnownBtn");
     const exportUnknownBtn = document.getElementById("exportUnknownBtn");
     const importUnknownBtn = document.getElementById("importUnknownBtn");
+    const importUnknownKnownRestBtn = document.getElementById("importUnknownKnownRestBtn");
     const importKnownBtn = document.getElementById("importKnownBtn");
     const importArea = document.getElementById("importArea");
     const importStatus = document.getElementById("importStatus");
+    const includeMnemonicsToggle = document.getElementById("includeMnemonicsToggle");
     const importMasterBtn = document.getElementById("importMasterBtn");
     const resetMasterBtn = document.getElementById("resetMasterBtn");
     const masterArea = document.getElementById("masterArea");
@@ -566,6 +616,10 @@
     const nextBtn = document.getElementById("nextBtn");
     const knownToggle = document.getElementById("knownToggle");
     const answerBlock = document.getElementById("answerBlock");
+    const mnemonicBlock = document.getElementById("mnemonicBlock");
+    const mnemonicList = document.getElementById("mnemonicList");
+    const mnemonicInput = document.getElementById("mnemonicInput");
+    const saveMnemonicBtn = document.getElementById("saveMnemonicBtn");
     const intervalBlock = document.getElementById("intervalBlock");
     const summaryText = document.getElementById("summaryText");
     const resultTable = document.getElementById("resultTable");
@@ -579,11 +633,16 @@
     const newFactBtn = document.getElementById("newFactBtn");
     const factBox = document.getElementById("factBox");
     const autoRemoveToggle = document.getElementById("autoRemoveToggle");
+    const shuffleToggle = document.getElementById("shuffleToggle");
     const autoNotice = document.getElementById("autoNotice");
     const setupCards = Array.from(document.querySelectorAll(".setup-card"));
     const manageKnownBtn = document.getElementById("manageKnownBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const mnemonicBtn = document.getElementById("mnemonicBtn");
     const knownCard = document.getElementById("knownCard");
     const knownNotice = document.getElementById("knownNotice");
+
+    let mnemonicOpenFor = null;
 
     function parseVocab(raw) {
       const lines = raw.trim().split("\n");
@@ -602,7 +661,10 @@
     }
 
     function transliterateGreek(text) {
-      let t = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      let t = text.normalize("NFD");
+      t = t.replace(/([αεηιουωΑΕΗΙΟΥΩ])\u0314/g, "h$1");
+      t = t.replace(/([ρΡ])\u0314/g, "rh");
+      t = t.replace(/[\u0300-\u036f]/g, "");
       t = t.replace(/[··;]/g, "");
       t = t.toLowerCase();
 
@@ -668,6 +730,111 @@
         .trim();
     }
 
+    function normalizeGreek(text) {
+      return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function cleanMeaning(text) {
+      return text
+        .replace(/\([^)]*\)/g, "")
+        .replace(/[,;]/g, "")
+        .trim();
+    }
+
+    function getEtymologyHint(item, translit, meaning) {
+      const greek = normalizeGreek(item.greek);
+      const hints = [
+        { match: (g) => g.includes("θεο"), hint: "Etymologie: theo- (theologie) = god." },
+        { match: (g) => g.includes("λογ"), hint: "Etymologie: logo-/log- (logica, logboek) = woord/verhaal." },
+        { match: (g) => g.includes("φω"), hint: "Etymologie: photo- (fotografie) = licht." },
+        { match: (g) => g.includes("βιο"), hint: "Etymologie: bio- (biologie) = leven." },
+        { match: (g) => g.includes("ανθρωπ"), hint: "Etymologie: anthropo- (antropologie) = mens." },
+        { match: (g) => g.includes("ελλην") || g.includes("ελλ"), hint: "Etymologie: Hellen- (Hellenisme) = Grieks/Griekenland." },
+        { match: (g) => g.includes("ηλιο"), hint: "Etymologie: heli- (heliocentrisch, helium) = zon." },
+        { match: (g) => g.includes("θαλατ"), hint: "Etymologie: thalasso- (thalassotherapie) = zee." },
+        { match: (g) => g.includes("υδωρ") || g.includes("υδατ"), hint: "Etymologie: hydro- (hydrauliek) = water." },
+        { match: (g) => g.includes("πυρ"), hint: "Etymologie: pyro- (pyrotechniek) = vuur." },
+        { match: (g) => g.includes("τεχν"), hint: "Etymologie: techno- (techniek) = kunst/vaardigheid." },
+        { match: (g) => g.includes("σοφι"), hint: "Etymologie: -sofia in filosofie = wijsheid." },
+        { match: (g) => g.includes("φιλο"), hint: "Etymologie: philo- (filantropie, filosofie) = vriend." },
+        { match: (g) => g.includes("πολεμ"), hint: "Etymologie: polem- (polemiek) = oorlog/strijd." },
+        { match: (g) => g.includes("νικ"), hint: "Etymologie: Nike (merk) = overwinning." },
+        { match: (g) => g.includes("οικ"), hint: "Etymologie: eco-/oiko- (ecologie) = huis/omgeving." },
+        { match: (g) => g.includes("ονομ"), hint: "Etymologie: -onym (pseudoniem) = naam." },
+        { match: (g) => g.includes("γυν"), hint: "Etymologie: gyn- (gynaecologie) = vrouw." },
+        { match: (g) => g.includes("ανδρ"), hint: "Etymologie: andro- (android, androloog) = man." },
+        { match: (g) => g.includes("αδελφ"), hint: "Etymologie: adelph- (Philadelphia) = broer/zus." },
+        { match: (g) => g.includes("ιππ"), hint: "Etymologie: hippo- (hippodroom) = paard." },
+        { match: (g) => g.includes("θανατ"), hint: "Etymologie: thanato- (thanatologie) = dood." },
+        { match: (g) => g.includes("πατρ"), hint: "Etymologie: patri- (patriarch) = vader." },
+        { match: (g) => g.includes("μητρ"), hint: "Etymologie: metr- (metropool) = moeder." },
+        { match: (g) => g.includes("οπλ"), hint: "Etymologie: hopliet (gewapende soldaat) komt van ὅπλον." },
+        { match: (g) => g.includes("θρον"), hint: "Etymologie: throne/tron = troon." },
+        { match: (g) => g.includes("ποταμ"), hint: "Etymologie: potam- (potamologie) = rivier." },
+        { match: (g) => g.includes("αντι"), hint: "Etymologie: anti- (antibiotica) = tegen/in plaats van." },
+        { match: (g) => g.includes("συν"), hint: "Etymologie: syn- (synthese) = samen/met." },
+        { match: (g) => g.includes("δια"), hint: "Etymologie: dia- (diagnose, diagram) = door/uit elkaar." },
+        { match: (g) => g.includes("μετα"), hint: "Etymologie: meta- (metafoor, metadata) = na/over." },
+        { match: (g) => g.includes("περι"), hint: "Etymologie: peri- (perimeter) = rondom." },
+        { match: (g) => g.includes("υπερ"), hint: "Etymologie: hyper- (hyperactief) = boven/overmatig." },
+        { match: (g) => g.includes("επι"), hint: "Etymologie: epi- (epicentrum) = op/bij." },
+        { match: (g) => g.includes("κατα"), hint: "Etymologie: kata- (katastrofe) = neer/naar beneden." }
+      ];
+
+      const match = hints.find((entry) => entry.match(greek));
+      if (match) return match.hint;
+      if (meaning) {
+        return `Etymologie-hint: denk aan NL/EN woorden rond "${meaning}" die vaak Griekse stammen gebruiken.`;
+      }
+      return "Etymologie-hint: gebruik de klank- en beeldhint om dit woord te onthouden.";
+    }
+
+    function hashIndex(text, modulo) {
+      let hash = 0;
+      for (let i = 0; i < text.length; i += 1) {
+        hash = (hash + text.charCodeAt(i) * (i + 1)) % modulo;
+      }
+      return hash;
+    }
+
+    function getMnemonics(item) {
+      const translit = transliterateGreek(item.greek);
+      const meaning = cleanMeaning(item.translations[0] || "de betekenis");
+      const etymology = getEtymologyHint(item, translit, meaning);
+      const userHints = getUserMnemonics(item).map((hint) => `Jouw ezelsbruggetje: ${hint}`);
+
+      const soundTemplates = [
+        (t, m) => `Klank: "${t}" klinkt als een mini-uitroep. Stel je ${m} voor die "${t}!" roept.`,
+        (t, m) => `Klank: zeg "${t}" hardop en plak het op ${m} in je hoofd.`,
+        (t, m) => `Klank: "${t}" → maak een korte zin met ${m} en herhaal het ritme.`
+      ];
+      const imageTemplates = [
+        (t, m) => `Beeld: schrijf "${t}" groot boven een ${m}.`,
+        (t, m) => `Beeld: maak van ${m} een vorm die lijkt op "${t}".`,
+        (t, m) => `Beeld: geef ${m} een label "${t}" alsof het een sticker is.`
+      ];
+
+      const sound = soundTemplates[hashIndex(translit + meaning, soundTemplates.length)](translit, meaning);
+      const image = imageTemplates[hashIndex(meaning + translit, imageTemplates.length)](translit, meaning);
+
+      return [...userHints, etymology, sound, image];
+    }
+
+    function renderMnemonics(item) {
+      const hints = getMnemonics(item);
+      mnemonicList.innerHTML = "";
+      hints.forEach((hint) => {
+        const li = document.createElement("li");
+        li.textContent = hint;
+        mnemonicList.appendChild(li);
+      });
+      mnemonicBlock.classList.remove("hidden");
+      mnemonicOpenFor = item.id;
+    }
+
     function isCorrectAnswer(answer, translations) {
       if (!answer) return false;
       const normalized = normalizeText(answer);
@@ -704,6 +871,47 @@
       localStorage.setItem(KNOWN_KEY, JSON.stringify(Array.from(knownIds)));
     }
 
+    function loadUserMnemonics() {
+      const raw = localStorage.getItem(MNEMONIC_KEY);
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return {};
+        const cleaned = {};
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            cleaned[key] = value.map((entry) => String(entry).trim()).filter(Boolean);
+          }
+        });
+        return cleaned;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveUserMnemonics() {
+      localStorage.setItem(MNEMONIC_KEY, JSON.stringify(userMnemonics));
+    }
+
+    function getUserMnemonics(item) {
+      if (!item || !item.greek) return [];
+      return userMnemonics[item.greek] || [];
+    }
+
+    function addUserMnemonic(item, text) {
+      if (!item || !item.greek) return false;
+      const cleaned = String(text || "").trim();
+      if (!cleaned) return false;
+      const list = userMnemonics[item.greek] || [];
+      const exists = list.some((entry) => entry.toLowerCase() === cleaned.toLowerCase());
+      if (!exists) {
+        list.push(cleaned);
+        userMnemonics[item.greek] = list;
+        saveUserMnemonics();
+      }
+      return true;
+    }
+
     function buildActiveIds(includeKnown) {
       if (includeKnown) return vocab.map((item) => item.id);
       return vocab.filter((item) => !knownIds.has(item.id)).map((item) => item.id);
@@ -713,9 +921,44 @@
       return vocab.filter((item) => !knownIds.has(item.id));
     }
 
+    function shuffleArray(values) {
+      const arr = values.slice();
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleActiveIds(keepCurrent = true) {
+      if (!session || session.activeIds.length === 0) return;
+      const currentId = session.activeIds[session.currentIndex];
+      if (!keepCurrent || !currentId) {
+        session.activeIds = shuffleArray(session.activeIds);
+        session.currentIndex = 0;
+      } else {
+        const rest = session.activeIds.filter((id) => id !== currentId);
+        const shuffled = shuffleArray(rest);
+        const insertIndex = Math.min(session.currentIndex, shuffled.length);
+        shuffled.splice(insertIndex, 0, currentId);
+        session.activeIds = shuffled;
+        session.currentIndex = insertIndex;
+      }
+      session.shuffle = true;
+      saveSession();
+      updateDisplay();
+    }
+
     function exportUnknowns() {
       const unknowns = buildUnknownList();
-      const lines = unknowns.map((item) => `${item.greek}\t${item.translations.join(", ")}`);
+      const includeMnemonics = includeMnemonicsToggle ? includeMnemonicsToggle.checked : false;
+      const lines = unknowns.map((item) => {
+        const base = `${item.greek}\t${item.translations.join(", ")}`;
+        if (!includeMnemonics) return base;
+        const mnemonics = getUserMnemonics(item);
+        if (!mnemonics.length) return base;
+        return `${base}\t${mnemonics.join(" | ")}`;
+      });
       importArea.value = lines.join("\n");
       importStatus.textContent = `Geëxporteerd: ${unknowns.length} onbekende woorden.`;
     }
@@ -723,12 +966,20 @@
     function parseImportLines(text) {
       const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
       return lines.map((line) => {
-        const splitIndex = line.indexOf("\t");
-        if (splitIndex === -1) return null;
-        const greek = line.slice(0, splitIndex).trim();
-        const dutch = line.slice(splitIndex + 1).trim();
+        const parts = line.split("\t").map((part) => part.trim());
+        if (parts.length < 2) return null;
+        const greek = parts[0];
+        const dutch = parts[1];
         if (!greek || !dutch) return null;
-        return { greek, translations: dutch.split(",").map((part) => part.trim()).filter(Boolean) };
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
+        return {
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          mnemonics
+        };
       }).filter(Boolean);
     }
 
@@ -744,13 +995,8 @@
       return validLines;
     }
 
-    function importUnknowns() {
-      const text = importArea.value.trim();
-      if (!text) {
-        importStatus.textContent = "Geen import gevonden.";
-        return;
-      }
-
+    function getImportItems(text) {
+      if (!text) return [];
       let items = [];
       if (text.startsWith("[")) {
         try {
@@ -770,11 +1016,48 @@
         items = parseImportLines(text);
       }
 
+      return items;
+    }
+
+    function applyImportedMnemonics(items) {
+      let added = 0;
+      items.forEach((entry) => {
+        if (!entry.greek || !Array.isArray(entry.mnemonics) || entry.mnemonics.length === 0) return;
+        const existing = userMnemonics[entry.greek] || [];
+        entry.mnemonics.forEach((hint) => {
+          const cleaned = String(hint || "").trim();
+          if (!cleaned) return;
+          const exists = existing.some((value) => value.toLowerCase() === cleaned.toLowerCase());
+          if (!exists) {
+            existing.push(cleaned);
+            added += 1;
+          }
+        });
+        if (existing.length > 0) {
+          userMnemonics[entry.greek] = existing;
+        }
+      });
+      if (added > 0) {
+        saveUserMnemonics();
+      }
+      return added;
+    }
+
+    function importUnknowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+
       if (items.length === 0) {
         importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
         return;
       }
 
+      const addedMnemonics = applyImportedMnemonics(items);
       let moved = 0;
       const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
       items.forEach((entry) => {
@@ -795,7 +1078,53 @@
         }
       }
 
-      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar onbekend.`;
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar onbekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importUnknownsKnownRest() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+      if (items.length === 0) {
+        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        return;
+      }
+
+      const confirmMessage = "Deze import zet alle niet-genoemde woorden op bekend. Doorgaan?";
+      if (!confirm(confirmMessage)) return;
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      const unknownIds = new Set();
+      let matched = 0;
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!unknownIds.has(id)) {
+          unknownIds.add(id);
+          matched += 1;
+        }
+      });
+
+      knownIds.clear();
+      vocab.forEach((item) => {
+        if (!unknownIds.has(item.id)) {
+          knownIds.add(item.id);
+        }
+      });
+
+      saveKnown();
+      renderKnownList();
+      if (session) {
+        rebuildActiveIds();
+        updateDisplay();
+      }
+
+      importStatus.textContent = `Import klaar. Onbekend: ${matched}. Bekend gemaakt: ${vocab.length - unknownIds.size}. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
     }
 
     function importKnowns() {
@@ -805,30 +1134,14 @@
         return;
       }
 
-      let items = [];
-      if (text.startsWith("[")) {
-        try {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed)) {
-            items = parsed.map((entry) => ({
-              greek: String(entry.greek || "").trim(),
-              translations: Array.isArray(entry.translations) ? entry.translations : [String(entry.translation || "").trim()]
-            })).filter((entry) => entry.greek);
-          }
-        } catch (error) {
-          items = [];
-        }
-      }
-
-      if (items.length === 0) {
-        items = parseImportLines(text);
-      }
+      const items = getImportItems(text);
 
       if (items.length === 0) {
         importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
         return;
       }
 
+      const addedMnemonics = applyImportedMnemonics(items);
       let moved = 0;
       const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
       items.forEach((entry) => {
@@ -849,7 +1162,7 @@
         }
       }
 
-      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend.`;
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
     }
 
     function importMasterList() {
@@ -964,7 +1277,7 @@
 
     function createSession(options) {
       const includeKnown = options.includeKnown;
-      const activeIds = buildActiveIds(includeKnown);
+      const activeIds = options.shuffle ? shuffleArray(buildActiveIds(includeKnown)) : buildActiveIds(includeKnown);
       session = {
         activeIds,
         currentIndex: 0,
@@ -972,7 +1285,8 @@
         attempts: [],
         revealMode: options.revealMode,
         interval: options.interval,
-        includeKnown
+        includeKnown,
+        shuffle: Boolean(options.shuffle)
       };
       saveSession();
     }
@@ -1051,6 +1365,9 @@
       revealStatus.textContent = describeRevealMode();
 
       answerBlock.classList.add("hidden");
+      mnemonicBlock.classList.add("hidden");
+      mnemonicOpenFor = null;
+      mnemonicInput.value = "";
       intervalBlock.classList.add("hidden");
       autoNotice.classList.add("hidden");
 
@@ -1271,6 +1588,7 @@
         input.checked = input.value === saved.revealMode;
       });
       intervalInput.value = saved.interval || 5;
+      shuffleToggle.checked = Boolean(saved.shuffle);
     }
 
     function updateStartButtons() {
@@ -1321,7 +1639,8 @@
       startTest({
         revealMode: mode,
         interval,
-        includeKnown: false
+        includeKnown: false,
+        shuffle: shuffleToggle.checked
       });
       setSetupVisibility(false);
     });
@@ -1383,6 +1702,10 @@
       importUnknowns();
     });
 
+    importUnknownKnownRestBtn.addEventListener("click", () => {
+      importUnknownsKnownRest();
+    });
+
     importKnownBtn.addEventListener("click", () => {
       importKnowns();
     });
@@ -1397,6 +1720,35 @@
 
     manageKnownBtn.addEventListener("click", () => {
       openKnownManager();
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      shuffleActiveIds(true);
+    });
+
+    mnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      if (!mnemonicBlock.classList.contains("hidden") && mnemonicOpenFor === id) {
+        mnemonicBlock.classList.add("hidden");
+        mnemonicOpenFor = null;
+        return;
+      }
+      renderMnemonics(item);
+    });
+
+    saveMnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      const added = addUserMnemonic(item, mnemonicInput.value);
+      if (added) {
+        mnemonicInput.value = "";
+        renderMnemonics(item);
+      }
     });
 
     backToTestBtn.addEventListener("click", () => {

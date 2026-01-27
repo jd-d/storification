@@ -17,6 +17,11 @@
 - [x] Verbeter contrast header-tekst Oudgrieks vocabtoets
 - [x] Oudgrieks vocab: auto-remove bij goed antwoord + toggle
 - [x] Oudgrieks vocab: antwoordcontrole negeert hoofdletters + interpunctie
+- [x] Oudgrieks vocab: transliteratie met spiritus asper (h)
+- [x] Oudgrieks vocab: optie om volgorde te schudden (start + tijdens toets)
+- [x] Oudgrieks vocab: ezelsbruggetjes per woord (etymologie + klank/beeld)
+- [x] Oudgrieks vocab: import onbekend + rest naar bekend
+- [x] Oudgrieks vocab: eigen ezelsbruggetjes + export/import bewaren
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 
