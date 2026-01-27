@@ -4,6 +4,11 @@
 - [x] Left hand side slide navigation for each story for easy navigation between story chapters/ slides
 - [x] Fix annoying bug where pressing Next or Previous nav buttons hides the buttons behind blue title panel
 - [ ] Convert entire site into Wiki (see detailed plan below)
+- [x] Add Oudgrieks → Nederlands vocabtoets component
+- [x] Verbeter layout/UX Oudgrieks vocabtoets
+- [x] UX polish Oudgrieks vocabtoets (leesbaarheid, focus, mobile flow)
+- [x] Verbeter contrast header-tekst Oudgrieks vocabtoets
+- [x] Oudgrieks vocab: auto-remove bij goed antwoord + toggle
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 
