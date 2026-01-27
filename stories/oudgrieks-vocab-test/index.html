@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Oudgrieks → Nederlands vocabtoets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --fg: #111827;
+      --accent: #1d4ed8;
+      --accent-soft: #dbeafe;
+      --card-bg: #ffffff;
+      --muted: #4b5563;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(120deg, #223c7a, #3a66d6);
+      color: #fff;
+      padding: 1.6rem 1.2rem 1.2rem;
+      text-align: left;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+
+    .home-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .home-link:hover { text-decoration: underline; }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+    }
+
+    header p {
+      margin: 0.4rem 0 0;
+      color: #f8fafc;
+      opacity: 1;
+      text-shadow: 0 1px 6px rgba(15, 23, 42, 0.3);
+      max-width: 860px;
+    }
+
+    header .hint {
+      color: #e2e8f0;
+      opacity: 1;
+    }
+
+    main { max-width: 1200px; margin: 1.5rem auto 2.5rem; padding: 0 1rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .full { grid-column: 1 / -1; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem 1rem;
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    h2 { margin-top: 0; color: var(--accent); font-size: 1.25rem; }
+    p { margin: 0.3rem 0 0.7rem; }
+
+    .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+    button {
+      border-radius: 12px;
+      border: 1px solid rgba(29, 78, 216, 0.4);
+      padding: 0.55rem 1rem;
+      background: #fff;
+      color: var(--accent);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14); }
+    button.primary:hover { background: #1e40af; color: #fff; }
+    button.danger { border-color: rgba(220, 38, 38, 0.5); color: #fff; background: var(--danger); }
+    button.danger:hover { background: #b91c1c; }
+    button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+
+    label { cursor: pointer; }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    .auto-notice {
+      font-size: 0.9rem;
+      color: #166534;
+      font-weight: 600;
+      margin: 0.4rem 0 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+
+    .test-layout { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
+
+    .nav-card { position: sticky; top: 90px; max-height: calc(100vh - 120px); overflow: auto; }
+
+    .nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .nav-list button { width: 100%; justify-content: flex-start; border-radius: 10px; }
+    .nav-list button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
+    .nav-list button.answered { border-color: var(--success); color: #166534; }
+
+    .question-card h3 { margin-top: 0; margin-bottom: 0.35rem; color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; }
+
+    .greek-term {
+      font-family: "Palatino Linotype", "Noto Serif", "Times New Roman", serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      margin: 0.5rem 0 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .translit {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .answer-block {
+      margin-top: 0.7rem;
+      padding: 0.65rem 0.75rem;
+      background: var(--accent-soft);
+      border-radius: 10px;
+      border: 1px solid rgba(29, 78, 216, 0.35);
+    }
+
+    .answer-block strong { color: var(--accent); }
+    .answer-block.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+    .answer-block.wrong { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+
+    .toggle-row {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .known-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 240px;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .known-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      background: #f9fafb;
+    }
+
+    .known-item small { color: var(--muted); }
+
+    .fact-box {
+      background: #fef9c3;
+      border: 1px solid #facc15;
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      margin: 0.6rem 0;
+      color: #854d0e;
+    }
+
+    .fact-note {
+      font-size: 0.85rem;
+      color: #854d0e;
+      margin-top: 0;
+    }
+
+    .interval-summary {
+      margin-top: 0.8rem;
+      border: 1px dashed #93c5fd;
+      border-radius: 12px;
+      padding: 0.7rem 0.9rem;
+      background: #f0f7ff;
+    }
+
+    .interval-summary h4 { margin: 0 0 0.4rem; color: #1e40af; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
+    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+    .result-table th { color: var(--accent); }
+
+    .hidden { display: none; }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .test-layout { display: flex; flex-direction: column; }
+      .nav-card { position: relative; top: auto; max-height: 200px; order: 2; }
+      .question-card { order: 1; }
+    }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.6rem; }
+      .greek-term { font-size: 1.6rem; }
+    }
+
+    .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
+    .setup-card:first-of-type { border: 1px dashed #cbd5e1; box-shadow: none; background: #f8fafc; }
+    .setup-primary { border: 2px solid var(--accent); background: #fff; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-bar">
+      <a href="../../index.html" class="home-link" id="homeLink">← Storification</a>
+      <button type="button" class="danger" id="resetSessionBtn">Reset toets</button>
+    </div>
+    <h1>Oudgrieks → Nederlands vocabtoets</h1>
+    <p>Oefen met Oudgriekse woordenschat. Je ziet altijd de Griekse term + eenvoudige transliteratie, en vertaalt naar het Nederlands.</p>
+    <p class="hint">Je voortgang en je lijst met bekende woorden worden automatisch opgeslagen.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card full setup-card setup-primary">
+        <h2>Hoe werkt deze toets?</h2>
+        <p>Je krijgt elk woord precies één keer te zien (tenzij je kiest om opnieuw te oefenen). Jij vertaalt van Grieks naar Nederlands.</p>
+        <ul>
+          <li>Je bepaalt wanneer je antwoorden ziet: direct, pas aan het einde, of om de X woorden.</li>
+          <li>Vink woorden aan die je kent. Dan verdwijnen ze uit de toets.</li>
+          <li>Je kunt bekende woorden altijd weer terugzetten.</li>
+        </ul>
+        <p class="hint">Dit is een oefenplek: zelfcontrole is toegestaan en zelfs aangemoedigd.</p>
+      </article>
+
+      <article class="card full setup-card">
+        <h2>Instellingen</h2>
+        <div>
+          <p><strong>Antwoorden tonen</strong></p>
+          <div>
+            <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
+          </div>
+          <div>
+            <label><input type="radio" name="revealMode" value="interval"> Om de</label>
+            <input type="number" id="intervalInput" min="1" value="5">
+            <span>vragen (max. totaal)</span>
+          </div>
+          <div>
+            <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
+          </div>
+          <p class="hint" id="intervalHint"></p>
+        </div>
+        <div>
+          <p><strong>Automatische bekend-markering</strong></p>
+          <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
+          <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
+        </div>
+        <div class="controls">
+          <button class="primary" id="startBtn" type="button">Start de toets</button>
+          <button id="resumeBtn" type="button" class="hidden">Doorgaan waar je was</button>
+        </div>
+      </article>
+
+      <article class="card setup-card">
+        <h2>Bekende woorden</h2>
+        <p id="knownCount"></p>
+        <div class="known-list" id="knownList"></div>
+        <div class="controls">
+          <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
+        </div>
+        <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
+      </article>
+
+      <article class="card setup-card">
+        <h2>Weetje over de Oude Grieken</h2>
+        <p class="fact-note">Dit is een leuk weetje en geen onderdeel van de toets.</p>
+        <p id="factText"></p>
+        <div class="controls">
+          <button type="button" id="newFactBtn">Nieuw weetje</button>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="testArea">
+        <div class="test-layout">
+          <aside class="card nav-card" aria-label="Navigatie woorden">
+            <h3>Woorden</h3>
+            <p class="hint" id="navHint"></p>
+            <ul class="nav-list" id="navList"></ul>
+          </aside>
+
+          <section class="card question-card">
+            <div class="meta" id="progressDisplay"></div>
+            <div class="status-chip" id="revealStatus"></div>
+
+            <div class="fact-box" id="factBox">
+              <strong>Weetje:</strong>
+              <span id="factInline"></span>
+            </div>
+
+            <div class="greek-term" id="greekText"></div>
+            <div class="translit" id="translitText"></div>
+            <p><strong>Vertaal naar het Nederlands.</strong></p>
+
+            <label for="userAnswer"><strong>Jouw antwoord</strong></label>
+            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus>
+
+            <div class="controls">
+              <button id="saveAnswer" type="button" class="primary">Bewaar antwoord</button>
+              <button id="revealNow" type="button">Toon antwoord nu</button>
+              <button id="prevBtn" type="button">← Vorige</button>
+              <button id="nextBtn" type="button">Volgende →</button>
+            </div>
+
+            <div class="toggle-row">
+              <label><input type="checkbox" id="knownToggle"> Ik weet dit woord (niet meer tonen)</label>
+              <p class="hint">Je kunt dit altijd terugzetten in het blok 'Bekende woorden'.</p>
+            </div>
+            <p class="auto-notice hidden" id="autoNotice"></p>
+
+            <div id="answerBlock" class="answer-block hidden"></div>
+            <div id="intervalBlock" class="interval-summary hidden"></div>
+          </section>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="summaryCard">
+        <h2>Resultaten & vervolg</h2>
+        <p id="summaryText"></p>
+        <table class="result-table" id="resultTable"></table>
+        <div class="controls">
+          <button id="retryUnknown" type="button" class="primary">Opnieuw met onbekende woorden</button>
+          <button id="retryAll" type="button">Alles opnieuw (ook bekende woorden)</button>
+          <button id="backToSettings" type="button">Terug naar instellingen</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="vocab-data.js"></script>
+  <script>
+    const RAW_VOCAB = window.RAW_VOCAB || "";
+
+    const FACTS = [
+      "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
+      "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
+      "In de Griekse mythologie droeg Zeus vaak een bliksemschicht als wapen.",
+      "Wist je dat veel moderne wetenschappelijke termen, zoals ‘biologie’ en ‘astronomie’, uit het Grieks komen?",
+      "In Athene werd democratie letterlijk ‘heerschappij van het volk’ genoemd (demos + kratos).",
+      "Wist je dat de Grieken hun goden als heel menselijk zagen, met emoties en ruzies?",
+      "In Sparta kregen jongens een strenge militaire opvoeding vanaf jonge leeftijd.",
+      "Wist je dat de Griekse filosoof Aristoteles lesgaf aan Alexander de Grote?",
+      "De oude Grieken gebruikten vaak amforen (grote kruiken) om wijn en olie te bewaren.",
+      "Wist je dat het alfabet dat wij gebruiken is geïnspireerd op het Griekse alfabet?",
+      "In de mythologie was Athena de godin van wijsheid en strategie.",
+      "Wist je dat de Griekse wiskundige Euclides de basis legde voor meetkunde?",
+      "De tempel van het Parthenon in Athene was gewijd aan Athena.",
+      "Wist je dat de Grieken al toneelstukken met acteurs en maskers opvoerden?",
+      "In de Odyssee reist Odysseus tien jaar lang terug naar huis na de Trojaanse oorlog.",
+      "Wist je dat ‘polis’ de Griekse term is voor stadstaat, zoals Athene of Sparta?",
+      "In de mythologie beschermde de god Poseidon de zeeën en aardbevingen.",
+      "Wist je dat het woord ‘geschiedenis’ verwant is aan het Griekse ‘historia’ (onderzoek)?",
+      "De Grieken bouwden vaak tempels op heuvels om dichter bij hun goden te zijn.",
+      "Wist je dat de oude Grieken tijd rekenden met zonnewijzers?"
+    ];
+
+    const STORAGE_KEY = "oudgrieks-vocab-session-v1";
+    const KNOWN_KEY = "oudgrieks-vocab-known-v1";
+    const AUTO_REMOVE_KEY = "oudgrieks-vocab-auto-remove-v1";
+
+    const vocab = parseVocab(RAW_VOCAB);
+    const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
+
+    const knownIds = loadKnown();
+
+    let session = null;
+
+    const startBtn = document.getElementById("startBtn");
+    const resumeBtn = document.getElementById("resumeBtn");
+    const intervalInput = document.getElementById("intervalInput");
+    const intervalHint = document.getElementById("intervalHint");
+    const knownCount = document.getElementById("knownCount");
+    const knownList = document.getElementById("knownList");
+    const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const testArea = document.getElementById("testArea");
+    const summaryCard = document.getElementById("summaryCard");
+    const navList = document.getElementById("navList");
+    const navHint = document.getElementById("navHint");
+    const progressDisplay = document.getElementById("progressDisplay");
+    const revealStatus = document.getElementById("revealStatus");
+    const greekText = document.getElementById("greekText");
+    const translitText = document.getElementById("translitText");
+    const userAnswer = document.getElementById("userAnswer");
+    const saveAnswer = document.getElementById("saveAnswer");
+    const revealNow = document.getElementById("revealNow");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const knownToggle = document.getElementById("knownToggle");
+    const answerBlock = document.getElementById("answerBlock");
+    const intervalBlock = document.getElementById("intervalBlock");
+    const summaryText = document.getElementById("summaryText");
+    const resultTable = document.getElementById("resultTable");
+    const retryUnknown = document.getElementById("retryUnknown");
+    const retryAll = document.getElementById("retryAll");
+    const backToSettings = document.getElementById("backToSettings");
+    const resetSessionBtn = document.getElementById("resetSessionBtn");
+    const homeLink = document.getElementById("homeLink");
+    const factText = document.getElementById("factText");
+    const factInline = document.getElementById("factInline");
+    const newFactBtn = document.getElementById("newFactBtn");
+    const factBox = document.getElementById("factBox");
+    const autoRemoveToggle = document.getElementById("autoRemoveToggle");
+    const autoNotice = document.getElementById("autoNotice");
+    const setupCards = Array.from(document.querySelectorAll(".setup-card"));
+
+    function parseVocab(raw) {
+      const lines = raw.trim().split("\n");
+      return lines.map((line, index) => {
+        const splitIndex = line.indexOf("\t");
+        if (splitIndex === -1) return null;
+        const greek = line.slice(0, splitIndex).trim();
+        const dutch = line.slice(splitIndex + 1).trim();
+        if (!greek || !dutch) return null;
+        return {
+          id: String(index),
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean)
+        };
+      }).filter(Boolean);
+    }
+
+    function transliterateGreek(text) {
+      let t = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      t = t.replace(/[··;]/g, "");
+      t = t.toLowerCase();
+
+      const digraphs = [
+        ["αι", "ai"],
+        ["ει", "ei"],
+        ["οι", "oi"],
+        ["υι", "ui"],
+        ["ου", "ou"],
+        ["ευ", "eu"],
+        ["αυ", "au"],
+        ["ηυ", "eu"]
+      ];
+
+      digraphs.forEach(([from, to]) => {
+        t = t.split(from).join(to);
+      });
+
+      const map = {
+        "α": "a",
+        "β": "b",
+        "γ": "g",
+        "δ": "d",
+        "ε": "e",
+        "ζ": "z",
+        "η": "e",
+        "θ": "th",
+        "ι": "i",
+        "κ": "k",
+        "λ": "l",
+        "μ": "m",
+        "ν": "n",
+        "ξ": "x",
+        "ο": "o",
+        "π": "p",
+        "ρ": "r",
+        "σ": "s",
+        "ς": "s",
+        "τ": "t",
+        "υ": "u",
+        "φ": "ph",
+        "χ": "ch",
+        "ψ": "ps",
+        "ω": "o"
+      };
+
+      let out = "";
+      for (const ch of t) {
+        out += map[ch] ?? ch;
+      }
+      return out;
+    }
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[()\[\]]/g, "")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isCorrectAnswer(answer, translations) {
+      if (!answer) return false;
+      const normalized = normalizeText(answer);
+      return translations.some((translation) => {
+        const cleaned = normalizeText(translation);
+        if (!cleaned) return false;
+        return normalized === cleaned;
+      });
+    }
+
+    function loadKnown() {
+      const raw = localStorage.getItem(KNOWN_KEY);
+      if (!raw) return new Set();
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return new Set();
+        return new Set(parsed);
+      } catch (error) {
+        return new Set();
+      }
+    }
+
+    function loadAutoRemove() {
+      const raw = localStorage.getItem(AUTO_REMOVE_KEY);
+      if (raw === null) return false;
+      return raw === "true";
+    }
+
+    function saveAutoRemove(value) {
+      localStorage.setItem(AUTO_REMOVE_KEY, value ? "true" : "false");
+    }
+
+    function saveKnown() {
+      localStorage.setItem(KNOWN_KEY, JSON.stringify(Array.from(knownIds)));
+    }
+
+    function buildActiveIds(includeKnown) {
+      if (includeKnown) return vocab.map((item) => item.id);
+      return vocab.filter((item) => !knownIds.has(item.id)).map((item) => item.id);
+    }
+
+    function getRevealMode() {
+      const selected = document.querySelector("input[name=\"revealMode\"]:checked");
+      return selected ? selected.value : "end";
+    }
+
+    function getIntervalValue() {
+      const value = Number(intervalInput.value);
+      if (!Number.isInteger(value) || value < 1) return 1;
+      return Math.min(value, vocab.length);
+    }
+
+    function updateIntervalHint() {
+      intervalInput.max = String(vocab.length || 1);
+      intervalHint.textContent = `Maximaal ${vocab.length} woorden.`;
+    }
+
+    function setFact(target) {
+      if (!FACTS.length) return;
+      const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
+      target.textContent = fact;
+    }
+
+    function renderKnownList() {
+      if (!knownList) return;
+      knownList.innerHTML = "";
+      const knownItems = vocab.filter((item) => knownIds.has(item.id));
+      knownCount.textContent = `Bekende woorden: ${knownItems.length} / ${vocab.length}`;
+
+      if (knownItems.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "hint";
+        empty.textContent = "Nog geen bekende woorden gemarkeerd.";
+        knownList.appendChild(empty);
+        return;
+      }
+
+      knownItems.forEach((item) => {
+        const wrapper = document.createElement("label");
+        wrapper.className = "known-item";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.addEventListener("change", () => {
+          if (!checkbox.checked) {
+            knownIds.delete(item.id);
+            saveKnown();
+            if (session) {
+              rebuildActiveIds();
+              updateDisplay();
+            }
+            renderKnownList();
+          }
+        });
+
+        const greek = document.createElement("strong");
+        greek.textContent = item.greek;
+        const translit = document.createElement("small");
+        translit.textContent = `Transliteratie: ${transliterateGreek(item.greek)}`;
+        const dutch = document.createElement("small");
+        dutch.textContent = `Nederlands: ${item.translations.join(", ")}`;
+
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(greek);
+        wrapper.appendChild(translit);
+        wrapper.appendChild(dutch);
+        knownList.appendChild(wrapper);
+      });
+    }
+
+    function createSession(options) {
+      const includeKnown = options.includeKnown;
+      const activeIds = buildActiveIds(includeKnown);
+      session = {
+        activeIds,
+        currentIndex: 0,
+        answers: {},
+        attempts: [],
+        revealMode: options.revealMode,
+        interval: options.interval,
+        includeKnown
+      };
+      saveSession();
+    }
+
+    function saveSession() {
+      if (!session) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEY);
+      session = null;
+    }
+
+    function loadSession() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.activeIds)) return null;
+        if (!parsed.activeIds.every((id) => vocabById[id])) return null;
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function rebuildActiveIds() {
+      if (!session) return;
+      const currentId = session.activeIds[session.currentIndex];
+      session.activeIds = buildActiveIds(session.includeKnown);
+      session.attempts = session.attempts.filter((id) => session.activeIds.includes(id));
+      if (session.activeIds.length === 0) {
+        showSummary();
+        return;
+      }
+      const newIndex = currentId ? session.activeIds.indexOf(currentId) : -1;
+      session.currentIndex = newIndex >= 0 ? newIndex : Math.min(session.currentIndex, session.activeIds.length - 1);
+      saveSession();
+    }
+
+    function updateNav() {
+      navList.innerHTML = "";
+      navHint.textContent = `Totaal in deze ronde: ${session.activeIds.length}.`;
+
+      session.activeIds.forEach((id, index) => {
+        const item = vocabById[id];
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = `${index + 1}. ${item.greek}`;
+        if (index === session.currentIndex) btn.classList.add("current");
+        if (session.answers[id]) btn.classList.add("answered");
+        btn.addEventListener("click", () => {
+          session.currentIndex = index;
+          updateDisplay();
+        });
+        navList.appendChild(btn);
+      });
+    }
+
+    function updateDisplay() {
+      if (!session || session.activeIds.length === 0) {
+        return;
+      }
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+
+      greekText.textContent = item.greek;
+      translitText.textContent = `Transliteratie: ${transliterateGreek(item.greek)}`;
+
+      userAnswer.value = session.answers[id] || "";
+      knownToggle.checked = knownIds.has(id);
+
+      const answeredCount = session.attempts.length;
+      progressDisplay.textContent = `Woord ${session.currentIndex + 1} van ${session.activeIds.length} • Ingevuld: ${answeredCount}`;
+      revealStatus.textContent = describeRevealMode();
+
+      answerBlock.classList.add("hidden");
+      intervalBlock.classList.add("hidden");
+      autoNotice.classList.add("hidden");
+
+      updateNav();
+      saveSession();
+
+      if (session.revealMode === "immediate" && session.answers[id]) {
+        showAnswer(id);
+      }
+
+      userAnswer.focus();
+    }
+
+    function describeRevealMode() {
+      if (!session) return "";
+      if (session.revealMode === "immediate") return "Antwoorden: direct";
+      if (session.revealMode === "interval") return `Antwoorden: om de ${session.interval} woorden`;
+      return "Antwoorden: aan het einde";
+    }
+
+    function showAnswer(id) {
+      const item = vocabById[id];
+      const answer = session.answers[id] || "";
+      const correct = isCorrectAnswer(answer, item.translations);
+      const correctLabel = correct ? "✅ (automatisch herkend)" : "✍️ controleer zelf";
+      answerBlock.className = "answer-block";
+      answerBlock.classList.add(correct ? "correct" : "wrong");
+      answerBlock.innerHTML = `
+        <div><strong>Jouw antwoord:</strong> ${answer || "[leeg]"}</div>
+        <div><strong>Correct:</strong> ${item.translations.join(", ")}</div>
+        <div class="hint">${correctLabel} — jij bepaalt of je het woord als bekend markeert.</div>
+      `;
+      answerBlock.classList.remove("hidden");
+    }
+
+    function showAutoNotice(text) {
+      autoNotice.textContent = text;
+      autoNotice.classList.remove("hidden");
+    }
+
+    function showIntervalSummary(ids) {
+      intervalBlock.innerHTML = "";
+      const title = document.createElement("h4");
+      title.textContent = `Korte check na ${session.interval} woorden`;
+      intervalBlock.appendChild(title);
+
+      ids.forEach((id) => {
+        const item = vocabById[id];
+        const answer = session.answers[id] || "";
+        const row = document.createElement("div");
+        row.innerHTML = `
+          <strong>${item.greek}</strong> (${transliterateGreek(item.greek)})<br>
+          Jouw antwoord: ${answer || "[leeg]"} • Correct: ${item.translations.join(", ")}
+        `;
+        intervalBlock.appendChild(row);
+      });
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "Verder met de toets";
+      btn.addEventListener("click", () => {
+        intervalBlock.classList.add("hidden");
+      });
+      intervalBlock.appendChild(btn);
+
+      intervalBlock.classList.remove("hidden");
+    }
+
+    function handleSave() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      session.answers[id] = userAnswer.value.trim();
+      if (!session.attempts.includes(id)) {
+        session.attempts.push(id);
+      }
+
+      const autoRemoveEnabled = autoRemoveToggle.checked;
+      const correctNow = isCorrectAnswer(session.answers[id], item.translations);
+      if (autoRemoveEnabled && correctNow) {
+        if (!knownIds.has(id)) {
+          knownIds.add(id);
+          saveKnown();
+          renderKnownList();
+        }
+        rebuildActiveIds();
+        if (session && session.activeIds.length > 0) {
+          updateDisplay();
+        }
+        showAutoNotice("✅ Juist! Dit woord verdwijnt uit deze ronde.");
+        return;
+      }
+
+      if (session.revealMode === "immediate") {
+        showAnswer(id);
+      }
+
+      if (session.revealMode === "interval") {
+        const interval = Math.max(1, session.interval);
+        if (session.attempts.length % interval === 0) {
+          const lastIds = session.attempts.slice(-interval);
+          showIntervalSummary(lastIds);
+        }
+      }
+
+      maybeRotateFact();
+      updateNav();
+      saveSession();
+    }
+
+    function handleRevealNow() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      showAnswer(id);
+    }
+
+    function goToRelative(step) {
+      if (!session || session.activeIds.length === 0) return;
+      const nextIndex = Math.min(Math.max(session.currentIndex + step, 0), session.activeIds.length - 1);
+      session.currentIndex = nextIndex;
+      updateDisplay();
+    }
+
+    function toggleKnownCurrent(checked) {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      if (checked) {
+        knownIds.add(id);
+        saveKnown();
+        rebuildActiveIds();
+        renderKnownList();
+        if (session && session.activeIds.length > 0) {
+          updateDisplay();
+        }
+      } else {
+        knownIds.delete(id);
+        saveKnown();
+        rebuildActiveIds();
+        renderKnownList();
+        updateDisplay();
+      }
+    }
+
+    function showSummary() {
+      testArea.classList.add("hidden");
+      summaryCard.classList.remove("hidden");
+      setSetupVisibility(false);
+
+      const answeredCount = session ? session.attempts.length : 0;
+      const knownCountValue = knownIds.size;
+      const remainingUnknown = buildActiveIds(false).length;
+      summaryText.textContent = `Je hebt ${answeredCount} antwoorden ingevuld. Bekende woorden: ${knownCountValue}. Nog niet gemarkeerd als bekend: ${remainingUnknown}.`;
+
+      resultTable.innerHTML = "";
+      const header = document.createElement("tr");
+      header.innerHTML = "<th>Grieks</th><th>Transliteratie</th><th>Jouw antwoord</th><th>Correct</th>";
+      resultTable.appendChild(header);
+
+      if (session) {
+        session.activeIds.forEach((id) => {
+          const item = vocabById[id];
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.greek}</td>
+            <td>${transliterateGreek(item.greek)}</td>
+            <td>${session.answers[id] || ""}</td>
+            <td>${item.translations.join(", ")}</td>
+          `;
+          resultTable.appendChild(row);
+        });
+      }
+
+      retryUnknown.disabled = remainingUnknown === 0;
+
+      clearSession();
+    }
+
+    function startTest(options) {
+      createSession(options);
+      if (session.activeIds.length === 0) {
+        summaryText.textContent = "Alle woorden staan nu als bekend. Vink woorden uit in de lijst om opnieuw te oefenen.";
+        resultTable.innerHTML = "";
+        summaryCard.classList.remove("hidden");
+        testArea.classList.add("hidden");
+        return;
+      }
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+    }
+
+    function resetSession(keepKnown) {
+      if (!keepKnown) {
+        if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
+          return;
+        }
+        if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
+          return;
+        }
+        knownIds.clear();
+        saveKnown();
+      }
+      clearSession();
+      summaryCard.classList.add("hidden");
+      testArea.classList.add("hidden");
+      renderKnownList();
+      updateStartButtons();
+    }
+
+    function applySessionSettings(saved) {
+      if (!saved) return;
+      document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+        input.checked = input.value === saved.revealMode;
+      });
+      intervalInput.value = saved.interval || 5;
+    }
+
+    function updateStartButtons() {
+      const existing = loadSession();
+      if (existing) {
+        resumeBtn.classList.remove("hidden");
+        applySessionSettings(existing);
+      } else {
+        resumeBtn.classList.add("hidden");
+      }
+    }
+
+    function maybeRotateFact() {
+      if (!session) return;
+      if (session.attempts.length > 0 && session.attempts.length % 3 === 0) {
+        setFact(factInline);
+      }
+    }
+
+    function setSetupVisibility(show) {
+      setupCards.forEach((card) => {
+        card.classList.toggle("hidden", !show);
+      });
+    }
+
+    startBtn.addEventListener("click", () => {
+      const mode = getRevealMode();
+      const interval = getIntervalValue();
+      startTest({
+        revealMode: mode,
+        interval,
+        includeKnown: false
+      });
+      setSetupVisibility(false);
+    });
+
+    resumeBtn.addEventListener("click", () => {
+      const saved = loadSession();
+      if (!saved) return;
+      session = saved;
+      rebuildActiveIds();
+      applySessionSettings(saved);
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      setSetupVisibility(false);
+    });
+
+    saveAnswer.addEventListener("click", handleSave);
+    userAnswer.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleSave();
+      }
+    });
+    revealNow.addEventListener("click", handleRevealNow);
+    prevBtn.addEventListener("click", () => goToRelative(-1));
+    nextBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      if (session.currentIndex === session.activeIds.length - 1) {
+        showSummary();
+      } else {
+        goToRelative(1);
+      }
+    });
+
+    knownToggle.addEventListener("change", () => {
+      toggleKnownCurrent(knownToggle.checked);
+    });
+
+    clearKnownBtn.addEventListener("click", () => {
+      resetSession(false);
+    });
+
+    retryUnknown.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: false
+      });
+      setSetupVisibility(false);
+    });
+
+    retryAll.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: true
+      });
+      setSetupVisibility(false);
+    });
+
+    backToSettings.addEventListener("click", () => {
+      summaryCard.classList.add("hidden");
+      testArea.classList.add("hidden");
+      setSetupVisibility(true);
+    });
+
+    resetSessionBtn.addEventListener("click", () => {
+      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren.")) {
+        return;
+      }
+      const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
+      resetSession(!clearKnown);
+      setSetupVisibility(true);
+    });
+
+    autoRemoveToggle.addEventListener("change", () => {
+      saveAutoRemove(autoRemoveToggle.checked);
+    });
+
+    homeLink.addEventListener("click", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    newFactBtn.addEventListener("click", () => {
+      setFact(factText);
+      setFact(factInline);
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (testArea.classList.contains("hidden")) return;
+      if (document.activeElement === userAnswer) return;
+      if (event.key === "ArrowLeft") {
+        goToRelative(-1);
+      }
+      if (event.key === "ArrowRight") {
+        if (session && session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      }
+    });
+
+    intervalInput.addEventListener("input", () => {
+      if (session) {
+        session.interval = getIntervalValue();
+        saveSession();
+        revealStatus.textContent = describeRevealMode();
+      }
+    });
+
+    document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+      input.addEventListener("change", () => {
+        if (session) {
+          session.revealMode = getRevealMode();
+          saveSession();
+          revealStatus.textContent = describeRevealMode();
+        }
+      });
+    });
+
+    updateIntervalHint();
+    renderKnownList();
+    updateStartButtons();
+    setFact(factText);
+    setFact(factInline);
+    autoRemoveToggle.checked = loadAutoRemove();
+    setSetupVisibility(true);
+  </script>
+</body>
+</html>
