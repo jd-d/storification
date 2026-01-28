@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Oudgrieks → Nederlands vocabtoets</title>
+  <title>Vocabtrainer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../assets/css/style.css" />
   <style>
@@ -134,13 +134,14 @@
     }
 
     .option-row label { margin-bottom: 0; }
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], select {
       width: 100%;
       padding: 0.6rem 0.7rem;
       border-radius: 10px;
       border: 1px solid #cbd5e1;
       font-size: 0.95rem;
       font-family: inherit;
+      background: #fff;
     }
 
     .hint {
@@ -365,8 +366,8 @@
       <a href="../../index.html" class="home-link" id="homeLink">← Storification</a>
       <button type="button" class="danger" id="resetSessionBtn">Reset toets</button>
     </div>
-    <h1>Oudgrieks → Nederlands vocabtoets</h1>
-    <p>Oefen met Oudgriekse woordenschat. Je ziet altijd de Griekse term + eenvoudige transliteratie, en vertaalt naar het Nederlands.</p>
+    <h1 id="pageTitle">Vocabtrainer</h1>
+    <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en vertaalt naar taal 2.</p>
     <p class="hint">Je voortgang en je lijst met bekende woorden worden automatisch opgeslagen.</p>
   </header>
 
@@ -374,7 +375,7 @@
     <section class="grid">
       <article class="card full setup-card setup-primary">
         <h2>Hoe werkt deze toets?</h2>
-        <p>Je krijgt elk woord precies één keer te zien (tenzij je kiest om opnieuw te oefenen). Jij vertaalt van Grieks naar Nederlands.</p>
+        <p>Je krijgt elk woord precies één keer te zien (tenzij je kiest om opnieuw te oefenen). Jij vertaalt van taal 1 naar taal 2.</p>
         <ul>
           <li>Je bepaalt wanneer je antwoorden ziet: direct, pas aan het einde, of om de X woorden.</li>
           <li>Vink woorden aan die je kent. Dan verdwijnen ze uit de toets.</li>
@@ -385,6 +386,11 @@
 
       <article class="card full setup-card">
         <h2>Instellingen</h2>
+        <div>
+          <p><strong>Woordlijst</strong></p>
+          <select id="datasetSelect"></select>
+          <p class="hint" id="datasetHint"></p>
+        </div>
         <div>
           <p><strong>Antwoorden tonen</strong></p>
           <div class="option-row">
@@ -427,7 +433,7 @@
         </div>
         <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
         <h3 class="section-title">Export / import onbekende woorden</h3>
-        <p class="hint">Formaat: één regel per woord, met TAB tussen Grieks en Nederlands. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
+        <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
         <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
         <div class="controls">
           <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
@@ -438,7 +444,7 @@
         </div>
         <p class="hint" id="importStatus"></p>
         <h3 class="section-title">Masterlijst (volledige overwrite)</h3>
-        <p class="hint">Let op: dit vervangt de hele vocab-lijst. TAB tussen Grieks en Nederlands.</p>
+        <p class="hint">Let op: dit vervangt de hele vocab-lijst. TAB tussen taal 1 en taal 2.</p>
         <textarea class="import-area" id="masterArea" placeholder="Plak hier de volledige lijst..."></textarea>
         <div class="controls">
           <button type="button" id="importMasterBtn">Importeer masterlijst</button>
@@ -480,7 +486,7 @@
 
             <div class="greek-term" id="greekText"></div>
             <div class="translit" id="translitText"></div>
-            <p><strong>Vertaal naar het Nederlands.</strong></p>
+            <p><strong>Vertaal naar <span id="targetLanguageLabel">taal 2</span>.</strong></p>
 
             <label for="userAnswer"><strong>Jouw antwoord</strong></label>
             <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus>
@@ -530,8 +536,37 @@
   </main>
 
   <script src="vocab-data.js"></script>
+  <script src="vocab-latin-nl.js"></script>
   <script>
-    const MASTER_VOCAB_KEY = "oudgrieks-vocab-master-v1";
+    const DATASET_KEY = "vocab-selected-dataset-v1";
+    const DATASETS = Array.isArray(window.VOCAB_DATASETS) && window.VOCAB_DATASETS.length
+      ? window.VOCAB_DATASETS
+      : [
+        {
+          id: "default",
+          label: "Woordlijst",
+          language1: "Taal 1",
+          language2: "Taal 2",
+          showTransliteration: true,
+          data: window.RAW_VOCAB || ""
+        }
+      ];
+    const selectedDatasetId = localStorage.getItem(DATASET_KEY) || DATASETS[0].id;
+    const activeDataset = DATASETS.find((dataset) => dataset.id === selectedDatasetId) || DATASETS[0];
+    const DATASET_ID = activeDataset.id || "default";
+    const LANGUAGE1_LABEL = activeDataset.language1 || "Taal 1";
+    const LANGUAGE2_LABEL = activeDataset.language2 || "Taal 2";
+    const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
+    const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
+    const LEGACY_DATASET_ID = "grc-nl";
+
+    if (!localStorage.getItem(DATASET_KEY) && activeDataset.id) {
+      localStorage.setItem(DATASET_KEY, activeDataset.id);
+    }
+
+    const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-master-v1"
+      : `vocab-master-${DATASET_ID}-v1`;
     const FACTS = [
       "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
       "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
@@ -555,10 +590,18 @@
       "Wist je dat de oude Grieken tijd rekenden met zonnewijzers?"
     ];
 
-    const STORAGE_KEY = "oudgrieks-vocab-session-v1";
-    const KNOWN_KEY = "oudgrieks-vocab-known-v1";
-    const AUTO_REMOVE_KEY = "oudgrieks-vocab-auto-remove-v1";
-    const MNEMONIC_KEY = "oudgrieks-vocab-mnemonics-v1";
+    const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-session-v1"
+      : `vocab-session-${DATASET_ID}-v1`;
+    const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-known-v1"
+      : `vocab-known-${DATASET_ID}-v1`;
+    const AUTO_REMOVE_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-auto-remove-v1"
+      : `vocab-auto-remove-${DATASET_ID}-v1`;
+    const MNEMONIC_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-mnemonics-v1"
+      : `vocab-mnemonics-${DATASET_ID}-v1`;
 
     function loadMasterVocab() {
       return localStorage.getItem(MASTER_VOCAB_KEY);
@@ -572,7 +615,7 @@
       localStorage.removeItem(MASTER_VOCAB_KEY);
     }
 
-    const RAW_VOCAB = loadMasterVocab() || window.RAW_VOCAB || "";
+    const RAW_VOCAB = loadMasterVocab() || activeDataset.data || "";
 
     const vocab = parseVocab(RAW_VOCAB);
     const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
@@ -583,6 +626,8 @@
     let session = null;
 
     const startBtn = document.getElementById("startBtn");
+    const datasetSelect = document.getElementById("datasetSelect");
+    const datasetHint = document.getElementById("datasetHint");
     const resumeBtn = document.getElementById("resumeBtn");
     const intervalInput = document.getElementById("intervalInput");
     const intervalHint = document.getElementById("intervalHint");
@@ -609,6 +654,7 @@
     const revealStatus = document.getElementById("revealStatus");
     const greekText = document.getElementById("greekText");
     const translitText = document.getElementById("translitText");
+    const targetLanguageLabel = document.getElementById("targetLanguageLabel");
     const userAnswer = document.getElementById("userAnswer");
     const saveAnswer = document.getElementById("saveAnswer");
     const revealNow = document.getElementById("revealNow");
@@ -628,6 +674,8 @@
     const backToSettings = document.getElementById("backToSettings");
     const resetSessionBtn = document.getElementById("resetSessionBtn");
     const homeLink = document.getElementById("homeLink");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDescription = document.getElementById("pageDescription");
     const factText = document.getElementById("factText");
     const factInline = document.getElementById("factInline");
     const newFactBtn = document.getElementById("newFactBtn");
@@ -644,19 +692,59 @@
 
     let mnemonicOpenFor = null;
 
+    function applyDatasetUI() {
+      if (datasetSelect) {
+        datasetSelect.innerHTML = "";
+        DATASETS.forEach((dataset) => {
+          const option = document.createElement("option");
+          option.value = dataset.id;
+          option.textContent = dataset.label || `${dataset.language1 || "Taal 1"} -> ${dataset.language2 || "Taal 2"}`;
+          option.selected = dataset.id === activeDataset.id;
+          datasetSelect.appendChild(option);
+        });
+      }
+
+      if (datasetHint) {
+        datasetHint.textContent = `Taal 1: ${LANGUAGE1_LABEL} • Taal 2: ${LANGUAGE2_LABEL}`;
+      }
+
+      const label = activeDataset.label || `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`;
+      const titleText = `${label} vocabtrainer`;
+      if (pageTitle) {
+        pageTitle.textContent = titleText;
+      }
+      if (pageDescription) {
+        const translitSuffix = SHOW_TRANSLIT ? " (met eventuele transliteratie)" : "";
+        pageDescription.textContent = `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE1_LABEL}${translitSuffix} en vertaalt naar ${LANGUAGE2_LABEL}.`;
+      }
+      document.title = titleText;
+
+      if (targetLanguageLabel) {
+        targetLanguageLabel.textContent = LANGUAGE2_LABEL;
+      }
+    }
+
+    function formatPairHint() {
+      return `${LANGUAGE1_LABEL} en ${LANGUAGE2_LABEL}`;
+    }
+
     function parseVocab(raw) {
       const lines = raw.trim().split("\n");
       return lines.map((line, index) => {
-        const splitIndex = line.indexOf("\t");
-        if (splitIndex === -1) return null;
-        const greek = line.slice(0, splitIndex).trim();
-        const dutch = line.slice(splitIndex + 1).trim();
+        const parts = line.split("\t");
+        const greek = (parts[0] ?? "").trim();
+        const dutch = (parts[1] ?? "").trim();
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
         if (!greek || !dutch) return null;
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
         return {
           id: String(index),
           greek,
           translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
-          rawTranslation: dutch
+          rawTranslation: dutch,
+          mnemonics
         };
       }).filter(Boolean);
     }
@@ -806,6 +894,7 @@
       const meaning = cleanMeaning(item.translations[0] || "de betekenis");
       const etymology = getEtymologyHint(item, translit, meaning);
       const userHints = getUserMnemonics(item).map((hint) => `Jouw ezelsbruggetje: ${hint}`);
+      const baseHints = (item.mnemonics || []).map((hint) => `Ezelsbruggetje: ${hint}`);
 
       const soundTemplates = [
         (t, m) => `Klank: "${t}" klinkt als een mini-uitroep. Stel je ${m} voor die "${t}!" roept.`,
@@ -821,7 +910,7 @@
       const sound = soundTemplates[hashIndex(translit + meaning, soundTemplates.length)](translit, meaning);
       const image = imageTemplates[hashIndex(meaning + translit, imageTemplates.length)](translit, meaning);
 
-      return [...userHints, etymology, sound, image];
+      return [...userHints, ...baseHints, etymology, sound, image];
     }
 
     function renderMnemonics(item) {
@@ -1060,7 +1149,7 @@
       const items = getImportItems(text);
 
       if (items.length === 0) {
-        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
         return;
       }
 
@@ -1097,7 +1186,7 @@
 
       const items = getImportItems(text);
       if (items.length === 0) {
-        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
         return;
       }
 
@@ -1144,7 +1233,7 @@
       const items = getImportItems(text);
 
       if (items.length === 0) {
-        importStatus.textContent = "Kon geen geldige regels vinden. Gebruik TAB tussen Grieks en Nederlands.";
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
         return;
       }
 
@@ -1181,7 +1270,7 @@
 
       const validLines = parseMasterLines(text);
       if (validLines.length === 0) {
-        masterStatus.textContent = "Geen geldige regels gevonden. Gebruik TAB tussen Grieks en Nederlands.";
+        masterStatus.textContent = `Geen geldige regels gevonden. Gebruik TAB tussen ${formatPairHint()}.`;
         return;
       }
 
@@ -1269,14 +1358,16 @@
 
         const greek = document.createElement("strong");
         greek.textContent = item.greek;
-        const translit = document.createElement("small");
-        translit.textContent = `Transliteratie: ${transliterateGreek(item.greek)}`;
         const dutch = document.createElement("small");
-        dutch.textContent = `Nederlands: ${item.translations.join(", ")}`;
+        dutch.textContent = `${LANGUAGE2_LABEL}: ${item.translations.join(", ")}`;
 
         wrapper.appendChild(checkbox);
         wrapper.appendChild(greek);
-        wrapper.appendChild(translit);
+        if (SHOW_TRANSLIT) {
+          const translit = document.createElement("small");
+          translit.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+          wrapper.appendChild(translit);
+        }
         wrapper.appendChild(dutch);
         knownList.appendChild(wrapper);
       });
@@ -1362,7 +1453,13 @@
       const item = vocabById[id];
 
       greekText.textContent = item.greek;
-      translitText.textContent = `Transliteratie: ${transliterateGreek(item.greek)}`;
+      if (SHOW_TRANSLIT) {
+        translitText.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+        translitText.classList.remove("hidden");
+      } else {
+        translitText.textContent = "";
+        translitText.classList.add("hidden");
+      }
 
       userAnswer.value = session.answers[id] || "";
       knownToggle.checked = knownIds.has(id);
@@ -1404,7 +1501,7 @@
       answerBlock.classList.add(correct ? "correct" : "wrong");
       answerBlock.innerHTML = `
         <div><strong>Jouw antwoord:</strong> ${answer || "[leeg]"}</div>
-        <div><strong>Correct:</strong> ${item.translations.join(", ")}</div>
+        <div><strong>Correct (${LANGUAGE2_LABEL}):</strong> ${item.translations.join(", ")}</div>
         <div class="hint">${correctLabel} — jij bepaalt of je het woord als bekend markeert.</div>
       `;
       answerBlock.classList.remove("hidden");
@@ -1425,9 +1522,10 @@
         const item = vocabById[id];
         const answer = session.answers[id] || "";
         const row = document.createElement("div");
+        const translit = SHOW_TRANSLIT ? ` (${transliterateGreek(item.greek)})` : "";
         row.innerHTML = `
-          <strong>${item.greek}</strong> (${transliterateGreek(item.greek)})<br>
-          Jouw antwoord: ${answer || "[leeg]"} • Correct: ${item.translations.join(", ")}
+          <strong>${item.greek}</strong>${translit}<br>
+          Jouw antwoord: ${answer || "[leeg]"} • Correct (${LANGUAGE2_LABEL}): ${item.translations.join(", ")}
         `;
         intervalBlock.appendChild(row);
       });
@@ -1532,16 +1630,18 @@
 
       resultTable.innerHTML = "";
       const header = document.createElement("tr");
-      header.innerHTML = "<th>Grieks</th><th>Transliteratie</th><th>Jouw antwoord</th><th>Correct</th>";
+      const translitHeader = SHOW_TRANSLIT ? `<th>${TRANSLIT_LABEL}</th>` : "";
+      header.innerHTML = `<th>${LANGUAGE1_LABEL}</th>${translitHeader}<th>Jouw antwoord</th><th>${LANGUAGE2_LABEL}</th>`;
       resultTable.appendChild(header);
 
       if (session) {
         session.activeIds.forEach((id) => {
           const item = vocabById[id];
           const row = document.createElement("tr");
+          const translitCell = SHOW_TRANSLIT ? `<td>${transliterateGreek(item.greek)}</td>` : "";
           row.innerHTML = `
             <td>${item.greek}</td>
-            <td>${transliterateGreek(item.greek)}</td>
+            ${translitCell}
             <td>${session.answers[id] || ""}</td>
             <td>${item.translations.join(", ")}</td>
           `;
@@ -1638,6 +1738,17 @@
       setSetupVisibility(false);
       testArea.scrollIntoView({ behavior: "smooth", block: "start" });
       updateDisplay();
+    }
+
+    applyDatasetUI();
+
+    if (datasetSelect) {
+      datasetSelect.addEventListener("change", () => {
+        const nextId = datasetSelect.value;
+        if (!nextId || nextId === activeDataset.id) return;
+        localStorage.setItem(DATASET_KEY, nextId);
+        window.location.reload();
+      });
     }
 
     startBtn.addEventListener("click", () => {

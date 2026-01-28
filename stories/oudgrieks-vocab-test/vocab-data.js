@@ -1,4 +1,11 @@
-window.RAW_VOCAB = `
+window.VOCAB_DATASETS = window.VOCAB_DATASETS || [];
+window.VOCAB_DATASETS.push({
+  id: "grc-nl",
+  label: "Oudgrieks → Nederlands",
+  language1: "Oudgrieks",
+  language2: "Nederlands",
+  showTransliteration: true,
+  data: `
 ὁ ἄνθρωπος\tmens
 γάρ\twant, immers, namelijk
 ἡ γῆ\tland, aarde
@@ -222,4 +229,7 @@ window.RAW_VOCAB = `
 τί\twat, waarom
 τιμάω\teren, vereren
 ὑπέρ + gen\tboven
-`;
+`
+});
+
+window.RAW_VOCAB = window.VOCAB_DATASETS[0].data;
