@@ -22,6 +22,7 @@
 - [x] Oudgrieks vocab: ezelsbruggetjes per woord (etymologie + klank/beeld)
 - [x] Oudgrieks vocab: import onbekend + rest naar bekend
 - [x] Oudgrieks vocab: eigen ezelsbruggetjes + export/import bewaren
+- [x] Oudgrieks vocab: correctheidscheck accepteert gecombineerde vertalingen zonder interpunctie
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 

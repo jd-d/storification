@@ -655,7 +655,8 @@
         return {
           id: String(index),
           greek,
-          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean)
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          rawTranslation: dutch
         };
       }).filter(Boolean);
     }
@@ -835,9 +836,15 @@
       mnemonicOpenFor = item.id;
     }
 
-    function isCorrectAnswer(answer, translations) {
+    function isCorrectAnswer(answer, translations, rawTranslation) {
       if (!answer) return false;
       const normalized = normalizeText(answer);
+      if (rawTranslation) {
+        const rawNormalized = normalizeText(rawTranslation);
+        if (rawNormalized && normalized === rawNormalized) {
+          return true;
+        }
+      }
       return translations.some((translation) => {
         const cleaned = normalizeText(translation);
         if (!cleaned) return false;
@@ -1391,7 +1398,7 @@
     function showAnswer(id) {
       const item = vocabById[id];
       const answer = session.answers[id] || "";
-      const correct = isCorrectAnswer(answer, item.translations);
+      const correct = isCorrectAnswer(answer, item.translations, item.rawTranslation);
       const correctLabel = correct ? "✅ (automatisch herkend)" : "✍️ controleer zelf";
       answerBlock.className = "answer-block";
       answerBlock.classList.add(correct ? "correct" : "wrong");
@@ -1446,7 +1453,7 @@
       }
 
       const autoRemoveEnabled = autoRemoveToggle.checked;
-      const correctNow = isCorrectAnswer(session.answers[id], item.translations);
+      const correctNow = isCorrectAnswer(session.answers[id], item.translations, item.rawTranslation);
       if (autoRemoveEnabled && correctNow) {
         if (!knownIds.has(id)) {
           knownIds.add(id);
