@@ -3,6 +3,7 @@
 ## HIGH PRIORITY
 - [x] Left hand side slide navigation for each story for easy navigation between story chapters/ slides
 - [x] Fix annoying bug where pressing Next or Previous nav buttons hides the buttons behind blue title panel
+- [x] Add Latin grammar story block + EN/NL + theme toggle for 24-1_to_25-3_SPQR-2
 - [ ] Convert entire site into Wiki (see detailed plan below)
 - [x] Add Oudgrieks → Nederlands vocabtoets component
 - [x] Verbeter layout/UX Oudgrieks vocabtoets
@@ -24,6 +25,7 @@
 - [x] Oudgrieks vocab: eigen ezelsbruggetjes + export/import bewaren
 - [x] Oudgrieks vocab: correctheidscheck accepteert gecombineerde vertalingen zonder interpunctie
 - [x] Vocabtrainer: meerdere woordlijsten (config-bestanden) kunnen kiezen
+- [x] README: uitleg over structuur/configuratie en uitbreidingspunten
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
 
