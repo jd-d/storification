@@ -1,0 +1,23 @@
+{
+  "default": "elektriciteit",
+  "sets": [
+    {
+      "id": "elektriciteit",
+      "label": "Elektriciteit (42 begrippen)",
+      "description": "Alle begrippen uit de elektriciteitsthema's in één toets.",
+      "file": "configs/elektriciteit.json"
+    },
+    {
+      "id": "krachten-energie",
+      "label": "Krachten en energie (10 begrippen)",
+      "description": "Basisbegrippen over krachten, beweging en energie.",
+      "file": "configs/krachten-energie.json"
+    },
+    {
+      "id": "fysische-aardrijkskunde-begrippen",
+      "label": "Fysische aardrijkskunde (78 begrippen)",
+      "description": "Begrippen uit de fysische aardrijkskunde.",
+      "file": "configs/fysische-aardrijkskunde-begrippen.json"
+    }
+  ]
+}
