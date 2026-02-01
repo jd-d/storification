@@ -705,7 +705,27 @@
       }
     }
 
-    function renderQuestion() {
+    function focusPrimaryAction(focusTarget) {
+      const active = document.activeElement;
+      if (active === userAnswer) return;
+
+      let target = null;
+      if (focusTarget === 'next') {
+        target = nextBtn;
+      } else if (focusTarget === 'reveal') {
+        target = revealNowBtn;
+      } else if (focusTarget === 'save') {
+        target = saveAnswerBtn;
+      } else {
+        target = state.revealMode === 'end' ? nextBtn : revealNowBtn;
+      }
+
+      if (target) {
+        requestAnimationFrame(() => target.focus());
+      }
+    }
+
+    function renderQuestion({ focusTarget } = {}) {
       const q = state.questions[state.currentIndex];
       if (!q) {
         persistState();
@@ -731,16 +751,17 @@
       prevBtn.disabled = state.currentIndex === 0;
       nextBtn.disabled = state.currentIndex === state.questions.length - 1;
       persistState();
+      focusPrimaryAction(focusTarget);
     }
 
-    function saveAnswer(showNow = false) {
+    function saveAnswer(showNow = false, options = {}) {
       const q = state.questions[state.currentIndex];
       q.userAnswer = userAnswer.value.trim();
       q.attempted = true;
       if (state.revealMode === 'immediate' || showNow) {
         q.revealed = true;
       }
-      renderQuestion();
+      renderQuestion(options);
       checkCompletion();
     }
 
@@ -842,7 +863,7 @@
     }
 
     saveAnswerBtn.addEventListener('click', () => saveAnswer(false));
-    revealNowBtn.addEventListener('click', () => saveAnswer(true));
+    revealNowBtn.addEventListener('click', () => saveAnswer(true, { focusTarget: 'next' }));
     prevBtn.addEventListener('click', () => {
       saveDraft();
       if (state.currentIndex > 0) {
