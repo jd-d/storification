@@ -167,6 +167,20 @@
 
     .answer-mode { display: inline-flex; gap: 0.35rem; align-items: center; margin-right: 0.65rem; }
 
+    .known-list { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
+    .known-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+    .known-item small { color: var(--muted); display: block; }
+    .known-item button { padding: 0.35rem 0.6rem; font-size: 0.85rem; }
+
     .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
     .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
     .result-table th { color: var(--accent); }
@@ -247,10 +261,25 @@
           <label class="answer-mode"><input type="radio" name="reveal" value="immediate"> Na elke vraag</label>
           <label class="answer-mode"><input type="radio" name="reveal" value="end" checked> Alles aan het einde</label>
         </div>
+        <div>
+          <p><strong>Bekende begrippen</strong></p>
+          <label class="answer-mode"><input type="checkbox" id="autoKnownToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
+          <p class="tiny">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het begrip uit deze toets.</p>
+        </div>
         <div class="controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
           <button id="restartBtn" type="button" class="hidden">Nieuwe toets</button>
         </div>
+      </article>
+
+      <article class="card full" id="knownCard">
+        <h2>Bekende begrippen</h2>
+        <p class="tiny" id="knownCount"></p>
+        <div class="known-list" id="knownList"></div>
+        <div class="controls">
+          <button type="button" id="clearKnownBtn">Wis bekende begrippen</button>
+        </div>
+        <p class="tiny">Je kunt begrippen altijd terugzetten om opnieuw te oefenen.</p>
       </article>
 
       <article class="card full hidden" id="testArea">
@@ -276,6 +305,7 @@
 
             <label for="userAnswer"><strong>Jouw antwoord</strong></label>
             <textarea id="userAnswer" placeholder="Typ hier je antwoord..."></textarea>
+            <label class="answer-mode"><input type="checkbox" id="knownToggle"> Ik ken dit begrip (niet meer tonen)</label>
 
             <div class="controls">
               <button id="saveAnswer" type="button" class="primary">Bewaar antwoord</button>
@@ -306,12 +336,15 @@
     const SETS_INDEX_URL = 'configs/sets.json';
     const SET_STORAGE_KEY = 'natuurkunde-begrippen-set-v1';
     const STATE_STORAGE_KEY = 'natuurkunde-begrippen-state-v1';
+    const KNOWN_KEY_PREFIX = 'begrippen-known-';
+    const AUTO_KNOWN_PREFIX = 'begrippen-auto-known-';
 
     const setRegistry = new Map();
     const setCache = new Map();
     let concepts = [];
     let availableSets = [];
     let activeSetId = null;
+    let knownTerms = new Set();
 
     // JS-configs can call window.registerBegrippenSet({ id, concepts, ... }).
     window.registerBegrippenSet = (payload) => {
@@ -380,6 +413,41 @@
       return loader;
     }
 
+    function getKnownKey() {
+      return `${KNOWN_KEY_PREFIX}${activeSetId || "default"}-v1`;
+    }
+
+    function getAutoKnownKey() {
+      return `${AUTO_KNOWN_PREFIX}${activeSetId || "default"}-v1`;
+    }
+
+    function loadKnown() {
+      try {
+        const raw = localStorage.getItem(getKnownKey());
+        if (!raw) return new Set();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return new Set();
+        return new Set(parsed);
+      } catch (err) {
+        console.warn("Kon bekende begrippen niet laden.", err);
+        return new Set();
+      }
+    }
+
+    function saveKnown() {
+      localStorage.setItem(getKnownKey(), JSON.stringify(Array.from(knownTerms)));
+    }
+
+    function loadAutoKnown() {
+      const stored = localStorage.getItem(getAutoKnownKey());
+      if (stored === null) return true;
+      return stored === "1";
+    }
+
+    function saveAutoKnown(enabled) {
+      localStorage.setItem(getAutoKnownKey(), enabled ? "1" : "0");
+    }
+
     function loadPersistedState() {
       try {
         const raw = localStorage.getItem(STATE_STORAGE_KEY);
@@ -433,6 +501,7 @@
     const setSelect = document.getElementById('setSelect');
     const setMeta = document.getElementById('setMeta');
     const setCount = document.getElementById('setCount');
+    const autoKnownToggle = document.getElementById('autoKnownToggle');
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
     const testArea = document.getElementById('testArea');
@@ -442,6 +511,7 @@
     const questionMeta = document.getElementById('questionMeta');
     const progressDisplay = document.getElementById('progressDisplay');
     const userAnswer = document.getElementById('userAnswer');
+    const knownToggle = document.getElementById('knownToggle');
     const answerBlock = document.getElementById('answerBlock');
     const resultBlock = document.getElementById('resultBlock');
     const saveAnswerBtn = document.getElementById('saveAnswer');
@@ -453,6 +523,9 @@
     const resultTable = document.getElementById('resultTable');
     const retryBtn = document.getElementById('retryBtn');
     const backBtn = document.getElementById('backBtn');
+    const knownCount = document.getElementById('knownCount');
+    const knownList = document.getElementById('knownList');
+    const clearKnownBtn = document.getElementById('clearKnownBtn');
     const homeLink = document.getElementById('homeLink');
     const resetHeaderBtn = document.getElementById('resetHeaderBtn');
 
@@ -482,6 +555,13 @@
         revealed: Boolean(q.revealed),
         attempted: Boolean(q.attempted)
       }));
+      state.questions = state.questions.filter((q) => !knownTerms.has(q.concept.term));
+      if (state.questions.length === 0) {
+        resetView();
+        renderKnownList();
+        updateStartAvailability();
+        return false;
+      }
       state.currentIndex = Math.min(Math.max(saved.currentIndex ?? 0, 0), state.questions.length - 1);
       state.started = Boolean(saved.started);
 
@@ -528,8 +608,12 @@
       setMeta.textContent = bits.join(' ') || 'Geen setinformatie beschikbaar.';
     }
 
+    function getUnknownConcepts() {
+      return concepts.filter((concept) => !knownTerms.has(concept.term));
+    }
+
     function updateStartAvailability() {
-      startBtn.disabled = concepts.length === 0;
+      startBtn.disabled = getUnknownConcepts().length === 0;
     }
 
     function setUiLoading(isLoading, message) {
@@ -540,6 +624,57 @@
       } else {
         updateStartAvailability();
       }
+    }
+
+    function normalizeAnswer(text) {
+      return (text || "")
+        .toLowerCase()
+        .replace(/[.,;:!?()[\]{}"“”'’`]/g, "")
+        .replace(/[-–—]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isCorrectAnswer(userAnswerText, expected) {
+      if (!userAnswerText) return false;
+      return normalizeAnswer(userAnswerText) === normalizeAnswer(expected);
+    }
+
+    function renderKnownList() {
+      if (!knownList) return;
+      knownList.innerHTML = "";
+      const knownItems = concepts.filter((concept) => knownTerms.has(concept.term));
+      if (knownCount) {
+        knownCount.textContent = `Bekende begrippen: ${knownItems.length} / ${concepts.length}`;
+      }
+
+      if (knownItems.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "tiny";
+        empty.textContent = "Nog geen begrippen gemarkeerd als bekend.";
+        knownList.appendChild(empty);
+        return;
+      }
+
+      knownItems.forEach((concept) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "known-item";
+        const text = document.createElement("div");
+        text.innerHTML = `<strong>${concept.term}</strong><small>${concept.description}</small>`;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = "Zet terug";
+        btn.addEventListener("click", () => {
+          knownTerms.delete(concept.term);
+          saveKnown();
+          rebuildQuestionsAfterKnownChange();
+          renderKnownList();
+        });
+        wrapper.appendChild(text);
+        wrapper.appendChild(btn);
+        knownList.appendChild(wrapper);
+      });
+      updateStartAvailability();
     }
 
     async function applySet(id, { reset = true, showLoading = true } = {}) {
@@ -567,12 +702,18 @@
         activeSetId = entry.id;
         localStorage.setItem(SET_STORAGE_KEY, entry.id);
         updateSetMeta(entry, data);
+        knownTerms = loadKnown();
+        if (autoKnownToggle) {
+          autoKnownToggle.checked = loadAutoKnown();
+        }
+        renderKnownList();
         if (reset) {
           state.questions = [];
           state.currentIndex = 0;
           resetView();
         }
         persistState();
+        updateStartAvailability();
       } catch (err) {
         console.error(err);
         concepts = [];
@@ -632,45 +773,105 @@
       return copy;
     }
 
+    function createQuestion(concept, idx, mode) {
+      let type;
+      switch (mode) {
+        case 'description':
+          type = 'descriptionToTerm';
+          break;
+        case 'alternate':
+          type = idx % 2 === 0 ? 'termToDescription' : 'descriptionToTerm';
+          break;
+        case 'mixed':
+          type = Math.random() > 0.5 ? 'termToDescription' : 'descriptionToTerm';
+          break;
+        default: // 'term'
+          type = 'termToDescription';
+      }
+
+      const prompt = type === 'termToDescription'
+        ? pickRandom(concept.termQuestions)
+        : pickRandom(concept.descriptionQuestions);
+      const answer = type === 'termToDescription' ? concept.description : concept.term;
+
+      return {
+        id: concept.term,
+        concept,
+        prompt,
+        type,
+        answer,
+        userAnswer: '',
+        revealed: false,
+        attempted: false
+      };
+    }
+
     function buildQuestions() {
-      if (!concepts.length) {
+      const pool = getUnknownConcepts();
+      if (!pool.length) {
         state.questions = [];
         state.currentIndex = 0;
         return;
       }
       const chosenMode = state.mode;
-      const base = shuffle(concepts).map((concept, idx) => {
-        let type;
-        switch (chosenMode) {
-          case 'description':
-            type = 'descriptionToTerm';
-            break;
-          case 'alternate':
-            type = idx % 2 === 0 ? 'termToDescription' : 'descriptionToTerm';
-            break;
-          case 'mixed':
-            type = Math.random() > 0.5 ? 'termToDescription' : 'descriptionToTerm';
-            break;
-          default: // 'term'
-            type = 'termToDescription';
-        }
-
-        const prompt = type === 'termToDescription' ? pickRandom(concept.termQuestions) : pickRandom(concept.descriptionQuestions);
-        const answer = type === 'termToDescription' ? concept.description : concept.term;
-
-        return {
-          id: `${concept.term}-${idx}`,
-          concept,
-          prompt,
-          type,
-          answer,
-          userAnswer: '',
-          revealed: false,
-          attempted: false
-        };
-      });
+      const base = shuffle(pool).map((concept, idx) => createQuestion(concept, idx, chosenMode));
       state.questions = base;
       state.currentIndex = 0;
+    }
+
+    function rebuildQuestionsAfterKnownChange({ focusTarget } = {}) {
+      const currentTerm = state.questions[state.currentIndex]?.concept.term;
+      const unknownSet = new Set(getUnknownConcepts().map((concept) => concept.term));
+
+      const kept = [];
+      state.questions.forEach((q) => {
+        if (unknownSet.has(q.concept.term)) {
+          kept.push(q);
+        }
+      });
+
+      const existingTerms = new Set(kept.map((q) => q.concept.term));
+      concepts.forEach((concept) => {
+        if (unknownSet.has(concept.term) && !existingTerms.has(concept.term)) {
+          kept.push(createQuestion(concept, kept.length, state.mode));
+        }
+      });
+
+      state.questions = kept;
+
+      if (state.questions.length === 0) {
+        state.currentIndex = 0;
+        renderQuestion({ focusTarget });
+        return;
+      }
+
+      if (currentTerm && !knownTerms.has(currentTerm)) {
+        const newIndex = state.questions.findIndex((q) => q.concept.term === currentTerm);
+        state.currentIndex = newIndex >= 0 ? newIndex : Math.min(state.currentIndex, state.questions.length - 1);
+      } else {
+        state.currentIndex = Math.min(state.currentIndex, state.questions.length - 1);
+      }
+
+      renderQuestion({ focusTarget });
+    }
+
+    function toggleKnownCurrent(checked) {
+      const q = state.questions[state.currentIndex];
+      if (!q) return;
+      const term = q.concept.term;
+      if (checked) {
+        if (knownTerms.has(term)) return;
+        knownTerms.add(term);
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+      } else {
+        if (!knownTerms.has(term)) return;
+        knownTerms.delete(term);
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+      }
     }
 
     function asciiBar(value, total) {
@@ -736,6 +937,9 @@
       questionPrompt.textContent = q.prompt;
       questionMeta.textContent = `${state.currentIndex + 1} / ${state.questions.length} • ${q.type === 'termToDescription' ? 'Je legt het begrip uit' : 'Je noemt het begrip'}`;
       userAnswer.value = q.userAnswer || '';
+      if (knownToggle) {
+        knownToggle.checked = knownTerms.has(q.concept.term);
+      }
 
       const answeredCount = state.questions.filter(item => item.attempted).length;
       progressDisplay.innerHTML = `Geteste begrippen: ${answeredCount} van ${state.questions.length} <span class="progress-bar">${asciiBar(answeredCount, state.questions.length)}</span>`;
@@ -756,10 +960,24 @@
 
     function saveAnswer(showNow = false, options = {}) {
       const q = state.questions[state.currentIndex];
+      if (!q) return;
       q.userAnswer = userAnswer.value.trim();
       q.attempted = true;
       if (state.revealMode === 'immediate' || showNow) {
         q.revealed = true;
+      }
+      const autoKnownEnabled = autoKnownToggle && autoKnownToggle.checked;
+      const correctNow = isCorrectAnswer(q.userAnswer, q.answer);
+      if (autoKnownEnabled && correctNow) {
+        if (!knownTerms.has(q.concept.term)) {
+          knownTerms.add(q.concept.term);
+          saveKnown();
+          renderKnownList();
+        }
+        resultBlock.classList.remove('hidden');
+        resultBlock.textContent = '✅ Juist! Begrip gemarkeerd als bekend.';
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+        return;
       }
       renderQuestion(options);
       checkCompletion();
@@ -802,8 +1020,8 @@
     }
 
     startBtn.addEventListener('click', () => {
-      if (!concepts.length) {
-        setMeta.textContent = 'Geen begrippen geladen. Kies een andere set of controleer je configuratie.';
+      if (!getUnknownConcepts().length) {
+        setMeta.textContent = 'Alle begrippen staan al als bekend. Zet er een paar terug of kies een andere set.';
         return;
       }
       state.mode = Array.from(modeRadios).find(r => r.checked).value;
@@ -846,6 +1064,18 @@
       });
     });
 
+    if (autoKnownToggle) {
+      autoKnownToggle.addEventListener('change', () => {
+        saveAutoKnown(autoKnownToggle.checked);
+      });
+    }
+
+    if (knownToggle) {
+      knownToggle.addEventListener('change', () => {
+        toggleKnownCurrent(knownToggle.checked);
+      });
+    }
+
     setSelect.addEventListener('change', () => {
       applySet(setSelect.value, { reset: true, showLoading: true });
     });
@@ -885,6 +1115,18 @@
       testArea.classList.remove('hidden');
       renderQuestion();
     });
+
+    if (clearKnownBtn) {
+      clearKnownBtn.addEventListener('click', () => {
+        if (!confirm('Je staat op het punt alle bekende begrippen te wissen. Doorgaan?')) return;
+        if (!confirm('Laatste check: wil je echt alles uit de bekende lijst verwijderen?')) return;
+        knownTerms.clear();
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange();
+        updateStartAvailability();
+      });
+    }
 
     backBtn.addEventListener('click', () => {
       resetView();
