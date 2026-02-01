@@ -30,6 +30,7 @@
 - [x] Natuurkunde Begrippen Check: README bij configs met format/voorbeelden
 - [x] Aardrijkskunde begrippen: ak-begrippen.md omzetten naar JSON config
 - [x] Begrippen mini-app: nieuwe naam, header navigation + reset, nieuwe kaart-afbeelding
+- [x] Begrippen mini-app: bekende begrippen (auto + handmatig) beheren zoals vocabtrainer
 - [x] README: uitleg over structuur/configuratie en uitbreidingspunten
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
