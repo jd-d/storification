@@ -1934,7 +1934,13 @@
       if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
         return false;
       }
-      resetSession(false);
+      knownIds.clear();
+      saveKnown();
+      renderKnownList();
+      if (session) {
+        rebuildActiveIds();
+        updateDisplay();
+      }
       return true;
     }
 
