@@ -1,4 +1,6 @@
-window.GREEK_FACTS = [
+window.VOCAB_DATA = window.VOCAB_DATA || {};
+window.VOCAB_DATA.FACTS = window.VOCAB_DATA.FACTS || {};
+window.VOCAB_DATA.FACTS["grc-nl"] = [
   "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
   "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
   "In de Griekse mythologie droeg Zeus vaak een bliksemschicht als wapen.",
