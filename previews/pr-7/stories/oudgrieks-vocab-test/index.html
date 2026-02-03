@@ -624,8 +624,8 @@
     ];
 
     const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
-      ? "oudgrieks-vocab-session-v2"
-      : `vocab-session-${DATASET_ID}-v2`;
+      ? "oudgrieks-vocab-session-v3"
+      : `vocab-session-${DATASET_ID}-v3`;
     const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-known-v1"
       : `vocab-known-${DATASET_ID}-v1`;
@@ -808,13 +808,22 @@
 
     function buildDirectionMap(activeIds, mode, existingMap = {}) {
       const map = {};
-      activeIds.forEach((id, index) => {
+      if (mode === "alternate") {
+        let toggleIndex = 0;
+        activeIds.forEach((id) => {
+          const existingDir = existingMap[id];
+          if (existingDir === "l1" || existingDir === "l2") {
+            map[id] = existingDir;
+            return;
+          }
+          map[id] = toggleIndex % 2 === 0 ? "l1" : "l2";
+          toggleIndex += 1;
+        });
+        return map;
+      }
+      activeIds.forEach((id) => {
         if (mode === "l2-to-l1") {
           map[id] = "l2";
-          return;
-        }
-        if (mode === "alternate") {
-          map[id] = index % 2 === 0 ? "l1" : "l2";
           return;
         }
         if (mode === "random") {
