@@ -448,8 +448,7 @@
         </div>
         <div class="controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
-          <button id="resumeBtn" type="button" class="hidden">Hervat de toets</button>
-          <button id="resetRestartBtn" type="button" class="danger hidden">Reset en herstart toets</button>
+          <button id="resetRestartBtn" type="button" class="danger hidden">RESET &amp; HERSTART TOETS</button>
         </div>
       </article>
 
@@ -663,7 +662,6 @@
     const startBtn = document.getElementById("startBtn");
     const datasetSelect = document.getElementById("datasetSelect");
     const datasetHint = document.getElementById("datasetHint");
-    const resumeBtn = document.getElementById("resumeBtn");
     const resetRestartBtn = document.getElementById("resetRestartBtn");
     const intervalInput = document.getElementById("intervalInput");
     const intervalHint = document.getElementById("intervalHint");
@@ -1833,12 +1831,6 @@
 
     function resetSession(keepKnown) {
       if (!keepKnown) {
-        if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
-          return;
-        }
-        if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
-          return;
-        }
         knownIds.clear();
         saveKnown();
       }
@@ -1866,16 +1858,12 @@
     function updateStartButtons() {
       const existing = loadSession();
       if (existing) {
-        resumeBtn.classList.remove("hidden");
         resetRestartBtn.classList.remove("hidden");
-        resumeBtn.classList.add("primary");
-        startBtn.classList.remove("primary");
+        startBtn.textContent = "Hervat de toets";
         applySessionSettings(existing);
       } else {
-        resumeBtn.classList.add("hidden");
         resetRestartBtn.classList.add("hidden");
-        resumeBtn.classList.remove("primary");
-        startBtn.classList.add("primary");
+        startBtn.textContent = "Start de toets";
         shuffleToggle.checked = false;
       }
     }
@@ -1897,9 +1885,13 @@
     }
 
     function showSettingsView() {
+      if (session) {
+        saveSession();
+      }
       setSetupVisibility(true);
       testArea.classList.add("hidden");
       summaryCard.classList.add("hidden");
+      updateStartButtons();
     }
 
     function openKnownManager() {
@@ -1918,12 +1910,31 @@
       updateDisplay();
     }
 
-    function confirmResetSessionFlow() {
-      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren.")) {
+    function confirmResetSessionFlow(options = {}) {
+      const { forceClearKnown = false } = options;
+      if (forceClearKnown) {
+        if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren, je bekende woorden worden gewist en de volgorde wordt opnieuw gestart.")) {
+          return false;
+        }
+        resetSession(false);
+        return true;
+      }
+      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren en de volgorde wordt opnieuw gestart.")) {
         return false;
       }
       const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
       resetSession(!clearKnown);
+      return true;
+    }
+
+    function confirmClearKnownFlow() {
+      if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
+        return false;
+      }
+      if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
+        return false;
+      }
+      resetSession(false);
       return true;
     }
 
@@ -1938,7 +1949,28 @@
       });
     }
 
+    function resumeTest(savedSession) {
+      session = savedSession;
+      session.directionMode = session.directionMode || getDirectionMode();
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode,
+        session.directionMap || {}
+      );
+      rebuildActiveIds();
+      applySessionSettings(savedSession);
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      setSetupVisibility(false);
+    }
+
     startBtn.addEventListener("click", () => {
+      const saved = loadSession();
+      if (saved) {
+        resumeTest(saved);
+        return;
+      }
       const mode = getRevealMode();
       const interval = getIntervalValue();
       startTest({
@@ -1951,26 +1983,8 @@
       setSetupVisibility(false);
     });
 
-    resumeBtn.addEventListener("click", () => {
-      const saved = loadSession();
-      if (!saved) return;
-      session = saved;
-      session.directionMode = session.directionMode || getDirectionMode();
-      session.directionMap = buildDirectionMap(
-        session.activeIds,
-        session.directionMode,
-        session.directionMap || {}
-      );
-      rebuildActiveIds();
-      applySessionSettings(saved);
-      summaryCard.classList.add("hidden");
-      testArea.classList.remove("hidden");
-      updateDisplay();
-      setSetupVisibility(false);
-    });
-
     resetRestartBtn.addEventListener("click", () => {
-      const confirmed = confirmResetSessionFlow();
+      const confirmed = confirmResetSessionFlow({ forceClearKnown: true });
       if (!confirmed) return;
       startTest({
         revealMode: getRevealMode(),
@@ -2016,7 +2030,7 @@
     });
 
     clearKnownBtn.addEventListener("click", () => {
-      resetSession(false);
+      confirmClearKnownFlow();
     });
 
     exportUnknownBtn.addEventListener("click", () => {
