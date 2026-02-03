@@ -1833,12 +1833,6 @@
 
     function resetSession(keepKnown) {
       if (!keepKnown) {
-        if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
-          return;
-        }
-        if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
-          return;
-        }
         knownIds.clear();
         saveKnown();
       }
@@ -1924,6 +1918,17 @@
       }
       const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
       resetSession(!clearKnown);
+      return true;
+    }
+
+    function confirmClearKnownFlow() {
+      if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
+        return false;
+      }
+      if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
+        return false;
+      }
+      resetSession(false);
       return true;
     }
 
@@ -2016,7 +2021,7 @@
     });
 
     clearKnownBtn.addEventListener("click", () => {
-      resetSession(false);
+      confirmClearKnownFlow();
     });
 
     exportUnknownBtn.addEventListener("click", () => {
