@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Leer Begrippen Reeksen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f6fb;
+      --fg: #1f2937;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --card-bg: #ffffff;
+      --muted: #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(120deg, #24428c, #3565c5);
+      color: #fff;
+      padding: 1.6rem 1.2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      flex: 1 1 320px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+    }
+
+    header p { margin: 0.35rem 0 0; opacity: 0.92; max-width: 780px; margin-left: auto; margin-right: auto; }
+
+    .header-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: none;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+    }
+
+    .header-action:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
+    }
+
+    .header-action svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    main { max-width: 1100px; margin: 1.5rem auto 2.5rem; padding: 0 1rem; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .full { grid-column: 1 / -1; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem 1rem;
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+    }
+
+    h2 { margin-top: 0; color: var(--accent); font-size: 1.25rem; }
+    p { margin: 0.3rem 0 0.7rem; }
+
+    .option-list { list-style: none; padding: 0; margin: 0.5rem 0; }
+    .option-list li { margin-bottom: 0.35rem; }
+
+    label { cursor: pointer; }
+
+    .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+    button {
+      border-radius: 12px;
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      padding: 0.55rem 1rem;
+      background: #fff;
+      color: var(--accent);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14); }
+    button.primary:hover { background: #1d4ed8; color: #fff; }
+    button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+
+    .hidden { display: none; }
+
+    .test-layout { display: grid; grid-template-columns: 270px 1fr; gap: 1rem; align-items: start; }
+
+    .nav-card { position: sticky; top: 90px; max-height: calc(100vh - 120px); overflow: auto; }
+
+    .nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .nav-list button { width: 100%; justify-content: flex-start; border-radius: 10px; }
+    .nav-list button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
+    .nav-list button.answered { border-color: #16a34a; color: #15803d; }
+
+    .question-card h3 { margin-top: 0; margin-bottom: 0.35rem; color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      min-height: 100px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    select {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .progress { font-size: 0.95rem; margin: 0.6rem 0 0.4rem; }
+    .progress-bar { font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+
+    .answer-block { margin-top: 0.7rem; padding: 0.65rem 0.75rem; background: var(--accent-soft); border-radius: 10px; border: 1px solid rgba(37, 99, 235, 0.35); }
+    .answer-block strong { color: var(--accent); }
+
+    .pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 0.85rem; margin-right: 0.4rem; }
+
+    .answer-mode { display: inline-flex; gap: 0.35rem; align-items: center; margin-right: 0.65rem; }
+
+    .known-list { display: grid; gap: 0.5rem; margin-top: 0.6rem; }
+    .known-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+    .known-item small { color: var(--muted); display: block; }
+    .known-item button { padding: 0.35rem 0.6rem; font-size: 0.85rem; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
+    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+    .result-table th { color: var(--accent); }
+
+    .tiny { font-size: 0.85rem; color: var(--muted); }
+
+    @media (max-width: 900px) {
+      .test-layout { grid-template-columns: 1fr; }
+      .nav-card { position: relative; top: auto; max-height: none; }
+    }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.6rem; }
+      .header-bar { justify-content: center; }
+      .header-action { width: 100%; justify-content: center; }
+      .header-title { order: 1; }
+      .home-link { order: 0; }
+      .reset-button { order: 2; }
+      .grid { grid-template-columns: 1fr; }
+      textarea { min-height: 90px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <a class="header-action home-link" id="homeLink" href="../../index.html" aria-label="Terug naar home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3.2 2.8 10.4a1 1 0 0 0 1.2 1.6l1.5-1.1v8.3a1 1 0 0 0 1 1h4.8a1 1 0 0 0 1-1v-5.2h3.4v5.2a1 1 0 0 0 1 1h4.8a1 1 0 0 0 1-1v-8.3l1.5 1.1a1 1 0 1 0 1.2-1.6L12 3.2z"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <div class="header-title">
+        <h1>Leer Begrippen Reeksen</h1>
+        <p>Kies een begrippenset, oefen in je eigen tempo en pak later verder waar je gebleven bent.</p>
+      </div>
+      <button class="header-action reset-button" id="resetHeaderBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 5a7 7 0 1 1-6.2 3.7H8a1 1 0 0 0 .7-1.7L5.4 3.7a1 1 0 0 0-1.7.7v4.1A1 1 0 0 0 4.7 9h3.9A1 1 0 0 0 9.3 7.3L8 6a5.2 5.2 0 1 0 4-1z"/>
+        </svg>
+        <span>Reset toets</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card">
+        <h2>Hoe werkt deze toets?</h2>
+        <p>Alle <span id="setCount">...</span> begrippen uit de gekozen set worden getest met vooraf gemaakte vragen. Eén vraag per begrip, steeds willekeurig gekozen uit het bijbehorende setje. Je kunt de antwoorden direct zien na het beantwoorden of alles pas aan het einde.</p>
+        <ul class="option-list">
+          <li>1. De toets geeft het begrip, jij legt uit.</li>
+          <li>2. De toets geeft een beschrijving, jij noemt het begrip.</li>
+          <li>3. Om en om: begrip, beschrijving, begrip, beschrijving...</li>
+          <li>4. Door elkaar: begrippen en beschrijvingen willekeurig gemixt.</li>
+        </ul>
+        <p class="tiny">Belangrijk: geen antwoorden in de vragen, elke vraag is kort en duidelijk.</p>
+      </article>
+
+      <article class="card">
+        <h2>Testinstellingen</h2>
+        <div>
+          <p><strong>Begrippenset</strong></p>
+          <select id="setSelect" aria-label="Kies begrippenset"></select>
+          <p class="tiny" id="setMeta">Beschikbare sets laden...</p>
+        </div>
+        <div>
+          <p><strong>Testsoort</strong></p>
+          <ul class="option-list" id="modeOptions">
+            <li><label><input type="radio" name="mode" value="term" checked> Begrip → uitleg</label></li>
+            <li><label><input type="radio" name="mode" value="description"> Beschrijving → begrip</label></li>
+            <li><label><input type="radio" name="mode" value="alternate"> Om en om</label></li>
+            <li><label><input type="radio" name="mode" value="mixed"> Door elkaar</label></li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Antwoorden tonen</strong></p>
+          <label class="answer-mode"><input type="radio" name="reveal" value="immediate"> Na elke vraag</label>
+          <label class="answer-mode"><input type="radio" name="reveal" value="end" checked> Alles aan het einde</label>
+        </div>
+        <div>
+          <p><strong>Bekende begrippen</strong></p>
+          <label class="answer-mode"><input type="checkbox" id="autoKnownToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
+          <p class="tiny">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het begrip uit deze toets.</p>
+        </div>
+        <div class="controls">
+          <button class="primary" id="startBtn" type="button">Start de toets</button>
+          <button id="restartBtn" type="button" class="hidden">Nieuwe toets</button>
+        </div>
+      </article>
+
+      <article class="card full" id="knownCard">
+        <h2>Bekende begrippen</h2>
+        <p class="tiny" id="knownCount"></p>
+        <div class="known-list" id="knownList"></div>
+        <div class="controls">
+          <button type="button" id="clearKnownBtn">Wis bekende begrippen</button>
+        </div>
+        <p class="tiny">Je kunt begrippen altijd terugzetten om opnieuw te oefenen.</p>
+      </article>
+
+      <article class="card full hidden" id="testArea">
+        <div class="test-layout">
+          <aside class="card nav-card" aria-label="Navigatie vragen">
+            <h3>Vragen</h3>
+            <p class="tiny">Klik om te springen. Alle begrippen komen één keer voor.</p>
+            <ul class="nav-list" id="navList"></ul>
+          </aside>
+
+          <section class="card question-card">
+            <div class="controls question-controls">
+              <div class="progress" id="progressDisplay"></div>
+              <div>
+                <label class="answer-mode" for="liveReveal-immediate"><input type="radio" id="liveReveal-immediate" name="liveReveal" value="immediate"> Toon antwoorden na poging</label>
+                <label class="answer-mode" for="liveReveal-end"><input type="radio" id="liveReveal-end" name="liveReveal" value="end" checked> Toon alles aan het einde</label>
+              </div>
+            </div>
+
+            <div class="meta" id="questionMeta"></div>
+            <h3 id="questionTitle"></h3>
+            <p id="questionPrompt"></p>
+
+            <label for="userAnswer"><strong>Jouw antwoord</strong></label>
+            <textarea id="userAnswer" placeholder="Typ hier je antwoord..."></textarea>
+            <label class="answer-mode"><input type="checkbox" id="knownToggle"> Ik ken dit begrip (niet meer tonen)</label>
+
+            <div class="controls">
+              <button id="saveAnswer" type="button" class="primary">Bewaar antwoord</button>
+              <button id="revealNow" type="button">Toon antwoord nu</button>
+              <button id="prevBtn" type="button">← Vorige</button>
+              <button id="nextBtn" type="button">Volgende →</button>
+            </div>
+
+            <div id="answerBlock" class="answer-block hidden"></div>
+            <div id="resultBlock" class="hidden"></div>
+          </section>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="summaryCard">
+        <h2>Resultaten</h2>
+        <p id="summaryText"></p>
+        <table class="result-table" id="resultTable"></table>
+        <div class="controls">
+          <button id="retryBtn" type="button" class="primary">Opnieuw starten</button>
+          <button id="backBtn" type="button">Terug naar testopties</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const SETS_INDEX_URL = 'configs/sets.json';
+    const SET_STORAGE_KEY = 'natuurkunde-begrippen-set-v1';
+    const STATE_STORAGE_KEY = 'natuurkunde-begrippen-state-v1';
+    const KNOWN_KEY_PREFIX = 'begrippen-known-';
+    const AUTO_KNOWN_PREFIX = 'begrippen-auto-known-';
+
+    const setRegistry = new Map();
+    const setCache = new Map();
+    let concepts = [];
+    let availableSets = [];
+    let activeSetId = null;
+    let knownTerms = new Set();
+
+    // JS-configs can call window.registerBegrippenSet({ id, concepts, ... }).
+    window.registerBegrippenSet = (payload) => {
+      if (!payload || !payload.id) return;
+      setRegistry.set(payload.id, payload);
+    };
+
+    async function loadJson(url) {
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Kon ${url} niet laden (${response.status})`);
+      }
+      return response.json();
+    }
+
+    function loadScript(url) {
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-begrippen-src="${url}"]`);
+        if (existing) {
+          if (existing.dataset.loaded === 'true') {
+            resolve();
+            return;
+          }
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => reject(new Error(`Kon ${url} niet laden.`)), { once: true });
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.dataset.begrippenSrc = url;
+        script.addEventListener('load', () => {
+          script.dataset.loaded = 'true';
+          resolve();
+        }, { once: true });
+        script.addEventListener('error', () => reject(new Error(`Kon ${url} niet laden.`)), { once: true });
+        document.head.appendChild(script);
+      });
+    }
+
+    async function loadSet(entry) {
+      if (setCache.has(entry.id)) {
+        return setCache.get(entry.id);
+      }
+
+      const loader = (async () => {
+        if (!entry.file) {
+          throw new Error('Geen bestand opgegeven voor de begrippenset.');
+        }
+        if (entry.file.endsWith('.json')) {
+          return loadJson(entry.file);
+        }
+        if (entry.file.endsWith('.js')) {
+          await loadScript(entry.file);
+          const data = setRegistry.get(entry.id);
+          if (!data) {
+            throw new Error(`Set ${entry.id} niet geregistreerd.`);
+          }
+          return data;
+        }
+        throw new Error(`Onbekend bestandsformaat: ${entry.file}`);
+      })();
+
+      setCache.set(entry.id, loader);
+      return loader;
+    }
+
+    function getKnownKey() {
+      return `${KNOWN_KEY_PREFIX}${activeSetId || "default"}-v1`;
+    }
+
+    function getAutoKnownKey() {
+      return `${AUTO_KNOWN_PREFIX}${activeSetId || "default"}-v1`;
+    }
+
+    function loadKnown() {
+      try {
+        const raw = localStorage.getItem(getKnownKey());
+        if (!raw) return new Set();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return new Set();
+        return new Set(parsed);
+      } catch (err) {
+        console.warn("Kon bekende begrippen niet laden.", err);
+        return new Set();
+      }
+    }
+
+    function saveKnown() {
+      localStorage.setItem(getKnownKey(), JSON.stringify(Array.from(knownTerms)));
+    }
+
+    function loadAutoKnown() {
+      const stored = localStorage.getItem(getAutoKnownKey());
+      if (stored === null) return true;
+      return stored === "1";
+    }
+
+    function saveAutoKnown(enabled) {
+      localStorage.setItem(getAutoKnownKey(), enabled ? "1" : "0");
+    }
+
+    function loadPersistedState() {
+      try {
+        const raw = localStorage.getItem(STATE_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('Kon opgeslagen voortgang niet lezen.', err);
+        return null;
+      }
+    }
+
+    function persistState() {
+      try {
+        const payload = {
+          activeSetId,
+          mode: state.mode,
+          revealMode: state.revealMode,
+          started: state.started,
+          currentIndex: state.currentIndex,
+          questions: state.questions.map((q) => ({
+            id: q.id,
+            prompt: q.prompt,
+            type: q.type,
+            answer: q.answer,
+            userAnswer: q.userAnswer,
+            revealed: q.revealed,
+            attempted: q.attempted,
+            concept: q.concept ? { term: q.concept.term, description: q.concept.description } : null
+          }))
+        };
+        localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify(payload));
+      } catch (err) {
+        console.warn('Kon voortgang niet opslaan.', err);
+      }
+    }
+
+    function clearPersistedState() {
+      localStorage.removeItem(STATE_STORAGE_KEY);
+    }
+
+    const state = {
+      mode: 'term',
+      revealMode: 'end',
+      questions: [],
+      currentIndex: 0,
+      started: false
+    };
+
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    const revealRadios = document.querySelectorAll('input[name="reveal"]');
+    const liveRevealRadios = document.querySelectorAll('input[name="liveReveal"]');
+    const setSelect = document.getElementById('setSelect');
+    const setMeta = document.getElementById('setMeta');
+    const setCount = document.getElementById('setCount');
+    const autoKnownToggle = document.getElementById('autoKnownToggle');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const testArea = document.getElementById('testArea');
+    const navList = document.getElementById('navList');
+    const questionTitle = document.getElementById('questionTitle');
+    const questionPrompt = document.getElementById('questionPrompt');
+    const questionMeta = document.getElementById('questionMeta');
+    const progressDisplay = document.getElementById('progressDisplay');
+    const userAnswer = document.getElementById('userAnswer');
+    const knownToggle = document.getElementById('knownToggle');
+    const answerBlock = document.getElementById('answerBlock');
+    const resultBlock = document.getElementById('resultBlock');
+    const saveAnswerBtn = document.getElementById('saveAnswer');
+    const revealNowBtn = document.getElementById('revealNow');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const summaryCard = document.getElementById('summaryCard');
+    const summaryText = document.getElementById('summaryText');
+    const resultTable = document.getElementById('resultTable');
+    const retryBtn = document.getElementById('retryBtn');
+    const backBtn = document.getElementById('backBtn');
+    const knownCount = document.getElementById('knownCount');
+    const knownList = document.getElementById('knownList');
+    const clearKnownBtn = document.getElementById('clearKnownBtn');
+    const homeLink = document.getElementById('homeLink');
+    const resetHeaderBtn = document.getElementById('resetHeaderBtn');
+
+    function syncModeRadios() {
+      modeRadios.forEach(r => { r.checked = r.value === state.mode; });
+    }
+
+    function syncRevealRadios() {
+      liveRevealRadios.forEach(r => { r.checked = r.value === state.revealMode; });
+      revealRadios.forEach(r => { r.checked = r.value === state.revealMode; });
+    }
+
+    function restoreState(saved) {
+      if (!saved || !Array.isArray(saved.questions) || saved.questions.length === 0) {
+        return false;
+      }
+
+      state.mode = saved.mode || state.mode;
+      state.revealMode = saved.revealMode || state.revealMode;
+      state.questions = saved.questions.map((q, idx) => ({
+        id: q.id || `${q.concept?.term || 'begrip'}-${idx}`,
+        concept: q.concept || { term: q.conceptTerm || q.answer || 'Begrip', description: '' },
+        prompt: q.prompt || '',
+        type: q.type || 'termToDescription',
+        answer: q.answer || '',
+        userAnswer: q.userAnswer || '',
+        revealed: Boolean(q.revealed),
+        attempted: Boolean(q.attempted)
+      }));
+      state.questions = state.questions.filter((q) => !knownTerms.has(q.concept.term));
+      if (state.questions.length === 0) {
+        resetView();
+        renderKnownList();
+        updateStartAvailability();
+        return false;
+      }
+      state.currentIndex = Math.min(Math.max(saved.currentIndex ?? 0, 0), state.questions.length - 1);
+      state.started = Boolean(saved.started);
+
+      syncModeRadios();
+      syncRevealRadios();
+
+      if (state.started) {
+        testArea.classList.remove('hidden');
+        summaryCard.classList.add('hidden');
+        restartBtn.classList.remove('hidden');
+        renderQuestion();
+        checkCompletion();
+      } else {
+        state.questions = [];
+        state.currentIndex = 0;
+        resetView();
+      }
+      return true;
+    }
+
+    function hardResetTest() {
+      state.questions = [];
+      state.currentIndex = 0;
+      state.started = false;
+      userAnswer.value = '';
+      navList.innerHTML = '';
+      answerBlock.classList.add('hidden');
+      resultBlock.classList.add('hidden');
+      summaryText.textContent = '';
+      resultTable.innerHTML = '';
+      resetView();
+      clearPersistedState();
+      persistState();
+      updateStartAvailability();
+    }
+
+    function updateSetMeta(entry, data) {
+      const count = Array.isArray(data.concepts) ? data.concepts.length : 0;
+      setCount.textContent = count ? String(count) : '0';
+
+      const bits = [];
+      if (entry && entry.description) bits.push(entry.description);
+      if (count) bits.push(`${count} begrippen.`);
+      setMeta.textContent = bits.join(' ') || 'Geen setinformatie beschikbaar.';
+    }
+
+    function getUnknownConcepts() {
+      return concepts.filter((concept) => !knownTerms.has(concept.term));
+    }
+
+    function updateStartAvailability() {
+      startBtn.disabled = getUnknownConcepts().length === 0;
+    }
+
+    function setUiLoading(isLoading, message) {
+      setSelect.disabled = isLoading;
+      if (isLoading) {
+        startBtn.disabled = true;
+        if (message) setMeta.textContent = message;
+      } else {
+        updateStartAvailability();
+      }
+    }
+
+    function normalizeAnswer(text) {
+      return (text || "")
+        .toLowerCase()
+        .replace(/[.,;:!?()[\]{}"“”'’`]/g, "")
+        .replace(/[-–—]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function isCorrectAnswer(userAnswerText, expected) {
+      if (!userAnswerText) return false;
+      return normalizeAnswer(userAnswerText) === normalizeAnswer(expected);
+    }
+
+    function renderKnownList() {
+      if (!knownList) return;
+      knownList.innerHTML = "";
+      const knownItems = concepts.filter((concept) => knownTerms.has(concept.term));
+      if (knownCount) {
+        knownCount.textContent = `Bekende begrippen: ${knownItems.length} / ${concepts.length}`;
+      }
+
+      if (knownItems.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "tiny";
+        empty.textContent = "Nog geen begrippen gemarkeerd als bekend.";
+        knownList.appendChild(empty);
+        return;
+      }
+
+      knownItems.forEach((concept) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "known-item";
+        const text = document.createElement("div");
+        text.innerHTML = `<strong>${concept.term}</strong><small>${concept.description}</small>`;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = "Zet terug";
+        btn.addEventListener("click", () => {
+          knownTerms.delete(concept.term);
+          saveKnown();
+          rebuildQuestionsAfterKnownChange();
+          renderKnownList();
+        });
+        wrapper.appendChild(text);
+        wrapper.appendChild(btn);
+        knownList.appendChild(wrapper);
+      });
+      updateStartAvailability();
+    }
+
+    async function applySet(id, { reset = true, showLoading = true } = {}) {
+      const entry = availableSets.find((set) => set.id === id);
+      if (!entry) return;
+
+      if (reset && state.started) {
+        const ok = window.confirm('Je huidige toets wordt opnieuw gestart als je van begrippenset wisselt. Doorgaan?');
+        if (!ok) {
+          setSelect.value = activeSetId || entry.id;
+          return;
+        }
+      }
+
+      if (showLoading) {
+        setUiLoading(true, 'Begrippenset laden...');
+      }
+
+      try {
+        const data = await loadSet(entry);
+        if (!data || !Array.isArray(data.concepts)) {
+          throw new Error('Config mist een concepts-array.');
+        }
+        concepts = data.concepts;
+        activeSetId = entry.id;
+        localStorage.setItem(SET_STORAGE_KEY, entry.id);
+        updateSetMeta(entry, data);
+        knownTerms = loadKnown();
+        if (autoKnownToggle) {
+          autoKnownToggle.checked = loadAutoKnown();
+        }
+        renderKnownList();
+        if (reset) {
+          state.questions = [];
+          state.currentIndex = 0;
+          resetView();
+        }
+        persistState();
+        updateStartAvailability();
+      } catch (err) {
+        console.error(err);
+        concepts = [];
+        updateSetMeta(entry, { concepts: [] });
+        setMeta.textContent = 'Kon deze begrippenset niet laden.';
+      } finally {
+        if (showLoading) {
+          setUiLoading(false);
+        }
+      }
+    }
+
+    async function initSets() {
+      setUiLoading(true, 'Begrippensets laden...');
+      try {
+        const index = await loadJson(SETS_INDEX_URL);
+        availableSets = Array.isArray(index.sets) ? index.sets : [];
+        if (!availableSets.length) {
+          throw new Error('Geen begrippensets gevonden.');
+        }
+        setSelect.innerHTML = availableSets
+          .map((set) => `<option value="${set.id}">${set.label || set.id}</option>`)
+          .join('');
+
+        const savedState = loadPersistedState();
+        const savedId = savedState && savedState.activeSetId;
+        const storedId = localStorage.getItem(SET_STORAGE_KEY);
+        const defaultId = availableSets.some((set) => set.id === savedId)
+          ? savedId
+          : (availableSets.some((set) => set.id === storedId)
+            ? storedId
+            : (index.default || availableSets[0].id));
+
+        setSelect.value = defaultId;
+        await applySet(defaultId, { reset: false, showLoading: false });
+        if (savedState && savedState.activeSetId === defaultId) {
+          restoreState(savedState);
+        }
+      } catch (err) {
+        console.error(err);
+        setMeta.textContent = 'Kon begrippensets niet laden.';
+      } finally {
+        setUiLoading(false);
+      }
+    }
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function createQuestion(concept, idx, mode) {
+      let type;
+      switch (mode) {
+        case 'description':
+          type = 'descriptionToTerm';
+          break;
+        case 'alternate':
+          type = idx % 2 === 0 ? 'termToDescription' : 'descriptionToTerm';
+          break;
+        case 'mixed':
+          type = Math.random() > 0.5 ? 'termToDescription' : 'descriptionToTerm';
+          break;
+        default: // 'term'
+          type = 'termToDescription';
+      }
+
+      const prompt = type === 'termToDescription'
+        ? pickRandom(concept.termQuestions)
+        : pickRandom(concept.descriptionQuestions);
+      const answer = type === 'termToDescription' ? concept.description : concept.term;
+
+      return {
+        id: concept.term,
+        concept,
+        prompt,
+        type,
+        answer,
+        userAnswer: '',
+        revealed: false,
+        attempted: false
+      };
+    }
+
+    function buildQuestions() {
+      const pool = getUnknownConcepts();
+      if (!pool.length) {
+        state.questions = [];
+        state.currentIndex = 0;
+        return;
+      }
+      const chosenMode = state.mode;
+      const base = shuffle(pool).map((concept, idx) => createQuestion(concept, idx, chosenMode));
+      state.questions = base;
+      state.currentIndex = 0;
+    }
+
+    function rebuildQuestionsAfterKnownChange({ focusTarget } = {}) {
+      const currentTerm = state.questions[state.currentIndex]?.concept.term;
+      const unknownSet = new Set(getUnknownConcepts().map((concept) => concept.term));
+
+      const kept = [];
+      state.questions.forEach((q) => {
+        if (unknownSet.has(q.concept.term)) {
+          kept.push(q);
+        }
+      });
+
+      const existingTerms = new Set(kept.map((q) => q.concept.term));
+      concepts.forEach((concept) => {
+        if (unknownSet.has(concept.term) && !existingTerms.has(concept.term)) {
+          kept.push(createQuestion(concept, kept.length, state.mode));
+        }
+      });
+
+      state.questions = kept;
+
+      if (state.questions.length === 0) {
+        state.currentIndex = 0;
+        renderQuestion({ focusTarget });
+        return;
+      }
+
+      if (currentTerm && !knownTerms.has(currentTerm)) {
+        const newIndex = state.questions.findIndex((q) => q.concept.term === currentTerm);
+        state.currentIndex = newIndex >= 0 ? newIndex : Math.min(state.currentIndex, state.questions.length - 1);
+      } else {
+        state.currentIndex = Math.min(state.currentIndex, state.questions.length - 1);
+      }
+
+      renderQuestion({ focusTarget });
+    }
+
+    function toggleKnownCurrent(checked) {
+      const q = state.questions[state.currentIndex];
+      if (!q) return;
+      const term = q.concept.term;
+      if (checked) {
+        if (knownTerms.has(term)) return;
+        knownTerms.add(term);
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+      } else {
+        if (!knownTerms.has(term)) return;
+        knownTerms.delete(term);
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+      }
+    }
+
+    function asciiBar(value, total) {
+      const length = 20;
+      const filled = total === 0 ? 0 : Math.round((value / total) * length);
+      return `[${'#'.repeat(filled)}${'-'.repeat(length - filled)}]`;
+    }
+
+    function updateNav() {
+      navList.innerHTML = '';
+      state.questions.forEach((q, idx) => {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = `${idx + 1}. ${q.type === 'termToDescription' ? 'Begrip → uitleg' : 'Beschrijving → begrip'}`;
+        if (idx === state.currentIndex) btn.classList.add('current');
+        if (q.attempted) btn.classList.add('answered');
+        btn.addEventListener('click', () => {
+          saveDraft();
+          state.currentIndex = idx;
+          renderQuestion();
+        });
+        li.appendChild(btn);
+        navList.appendChild(li);
+      });
+    }
+
+    function saveDraft() {
+      const current = state.questions[state.currentIndex];
+      if (current) {
+        current.userAnswer = userAnswer.value;
+      }
+    }
+
+    function focusPrimaryAction(focusTarget) {
+      const active = document.activeElement;
+      if (active === userAnswer) return;
+
+      let target = null;
+      if (focusTarget === 'next') {
+        target = nextBtn;
+      } else if (focusTarget === 'reveal') {
+        target = revealNowBtn;
+      } else if (focusTarget === 'save') {
+        target = saveAnswerBtn;
+      } else {
+        target = state.revealMode === 'end' ? nextBtn : revealNowBtn;
+      }
+
+      if (target) {
+        requestAnimationFrame(() => target.focus());
+      }
+    }
+
+    function renderQuestion({ focusTarget } = {}) {
+      const q = state.questions[state.currentIndex];
+      if (!q) {
+        persistState();
+        return;
+      }
+
+      questionTitle.textContent = q.type === 'termToDescription' ? q.concept.term : 'Welk begrip hoort bij deze beschrijving?';
+      questionPrompt.textContent = q.prompt;
+      questionMeta.textContent = `${state.currentIndex + 1} / ${state.questions.length} • ${q.type === 'termToDescription' ? 'Je legt het begrip uit' : 'Je noemt het begrip'}`;
+      userAnswer.value = q.userAnswer || '';
+      if (knownToggle) {
+        knownToggle.checked = knownTerms.has(q.concept.term);
+      }
+
+      const answeredCount = state.questions.filter(item => item.attempted).length;
+      progressDisplay.innerHTML = `Geteste begrippen: ${answeredCount} van ${state.questions.length} <span class="progress-bar">${asciiBar(answeredCount, state.questions.length)}</span>`;
+
+      answerBlock.classList.add('hidden');
+      resultBlock.classList.add('hidden');
+      if (q.revealed) {
+        answerBlock.classList.remove('hidden');
+        answerBlock.innerHTML = `<strong>Officieel antwoord:</strong><br>${q.answer}`;
+      }
+
+      updateNav();
+      prevBtn.disabled = state.currentIndex === 0;
+      nextBtn.disabled = state.currentIndex === state.questions.length - 1;
+      persistState();
+      focusPrimaryAction(focusTarget);
+    }
+
+    function saveAnswer(showNow = false, options = {}) {
+      const q = state.questions[state.currentIndex];
+      if (!q) return;
+      q.userAnswer = userAnswer.value.trim();
+      q.attempted = true;
+      if (state.revealMode === 'immediate' || showNow) {
+        q.revealed = true;
+      }
+      const autoKnownEnabled = autoKnownToggle && autoKnownToggle.checked;
+      const correctNow = isCorrectAnswer(q.userAnswer, q.answer);
+      if (autoKnownEnabled && correctNow) {
+        if (!knownTerms.has(q.concept.term)) {
+          knownTerms.add(q.concept.term);
+          saveKnown();
+          renderKnownList();
+        }
+        resultBlock.classList.remove('hidden');
+        resultBlock.textContent = '✅ Juist! Begrip gemarkeerd als bekend.';
+        rebuildQuestionsAfterKnownChange({ focusTarget: 'reveal' });
+        return;
+      }
+      renderQuestion(options);
+      checkCompletion();
+    }
+
+    function checkCompletion() {
+      const allDone = state.questions.every(q => q.attempted);
+      if (allDone) {
+        if (state.revealMode === 'end') {
+          showSummary();
+        } else if (state.revealMode === 'immediate') {
+          summaryCard.classList.remove('hidden');
+          summaryText.textContent = 'Je hebt alle begrippen getest. Je kunt de resultaten bekijken of opnieuw beginnen.';
+          fillResultTable();
+        }
+      }
+    }
+
+    function fillResultTable() {
+      const rows = state.questions.map((q, idx) => {
+        const expect = q.type === 'termToDescription' ? 'Uitleg' : 'Begrip';
+        return `<tr><th>${idx + 1}. ${q.concept.term}</th><td><em>${expect}</em><br>${q.answer}</td><td class="tiny">Vraag: ${q.prompt}</td></tr>`;
+      });
+      resultTable.innerHTML = `<thead><tr><th>Begrip</th><th>Antwoord</th><th>Vraag</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+    }
+
+    function showSummary() {
+      summaryCard.classList.remove('hidden');
+      summaryText.textContent = 'Je koos om alle antwoorden aan het einde te zien. Hieronder staan ze per vraag.';
+      fillResultTable();
+    }
+
+    function resetView() {
+      testArea.classList.add('hidden');
+      summaryCard.classList.add('hidden');
+      restartBtn.classList.add('hidden');
+      userAnswer.value = '';
+      state.started = false;
+      persistState();
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (!getUnknownConcepts().length) {
+        setMeta.textContent = 'Alle begrippen staan al als bekend. Zet er een paar terug of kies een andere set.';
+        return;
+      }
+      state.mode = Array.from(modeRadios).find(r => r.checked).value;
+      state.revealMode = Array.from(revealRadios).find(r => r.checked).value;
+      syncModeRadios();
+      syncRevealRadios();
+      buildQuestions();
+      testArea.classList.remove('hidden');
+      summaryCard.classList.add('hidden');
+      state.started = true;
+      restartBtn.classList.remove('hidden');
+      renderQuestion();
+    });
+
+    restartBtn.addEventListener('click', () => {
+      saveDraft();
+      buildQuestions();
+      renderQuestion();
+      summaryCard.classList.add('hidden');
+    });
+
+    function syncRevealMode(newMode) {
+      state.revealMode = newMode;
+      syncRevealRadios();
+      if (newMode === 'immediate') {
+        state.questions.forEach(q => { if (q.attempted) q.revealed = true; });
+      }
+      renderQuestion();
+    }
+
+    liveRevealRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        syncRevealMode(radio.value);
+      });
+    });
+
+    revealRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        syncRevealMode(radio.value);
+      });
+    });
+
+    if (autoKnownToggle) {
+      autoKnownToggle.addEventListener('change', () => {
+        saveAutoKnown(autoKnownToggle.checked);
+      });
+    }
+
+    if (knownToggle) {
+      knownToggle.addEventListener('change', () => {
+        toggleKnownCurrent(knownToggle.checked);
+      });
+    }
+
+    setSelect.addEventListener('change', () => {
+      applySet(setSelect.value, { reset: true, showLoading: true });
+    });
+
+    if (homeLink) {
+      homeLink.addEventListener('click', () => {
+        persistState();
+      });
+    }
+
+    if (resetHeaderBtn) {
+      resetHeaderBtn.addEventListener('click', () => {
+        hardResetTest();
+      });
+    }
+
+    saveAnswerBtn.addEventListener('click', () => saveAnswer(false));
+    revealNowBtn.addEventListener('click', () => saveAnswer(true, { focusTarget: 'next' }));
+    prevBtn.addEventListener('click', () => {
+      saveDraft();
+      if (state.currentIndex > 0) {
+        state.currentIndex -= 1;
+        renderQuestion();
+      }
+    });
+    nextBtn.addEventListener('click', () => {
+      saveDraft();
+      if (state.currentIndex < state.questions.length - 1) {
+        state.currentIndex += 1;
+        renderQuestion();
+      }
+    });
+
+    retryBtn.addEventListener('click', () => {
+      buildQuestions();
+      summaryCard.classList.add('hidden');
+      testArea.classList.remove('hidden');
+      renderQuestion();
+    });
+
+    if (clearKnownBtn) {
+      clearKnownBtn.addEventListener('click', () => {
+        if (!confirm('Je staat op het punt alle bekende begrippen te wissen. Doorgaan?')) return;
+        if (!confirm('Laatste check: wil je echt alles uit de bekende lijst verwijderen?')) return;
+        knownTerms.clear();
+        saveKnown();
+        renderKnownList();
+        rebuildQuestionsAfterKnownChange();
+        updateStartAvailability();
+      });
+    }
+
+    backBtn.addEventListener('click', () => {
+      resetView();
+    });
+
+    window.addEventListener('beforeunload', () => {
+      persistState();
+    });
+
+    initSets();
+
+    document.addEventListener('keydown', (e) => {
+      if (!state.started || e.target === userAnswer) return;
+      if (e.key === 'ArrowRight') {
+        nextBtn.click();
+      } else if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
