@@ -483,15 +483,6 @@
         <p class="hint" id="masterStatus"></p>
       </article>
 
-      <article class="card setup-card">
-        <h2>Weetje over de Oude Grieken</h2>
-        <p class="fact-note">Dit is een leuk weetje en geen onderdeel van de toets.</p>
-        <p id="factText"></p>
-        <div class="controls">
-          <button type="button" id="newFactBtn">Nieuw weetje</button>
-        </div>
-      </article>
-
       <article class="card full hidden" id="testArea">
         <div class="test-layout">
           <aside class="card nav-card" aria-label="Navigatie woorden">
@@ -566,13 +557,14 @@
     </section>
   </main>
 
+  <script src="vocab-greek-facts.js"></script>
   <script src="vocab-data.js"></script>
   <script src="vocab-latin-nl.js"></script>
   <script src="vocab-fr-nl-unite-2.js"></script>
   <script src="vocab-nl-fr-unite-2.js"></script>
   <script src="vocab-fr-nl-unite-3.js"></script>
   <script>
-    const DATASET_KEY = "vocab-selected-dataset-v1";
+    const DATASET_KEY = "vocab-selected-dataset-v2";
     const DATASETS = Array.isArray(window.VOCAB_DATASETS) && window.VOCAB_DATASETS.length
       ? window.VOCAB_DATASETS
       : [
@@ -601,32 +593,11 @@
     const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-master-v1"
       : `vocab-master-${DATASET_ID}-v1`;
-    const FACTS = [
-      "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
-      "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
-      "In de Griekse mythologie droeg Zeus vaak een bliksemschicht als wapen.",
-      "Wist je dat veel moderne wetenschappelijke termen, zoals ‘biologie’ en ‘astronomie’, uit het Grieks komen?",
-      "In Athene werd democratie letterlijk ‘heerschappij van het volk’ genoemd (demos + kratos).",
-      "Wist je dat de Grieken hun goden als heel menselijk zagen, met emoties en ruzies?",
-      "In Sparta kregen jongens een strenge militaire opvoeding vanaf jonge leeftijd.",
-      "Wist je dat de Griekse filosoof Aristoteles lesgaf aan Alexander de Grote?",
-      "De oude Grieken gebruikten vaak amforen (grote kruiken) om wijn en olie te bewaren.",
-      "Wist je dat het alfabet dat wij gebruiken is geïnspireerd op het Griekse alfabet?",
-      "In de mythologie was Athena de godin van wijsheid en strategie.",
-      "Wist je dat de Griekse wiskundige Euclides de basis legde voor meetkunde?",
-      "De tempel van het Parthenon in Athene was gewijd aan Athena.",
-      "Wist je dat de Grieken al toneelstukken met acteurs en maskers opvoerden?",
-      "In de Odyssee reist Odysseus tien jaar lang terug naar huis na de Trojaanse oorlog.",
-      "Wist je dat ‘polis’ de Griekse term is voor stadstaat, zoals Athene of Sparta?",
-      "In de mythologie beschermde de god Poseidon de zeeën en aardbevingen.",
-      "Wist je dat het woord ‘geschiedenis’ verwant is aan het Griekse ‘historia’ (onderzoek)?",
-      "De Grieken bouwden vaak tempels op heuvels om dichter bij hun goden te zijn.",
-      "Wist je dat de oude Grieken tijd rekenden met zonnewijzers?"
-    ];
+    const FACTS = Array.isArray(activeDataset.facts) ? activeDataset.facts : [];
 
     const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
-      ? "oudgrieks-vocab-session-v4"
-      : `vocab-session-${DATASET_ID}-v4`;
+      ? "oudgrieks-vocab-session-v5"
+      : `vocab-session-${DATASET_ID}-v5`;
     const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-known-v1"
       : `vocab-known-${DATASET_ID}-v1`;
@@ -711,9 +682,7 @@
     const homeLink = document.getElementById("homeLink");
     const pageTitle = document.getElementById("pageTitle");
     const pageDescription = document.getElementById("pageDescription");
-    const factText = document.getElementById("factText");
     const factInline = document.getElementById("factInline");
-    const newFactBtn = document.getElementById("newFactBtn");
     const factBox = document.getElementById("factBox");
     const autoRemoveToggle = document.getElementById("autoRemoveToggle");
     const shuffleToggle = document.getElementById("shuffleToggle");
@@ -1444,7 +1413,7 @@
     }
 
     function setFact(target) {
-      if (!FACTS.length) return;
+      if (!target || !FACTS.length) return;
       const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
       target.textContent = fact;
     }
@@ -1693,6 +1662,12 @@
       btn.textContent = "Verder met de toets";
       btn.addEventListener("click", () => {
         intervalBlock.classList.add("hidden");
+        if (!session || session.activeIds.length === 0) return;
+        if (session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
       });
       intervalBlock.appendChild(btn);
 
@@ -1700,6 +1675,7 @@
     }
 
     function handleSave() {
+      let intervalShown = false;
       if (!session || session.activeIds.length === 0) return;
       const id = session.activeIds[session.currentIndex];
       const item = vocabById[id];
@@ -1722,7 +1698,7 @@
           updateDisplay();
         }
         showAutoNotice("✅ Juist! Dit woord verdwijnt uit deze ronde.");
-        return true;
+        return { autoRemoved: true, intervalShown };
       }
 
       if (session.revealMode === "immediate") {
@@ -1734,13 +1710,14 @@
         if (session.attempts.length % interval === 0) {
           const lastIds = session.attempts.slice(-interval);
           showIntervalSummary(lastIds);
+          intervalShown = true;
         }
       }
 
       maybeRotateFact();
       updateNav();
       saveSession();
-      return false;
+      return { autoRemoved: false, intervalShown };
     }
 
     function handleRevealNow() {
@@ -1870,6 +1847,7 @@
 
     function maybeRotateFact() {
       if (!session) return;
+      if (!FACTS.length) return;
       if (session.attempts.length > 0 && session.attempts.length % 3 === 0) {
         setFact(factInline);
       }
@@ -2007,8 +1985,9 @@
       if (event.key === "Enter") {
         event.preventDefault();
         if (!session || session.activeIds.length === 0) return;
-        const autoRemoved = handleSave();
-        if (autoRemoved) return;
+        const result = handleSave();
+        if (result && result.autoRemoved) return;
+        if (result && result.intervalShown) return;
         if (session.revealMode === "immediate") {
           nextBtn.focus();
           return;
@@ -2144,10 +2123,9 @@
       }
     });
 
-    newFactBtn.addEventListener("click", () => {
-      setFact(factText);
-      setFact(factInline);
-    });
+    if (FACTS.length === 0 && factBox) {
+      factBox.classList.add("hidden");
+    }
 
     window.addEventListener("beforeunload", () => {
       if (session) {
@@ -2207,7 +2185,6 @@
     updateIntervalHint();
     renderKnownList();
     updateStartButtons();
-    setFact(factText);
     setFact(factInline);
     autoRemoveToggle.checked = loadAutoRemove();
     setSetupVisibility(true);

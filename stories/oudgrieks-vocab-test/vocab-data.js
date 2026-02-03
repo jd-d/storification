@@ -5,6 +5,7 @@ window.VOCAB_DATASETS.push({
   language1: "Oudgrieks",
   language2: "Nederlands",
   showTransliteration: true,
+  facts: Array.isArray(window.GREEK_FACTS) ? window.GREEK_FACTS : [],
   data: `
 ὁ ἄνθρωπος\tmens
 γάρ\twant, immers, namelijk
