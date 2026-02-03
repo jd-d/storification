@@ -408,7 +408,7 @@
           <div class="settings-block">
             <p><strong>Antwoorden tonen</strong></p>
             <div class="option-row">
-              <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
+              <label><input type="radio" name="revealMode" value="immediate" checked> Na elke vraag</label>
             </div>
             <div class="option-row">
               <label><input type="radio" name="revealMode" value="interval"> Om de</label>
@@ -416,7 +416,7 @@
               <span>vragen (max. totaal)</span>
             </div>
             <div class="option-row">
-              <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
+              <label><input type="radio" name="revealMode" value="end"> Alles aan het einde</label>
             </div>
             <p class="hint" id="intervalHint"></p>
           </div>
@@ -448,7 +448,8 @@
         </div>
         <div class="controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
-          <button id="resumeBtn" type="button" class="hidden">Doorgaan waar je was</button>
+          <button id="resumeBtn" type="button" class="hidden">Hervat de toets</button>
+          <button id="resetRestartBtn" type="button" class="danger hidden">Reset en herstart toets</button>
         </div>
       </article>
 
@@ -505,6 +506,7 @@
             <div class="status-chip" id="revealStatus"></div>
             <div class="controls mini-controls">
               <button type="button" id="manageKnownBtn">Bekende woorden beheren</button>
+              <button type="button" id="backToSettingsBtn">Terug naar instellingen</button>
               <button type="button" id="shuffleBtn">Schud volgorde</button>
               <span class="hint">Je voortgang wordt automatisch opgeslagen.</span>
             </div>
@@ -624,8 +626,8 @@
     ];
 
     const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
-      ? "oudgrieks-vocab-session-v3"
-      : `vocab-session-${DATASET_ID}-v3`;
+      ? "oudgrieks-vocab-session-v4"
+      : `vocab-session-${DATASET_ID}-v4`;
     const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-known-v1"
       : `vocab-known-${DATASET_ID}-v1`;
@@ -662,6 +664,7 @@
     const datasetSelect = document.getElementById("datasetSelect");
     const datasetHint = document.getElementById("datasetHint");
     const resumeBtn = document.getElementById("resumeBtn");
+    const resetRestartBtn = document.getElementById("resetRestartBtn");
     const intervalInput = document.getElementById("intervalInput");
     const intervalHint = document.getElementById("intervalHint");
     const directionRadios = document.querySelectorAll("input[name=\"directionMode\"]");
@@ -719,6 +722,7 @@
     const autoNotice = document.getElementById("autoNotice");
     const setupCards = Array.from(document.querySelectorAll(".setup-card"));
     const manageKnownBtn = document.getElementById("manageKnownBtn");
+    const backToSettingsBtn = document.getElementById("backToSettingsBtn");
     const shuffleBtn = document.getElementById("shuffleBtn");
     const mnemonicBtn = document.getElementById("mnemonicBtn");
     const knownCard = document.getElementById("knownCard");
@@ -1074,7 +1078,7 @@
 
     function loadAutoRemove() {
       const raw = localStorage.getItem(AUTO_REMOVE_KEY);
-      if (raw === null) return false;
+      if (raw === null) return true;
       return raw === "true";
     }
 
@@ -1427,7 +1431,7 @@
 
     function getRevealMode() {
       const selected = document.querySelector("input[name=\"revealMode\"]:checked");
-      return selected ? selected.value : "end";
+      return selected ? selected.value : "immediate";
     }
 
     function getIntervalValue() {
@@ -1863,9 +1867,16 @@
       const existing = loadSession();
       if (existing) {
         resumeBtn.classList.remove("hidden");
+        resetRestartBtn.classList.remove("hidden");
+        resumeBtn.classList.add("primary");
+        startBtn.classList.remove("primary");
         applySessionSettings(existing);
       } else {
         resumeBtn.classList.add("hidden");
+        resetRestartBtn.classList.add("hidden");
+        resumeBtn.classList.remove("primary");
+        startBtn.classList.add("primary");
+        shuffleToggle.checked = false;
       }
     }
 
@@ -1885,11 +1896,17 @@
       }
     }
 
+    function showSettingsView() {
+      setSetupVisibility(true);
+      testArea.classList.add("hidden");
+      summaryCard.classList.add("hidden");
+    }
+
     function openKnownManager() {
       if (session) {
         saveSession();
       }
-      setSetupVisibility(true);
+      showSettingsView();
       knownNotice.classList.remove("hidden");
       knownCard.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -1899,6 +1916,15 @@
       setSetupVisibility(false);
       testArea.scrollIntoView({ behavior: "smooth", block: "start" });
       updateDisplay();
+    }
+
+    function confirmResetSessionFlow() {
+      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren.")) {
+        return false;
+      }
+      const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
+      resetSession(!clearKnown);
+      return true;
     }
 
     applyDatasetUI();
@@ -1940,6 +1966,19 @@
       summaryCard.classList.add("hidden");
       testArea.classList.remove("hidden");
       updateDisplay();
+      setSetupVisibility(false);
+    });
+
+    resetRestartBtn.addEventListener("click", () => {
+      const confirmed = confirmResetSessionFlow();
+      if (!confirmed) return;
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: false,
+        shuffle: shuffleToggle.checked,
+        directionMode: getDirectionMode()
+      });
       setSetupVisibility(false);
     });
 
@@ -2008,6 +2047,10 @@
       openKnownManager();
     });
 
+    backToSettingsBtn.addEventListener("click", () => {
+      showSettingsView();
+    });
+
     shuffleBtn.addEventListener("click", () => {
       shuffleActiveIds(true);
     });
@@ -2062,18 +2105,13 @@
     });
 
     backToSettings.addEventListener("click", () => {
-      summaryCard.classList.add("hidden");
-      testArea.classList.add("hidden");
-      setSetupVisibility(true);
+      showSettingsView();
     });
 
     resetSessionBtn.addEventListener("click", () => {
-      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren.")) {
-        return;
-      }
-      const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
-      resetSession(!clearKnown);
-      setSetupVisibility(true);
+      const confirmed = confirmResetSessionFlow();
+      if (!confirmed) return;
+      showSettingsView();
     });
 
     autoRemoveToggle.addEventListener("change", () => {
