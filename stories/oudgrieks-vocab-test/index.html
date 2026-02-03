@@ -125,6 +125,19 @@
       margin-bottom: 8px;
     }
 
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .settings-block {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.8rem 0.9rem;
+      background: #fafafa;
+    }
+
     .option-row {
       display: flex;
       align-items: center;
@@ -386,35 +399,52 @@
 
       <article class="card full setup-card">
         <h2>Instellingen</h2>
-        <div>
-          <p><strong>Woordlijst</strong></p>
-          <select id="datasetSelect"></select>
-          <p class="hint" id="datasetHint"></p>
-        </div>
-        <div>
-          <p><strong>Antwoorden tonen</strong></p>
-          <div class="option-row">
-            <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
+        <div class="settings-grid">
+          <div class="settings-block">
+            <p><strong>Woordlijst</strong></p>
+            <select id="datasetSelect"></select>
+            <p class="hint" id="datasetHint"></p>
           </div>
-          <div class="option-row">
-            <label><input type="radio" name="revealMode" value="interval"> Om de</label>
-            <input type="number" id="intervalInput" min="1" value="5">
-            <span>vragen (max. totaal)</span>
+          <div class="settings-block">
+            <p><strong>Antwoorden tonen</strong></p>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="interval"> Om de</label>
+              <input type="number" id="intervalInput" min="1" value="5">
+              <span>vragen (max. totaal)</span>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
+            </div>
+            <p class="hint" id="intervalHint"></p>
           </div>
-          <div class="option-row">
-            <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
+          <div class="settings-block">
+            <p><strong>Vertaalrichting</strong></p>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="l1-to-l2" checked> Altijd taal 1 naar taal 2</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="l2-to-l1"> Altijd taal 2 naar taal 1</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="alternate"> Om en om</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="random"> Willekeurig</label>
+            </div>
           </div>
-          <p class="hint" id="intervalHint"></p>
-        </div>
-        <div>
-          <p><strong>Automatische bekend-markering</strong></p>
-          <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
-          <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
-        </div>
-        <div>
-          <p><strong>Volgorde</strong></p>
-          <label><input type="checkbox" id="shuffleToggle"> Schud de woorden bij start</label>
-          <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
+          <div class="settings-block">
+            <p><strong>Automatische bekend-markering</strong></p>
+            <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
+            <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Volgorde</strong></p>
+            <label><input type="checkbox" id="shuffleToggle"> Schud de woorden bij start</label>
+            <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
+          </div>
         </div>
         <div class="controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
@@ -594,8 +624,8 @@
     ];
 
     const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
-      ? "oudgrieks-vocab-session-v1"
-      : `vocab-session-${DATASET_ID}-v1`;
+      ? "oudgrieks-vocab-session-v2"
+      : `vocab-session-${DATASET_ID}-v2`;
     const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-known-v1"
       : `vocab-known-${DATASET_ID}-v1`;
@@ -634,6 +664,7 @@
     const resumeBtn = document.getElementById("resumeBtn");
     const intervalInput = document.getElementById("intervalInput");
     const intervalHint = document.getElementById("intervalHint");
+    const directionRadios = document.querySelectorAll("input[name=\"directionMode\"]");
     const knownCount = document.getElementById("knownCount");
     const knownList = document.getElementById("knownList");
     const clearKnownBtn = document.getElementById("clearKnownBtn");
@@ -716,15 +747,38 @@
       if (pageTitle) {
         pageTitle.textContent = titleText;
       }
-      if (pageDescription) {
-        const translitSuffix = SHOW_TRANSLIT ? " (met eventuele transliteratie)" : "";
-        pageDescription.textContent = `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE1_LABEL}${translitSuffix} en vertaalt naar ${LANGUAGE2_LABEL}.`;
-      }
       document.title = titleText;
 
-      if (targetLanguageLabel) {
-        targetLanguageLabel.textContent = LANGUAGE2_LABEL;
+      updateDirectionCopy(getDirectionMode());
+    }
+
+    function getDirectionMode() {
+      const selected = document.querySelector("input[name=\"directionMode\"]:checked");
+      return selected ? selected.value : "l1-to-l2";
+    }
+
+    function getDirectionCopy(mode) {
+      const translitSuffix = SHOW_TRANSLIT ? " (met eventuele transliteratie)" : "";
+      if (mode === "l2-to-l1") {
+        return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE2_LABEL} en vertaalt naar ${LANGUAGE1_LABEL}.`;
       }
+      if (mode === "alternate") {
+        return `Oefen met woordenschat. Je wisselt om en om tussen ${LANGUAGE1_LABEL}${translitSuffix} en ${LANGUAGE2_LABEL} als brontaal, en vertaalt steeds naar de andere taal.`;
+      }
+      if (mode === "random") {
+        return `Oefen met woordenschat. De brontaal is willekeurig ${LANGUAGE1_LABEL}${translitSuffix} of ${LANGUAGE2_LABEL}. Jij vertaalt telkens naar de andere taal.`;
+      }
+      return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE1_LABEL}${translitSuffix} en vertaalt naar ${LANGUAGE2_LABEL}.`;
+    }
+
+    function updateDirectionCopy(mode) {
+      if (pageDescription) {
+        pageDescription.textContent = getDirectionCopy(mode);
+      }
+    }
+
+    function getDirectionTargetLabel(direction) {
+      return direction === "l2" ? LANGUAGE1_LABEL : LANGUAGE2_LABEL;
     }
 
     function formatPairHint() {
@@ -750,6 +804,49 @@
           mnemonics
         };
       }).filter(Boolean);
+    }
+
+    function buildDirectionMap(activeIds, mode, existingMap = {}) {
+      const map = {};
+      activeIds.forEach((id, index) => {
+        if (mode === "l2-to-l1") {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "alternate") {
+          map[id] = index % 2 === 0 ? "l1" : "l2";
+          return;
+        }
+        if (mode === "random") {
+          map[id] = existingMap[id] || (Math.random() < 0.5 ? "l1" : "l2");
+          return;
+        }
+        map[id] = "l1";
+      });
+      return map;
+    }
+
+    function getDirectionForId(id) {
+      if (!session || !session.directionMap) return "l1";
+      return session.directionMap[id] || "l1";
+    }
+
+    function getSourceTerm(item, direction) {
+      if (direction === "l2") {
+        return item.translations.join(", ");
+      }
+      return item.greek;
+    }
+
+    function getTargetAnswer(item, direction) {
+      if (direction === "l2") {
+        return item.greek;
+      }
+      return item.translations.join(", ");
+    }
+
+    function shouldShowTranslit(direction) {
+      return SHOW_TRANSLIT && direction === "l1";
     }
 
     function transliterateGreek(text) {
@@ -944,6 +1041,16 @@
       });
     }
 
+    function isCorrectAnswerForDirection(answer, item, direction) {
+      if (direction === "l2") {
+        const normalizedAnswer = normalizeGreek(answer);
+        const normalizedTarget = normalizeGreek(item.greek);
+        if (!normalizedAnswer || !normalizedTarget) return false;
+        return normalizedAnswer === normalizedTarget;
+      }
+      return isCorrectAnswer(answer, item.translations, item.rawTranslation);
+    }
+
     function loadKnown() {
       const raw = localStorage.getItem(KNOWN_KEY);
       if (!raw) return new Set();
@@ -1044,6 +1151,11 @@
         session.currentIndex = insertIndex;
       }
       session.shuffle = true;
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
       saveSession();
       updateDisplay();
     }
@@ -1379,6 +1491,7 @@
     function createSession(options) {
       const includeKnown = options.includeKnown;
       const activeIds = options.shuffle ? shuffleArray(buildActiveIds(includeKnown)) : buildActiveIds(includeKnown);
+      const directionMode = options.directionMode || "l1-to-l2";
       session = {
         activeIds,
         currentIndex: 0,
@@ -1387,7 +1500,9 @@
         revealMode: options.revealMode,
         interval: options.interval,
         includeKnown,
-        shuffle: Boolean(options.shuffle)
+        shuffle: Boolean(options.shuffle),
+        directionMode,
+        directionMap: buildDirectionMap(activeIds, directionMode)
       };
       saveSession();
     }
@@ -1420,6 +1535,11 @@
       const currentId = session.activeIds[session.currentIndex];
       session.activeIds = buildActiveIds(session.includeKnown);
       session.attempts = session.attempts.filter((id) => session.activeIds.includes(id));
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
       if (session.activeIds.length === 0) {
         showSummary();
         return;
@@ -1435,9 +1555,11 @@
 
       session.activeIds.forEach((id, index) => {
         const item = vocabById[id];
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
         const btn = document.createElement("button");
         btn.type = "button";
-        btn.textContent = `${index + 1}. ${item.greek}`;
+        btn.textContent = `${index + 1}. ${sourceTerm}`;
         if (index === session.currentIndex) btn.classList.add("current");
         if (session.answers[id]) btn.classList.add("answered");
         btn.addEventListener("click", () => {
@@ -1454,14 +1576,20 @@
       }
       const id = session.activeIds[session.currentIndex];
       const item = vocabById[id];
+      const direction = getDirectionForId(id);
+      const sourceTerm = getSourceTerm(item, direction);
+      const targetLabel = getDirectionTargetLabel(direction);
 
-      greekText.textContent = item.greek;
-      if (SHOW_TRANSLIT) {
+      greekText.textContent = sourceTerm;
+      if (shouldShowTranslit(direction)) {
         translitText.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
         translitText.classList.remove("hidden");
       } else {
         translitText.textContent = "";
         translitText.classList.add("hidden");
+      }
+      if (targetLanguageLabel) {
+        targetLanguageLabel.textContent = targetLabel;
       }
 
       userAnswer.value = session.answers[id] || "";
@@ -1498,14 +1626,17 @@
     function showAnswer(id) {
       const item = vocabById[id];
       const answer = session.answers[id] || "";
-      const correct = isCorrectAnswer(answer, item.translations, item.rawTranslation);
+      const direction = getDirectionForId(id);
+      const correct = isCorrectAnswerForDirection(answer, item, direction);
       const correctLabel = correct ? "✅ (automatisch herkend)" : "✍️ controleer zelf";
+      const targetLabel = getDirectionTargetLabel(direction);
+      const targetAnswer = getTargetAnswer(item, direction);
       answerBlock.className = "answer-block";
       answerBlock.classList.add(correct ? "correct" : "wrong");
       answerBlock.innerHTML = `
         <div><strong>Jouw antwoord:</strong> ${answer || "[leeg]"}</div>
-        <div><strong>Correct (${LANGUAGE2_LABEL}):</strong> ${item.translations.join(", ")}</div>
-        <div class="hint">${correctLabel} — jij bepaalt of je het woord als bekend markeert.</div>
+        <div><strong>Correct (${targetLabel}):</strong> ${targetAnswer}</div>
+        <div class="hint">${correctLabel} - jij bepaalt of je het woord als bekend markeert.</div>
       `;
       answerBlock.classList.remove("hidden");
     }
@@ -1524,11 +1655,15 @@
       ids.forEach((id) => {
         const item = vocabById[id];
         const answer = session.answers[id] || "";
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
+        const targetLabel = getDirectionTargetLabel(direction);
+        const targetAnswer = getTargetAnswer(item, direction);
         const row = document.createElement("div");
-        const translit = SHOW_TRANSLIT ? ` (${transliterateGreek(item.greek)})` : "";
+        const translit = shouldShowTranslit(direction) ? ` (${transliterateGreek(item.greek)})` : "";
         row.innerHTML = `
-          <strong>${item.greek}</strong>${translit}<br>
-          Jouw antwoord: ${answer || "[leeg]"} • Correct (${LANGUAGE2_LABEL}): ${item.translations.join(", ")}
+          <strong>${sourceTerm}</strong>${translit}<br>
+          Jouw antwoord: ${answer || "[leeg]"} • Correct (${targetLabel}): ${targetAnswer}
         `;
         intervalBlock.appendChild(row);
       });
@@ -1554,7 +1689,8 @@
       }
 
       const autoRemoveEnabled = autoRemoveToggle.checked;
-      const correctNow = isCorrectAnswer(session.answers[id], item.translations, item.rawTranslation);
+      const direction = getDirectionForId(id);
+      const correctNow = isCorrectAnswerForDirection(session.answers[id], item, direction);
       if (autoRemoveEnabled && correctNow) {
         if (!knownIds.has(id)) {
           knownIds.add(id);
@@ -1699,6 +1835,10 @@
       });
       intervalInput.value = saved.interval || 5;
       shuffleToggle.checked = Boolean(saved.shuffle);
+      directionRadios.forEach((input) => {
+        input.checked = input.value === (saved.directionMode || "l1-to-l2");
+      });
+      updateDirectionCopy(getDirectionMode());
     }
 
     function updateStartButtons() {
@@ -1761,7 +1901,8 @@
         revealMode: mode,
         interval,
         includeKnown: false,
-        shuffle: shuffleToggle.checked
+        shuffle: shuffleToggle.checked,
+        directionMode: getDirectionMode()
       });
       setSetupVisibility(false);
     });
@@ -1770,6 +1911,12 @@
       const saved = loadSession();
       if (!saved) return;
       session = saved;
+      session.directionMode = session.directionMode || getDirectionMode();
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode,
+        session.directionMap || {}
+      );
       rebuildActiveIds();
       applySessionSettings(saved);
       summaryCard.classList.add("hidden");
@@ -1880,7 +2027,8 @@
       startTest({
         revealMode: getRevealMode(),
         interval: getIntervalValue(),
-        includeKnown: false
+        includeKnown: false,
+        directionMode: getDirectionMode()
       });
       setSetupVisibility(false);
     });
@@ -1889,7 +2037,8 @@
       startTest({
         revealMode: getRevealMode(),
         interval: getIntervalValue(),
-        includeKnown: true
+        includeKnown: true,
+        directionMode: getDirectionMode()
       });
       setSetupVisibility(false);
     });
@@ -1959,6 +2108,22 @@
           session.revealMode = getRevealMode();
           saveSession();
           revealStatus.textContent = describeRevealMode();
+        }
+      });
+    });
+
+    directionRadios.forEach((input) => {
+      input.addEventListener("change", () => {
+        updateDirectionCopy(getDirectionMode());
+        if (session) {
+          session.directionMode = getDirectionMode();
+          session.directionMap = buildDirectionMap(
+            session.activeIds,
+            session.directionMode,
+            session.directionMap || {}
+          );
+          saveSession();
+          updateDisplay();
         }
       });
     });
