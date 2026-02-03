@@ -1533,7 +1533,16 @@
     function rebuildActiveIds() {
       if (!session) return;
       const currentId = session.activeIds[session.currentIndex];
-      session.activeIds = buildActiveIds(session.includeKnown);
+      const allowedIds = buildActiveIds(session.includeKnown);
+      if (session.shuffle) {
+        const allowedSet = new Set(allowedIds);
+        const preserved = session.activeIds.filter((id) => allowedSet.has(id));
+        const preservedSet = new Set(preserved);
+        const additions = allowedIds.filter((id) => !preservedSet.has(id));
+        session.activeIds = preserved.concat(additions);
+      } else {
+        session.activeIds = allowedIds;
+      }
       session.attempts = session.attempts.filter((id) => session.activeIds.includes(id));
       session.directionMap = buildDirectionMap(
         session.activeIds,
