@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Vocabtrainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --fg: #1f2937;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --card-bg: #ffffff;
+      --muted: #4b5563;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(120deg, #223c7a, #3a66d6);
+      color: #fff;
+      padding: 1.6rem 1.2rem 1.2rem;
+      text-align: left;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+
+    .home-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .home-link:hover { text-decoration: underline; }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+    }
+
+    header p {
+      margin: 0.4rem 0 0;
+      color: #f8fafc;
+      opacity: 1;
+      text-shadow: 0 1px 6px rgba(15, 23, 42, 0.3);
+      max-width: 860px;
+    }
+
+    header .hint {
+      color: #e2e8f0;
+      opacity: 1;
+    }
+
+    main { max-width: 1200px; margin: 1.5rem auto 2.5rem; padding: 0 1rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .full { grid-column: 1 / -1; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem 1rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-align: left !important;
+    }
+
+    h2 { margin-top: 0; color: var(--accent); font-size: 1.25rem; }
+    .card h2, .card h1 { text-align: center; margin-bottom: 1.5rem; }
+    p { margin: 0.3rem 0 0.7rem; }
+
+    .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .mini-controls { align-items: center; }
+    .mini-controls .hint { margin: 0; }
+
+    button {
+      border-radius: 12px;
+      border: 1px solid rgba(29, 78, 216, 0.4);
+      padding: 0.55rem 1rem;
+      background: #fff;
+      color: var(--accent);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14); }
+    button.primary:hover { background: #1e40af; color: #fff; }
+    button.danger { border-color: rgba(220, 38, 38, 0.5); color: #fff; background: var(--danger); }
+    button.danger:hover { background: #b91c1c; }
+    button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+
+    label { cursor: pointer; }
+    .setup-card label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .settings-block {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.8rem 0.9rem;
+      background: #fafafa;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.6rem;
+    }
+
+    .option-row label { margin-bottom: 0; }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    .setup-card ul {
+      text-align: left;
+      display: block;
+      margin: 0 0 1.5rem;
+      max-width: 600px;
+      padding-left: 1.5rem;
+    }
+
+    .setup-card p {
+      max-width: 600px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    #intervalInput {
+      width: 70px !important;
+      display: inline-block !important;
+      margin: 0 10px !important;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .auto-notice {
+      font-size: 0.9rem;
+      color: #166534;
+      font-weight: 600;
+      margin: 0.4rem 0 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+
+    .test-layout { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
+
+    .nav-card { position: sticky; top: 90px; max-height: calc(100vh - 120px); overflow: auto; }
+
+    .nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .nav-list button { width: 100%; justify-content: flex-start; border-radius: 10px; }
+    .nav-list button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
+    .nav-list button.answered { border-color: var(--success); color: #166534; }
+
+    .question-card h3 { margin-top: 0; margin-bottom: 0.35rem; color: var(--accent); }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; }
+
+    .greek-term {
+      font-family: "Palatino Linotype", "Noto Serif", "Times New Roman", serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      margin: 0.5rem 0 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .translit {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .answer-block {
+      margin-top: 0.7rem;
+      padding: 0.65rem 0.75rem;
+      background: var(--accent-soft);
+      border-radius: 10px;
+      border: 1px solid rgba(29, 78, 216, 0.35);
+    }
+
+    .answer-block strong { color: var(--accent); }
+    .answer-block.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
+    .answer-block.wrong { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+
+    .toggle-row {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .known-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 240px;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .import-area {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .known-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      background: #f9fafb;
+    }
+
+    .known-item small { color: var(--muted); }
+
+    .fact-box {
+      background: #fef9c3;
+      border: 1px solid #facc15;
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      margin: 0.6rem 0;
+      color: #854d0e;
+    }
+
+    .fact-note {
+      font-size: 0.85rem;
+      color: #854d0e;
+      margin-top: 0;
+    }
+
+    .interval-summary {
+      margin-top: 0.8rem;
+      border: 1px dashed #93c5fd;
+      border-radius: 12px;
+      padding: 0.7rem 0.9rem;
+      background: #f0f7ff;
+    }
+
+    .interval-summary h4 { margin: 0 0 0.4rem; color: #1e40af; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
+    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+    .result-table th { color: var(--accent); }
+
+    .mnemonic-block {
+      margin-top: 0.9rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid #fcd34d;
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .mnemonic-block h4 {
+      margin: 0 0 0.4rem;
+      color: #92400e;
+    }
+
+    .mnemonic-block ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .mnemonic-input {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .test-layout { display: flex; flex-direction: column; }
+      .nav-card { position: relative; top: auto; max-height: 200px; order: 2; }
+      .question-card { order: 1; }
+    }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.6rem; }
+      .greek-term { font-size: 1.6rem; }
+    }
+
+    .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
+    .setup-card:first-of-type { border: 1px dashed #cbd5e1; box-shadow: none; background: #f8fafc; }
+    .setup-primary { border: 2px solid var(--accent); background: #fff; }
+
+    .section-title {
+      margin-top: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+      font-size: 1.05rem;
+      text-align: left;
+    }
+
+    #startBtn {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 20px auto 0;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-bar">
+      <a href="../../index.html" class="home-link" id="homeLink">← Storification</a>
+      <button type="button" class="danger" id="resetSessionBtn">Reset toets</button>
+    </div>
+    <h1 id="pageTitle">Vocabtrainer</h1>
+    <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en vertaalt naar taal 2.</p>
+    <p class="hint">Je voortgang en je lijst met bekende woorden worden automatisch opgeslagen.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card full setup-card setup-primary">
+        <h2>Hoe werkt deze toets?</h2>
+        <p>Je krijgt elk woord precies één keer te zien (tenzij je kiest om opnieuw te oefenen). Jij vertaalt van taal 1 naar taal 2.</p>
+        <ul>
+          <li>Je bepaalt wanneer je antwoorden ziet: direct, pas aan het einde, of om de X woorden.</li>
+          <li>Vink woorden aan die je kent. Dan verdwijnen ze uit de toets.</li>
+          <li>Je kunt bekende woorden altijd weer terugzetten.</li>
+        </ul>
+        <p class="hint">Dit is een oefenplek: zelfcontrole is toegestaan en zelfs aangemoedigd.</p>
+      </article>
+
+      <article class="card full setup-card">
+        <h2>Instellingen</h2>
+        <div class="settings-grid">
+          <div class="settings-block">
+            <p><strong>Woordlijst</strong></p>
+            <select id="datasetSelect"></select>
+            <p class="hint" id="datasetHint"></p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Antwoorden tonen</strong></p>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="immediate"> Na elke vraag</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="interval"> Om de</label>
+              <input type="number" id="intervalInput" min="1" value="5">
+              <span>vragen (max. totaal)</span>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="end" checked> Alles aan het einde</label>
+            </div>
+            <p class="hint" id="intervalHint"></p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Vertaalrichting</strong></p>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="l1-to-l2" checked> Altijd taal 1 naar taal 2</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="l2-to-l1"> Altijd taal 2 naar taal 1</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="alternate"> Om en om</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="random"> Willekeurig</label>
+            </div>
+          </div>
+          <div class="settings-block">
+            <p><strong>Automatische bekend-markering</strong></p>
+            <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
+            <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Volgorde</strong></p>
+            <label><input type="checkbox" id="shuffleToggle"> Schud de woorden bij start</label>
+            <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="primary" id="startBtn" type="button">Start de toets</button>
+          <button id="resumeBtn" type="button" class="hidden">Doorgaan waar je was</button>
+        </div>
+      </article>
+
+      <article class="card setup-card" id="knownCard">
+        <h2>Bekende woorden</h2>
+        <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer verdergaan.</p>
+        <p id="knownCount"></p>
+        <div class="known-list" id="knownList"></div>
+        <div class="controls">
+          <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
+          <button type="button" id="backToTestBtn">Terug naar toets</button>
+        </div>
+        <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
+        <h3 class="section-title">Export / import onbekende woorden</h3>
+        <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
+        <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
+        <div class="controls">
+          <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
+          <label><input type="checkbox" id="includeMnemonicsToggle"> Neem mijn ezelsbruggetjes mee</label>
+          <button type="button" id="importUnknownBtn">Importeer onbekend</button>
+          <button type="button" id="importUnknownKnownRestBtn">Importeer onbekend + rest bekend</button>
+          <button type="button" id="importKnownBtn">Importeer bekend</button>
+        </div>
+        <p class="hint" id="importStatus"></p>
+        <h3 class="section-title">Masterlijst (volledige overwrite)</h3>
+        <p class="hint">Let op: dit vervangt de hele vocab-lijst. TAB tussen taal 1 en taal 2.</p>
+        <textarea class="import-area" id="masterArea" placeholder="Plak hier de volledige lijst..."></textarea>
+        <div class="controls">
+          <button type="button" id="importMasterBtn">Importeer masterlijst</button>
+          <button type="button" id="resetMasterBtn">Herstel standaardlijst</button>
+        </div>
+        <p class="hint" id="masterStatus"></p>
+      </article>
+
+      <article class="card setup-card">
+        <h2>Weetje over de Oude Grieken</h2>
+        <p class="fact-note">Dit is een leuk weetje en geen onderdeel van de toets.</p>
+        <p id="factText"></p>
+        <div class="controls">
+          <button type="button" id="newFactBtn">Nieuw weetje</button>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="testArea">
+        <div class="test-layout">
+          <aside class="card nav-card" aria-label="Navigatie woorden">
+            <h3>Woorden</h3>
+            <p class="hint" id="navHint"></p>
+            <ul class="nav-list" id="navList"></ul>
+          </aside>
+
+          <section class="card question-card">
+            <div class="meta" id="progressDisplay"></div>
+            <div class="status-chip" id="revealStatus"></div>
+            <div class="controls mini-controls">
+              <button type="button" id="manageKnownBtn">Bekende woorden beheren</button>
+              <button type="button" id="shuffleBtn">Schud volgorde</button>
+              <span class="hint">Je voortgang wordt automatisch opgeslagen.</span>
+            </div>
+
+            <div class="fact-box" id="factBox">
+              <strong>Weetje:</strong>
+              <span id="factInline"></span>
+            </div>
+
+            <div class="greek-term" id="greekText"></div>
+            <div class="translit" id="translitText"></div>
+            <p><strong>Vertaal naar <span id="targetLanguageLabel">taal 2</span>.</strong></p>
+
+            <label for="userAnswer"><strong>Jouw antwoord</strong></label>
+            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus>
+
+            <div class="controls">
+              <button id="saveAnswer" type="button" class="primary">Bewaar antwoord</button>
+              <button id="revealNow" type="button">Toon antwoord nu</button>
+              <button id="prevBtn" type="button">← Vorige</button>
+              <button id="nextBtn" type="button">Volgende →</button>
+            </div>
+            <div class="controls">
+              <button id="mnemonicBtn" type="button">Ezelsbruggetjes</button>
+            </div>
+
+            <div class="toggle-row">
+              <label><input type="checkbox" id="knownToggle"> Ik weet dit woord (niet meer tonen)</label>
+              <p class="hint">Je kunt dit altijd terugzetten in het blok 'Bekende woorden'.</p>
+            </div>
+            <p class="auto-notice hidden" id="autoNotice"></p>
+
+            <div id="answerBlock" class="answer-block hidden"></div>
+            <div id="mnemonicBlock" class="mnemonic-block hidden">
+              <h4>Ezelsbruggetjes</h4>
+              <ul id="mnemonicList"></ul>
+              <div class="mnemonic-input">
+                <label for="mnemonicInput"><strong>Jouw ezelsbruggetje</strong></label>
+                <input type="text" id="mnemonicInput" placeholder="Typ jouw ezelsbruggetje...">
+                <button type="button" id="saveMnemonicBtn">Opslaan</button>
+              </div>
+            </div>
+            <div id="intervalBlock" class="interval-summary hidden"></div>
+          </section>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="summaryCard">
+        <h2>Resultaten & vervolg</h2>
+        <p id="summaryText"></p>
+        <table class="result-table" id="resultTable"></table>
+        <div class="controls">
+          <button id="retryUnknown" type="button" class="primary">Opnieuw met onbekende woorden</button>
+          <button id="retryAll" type="button">Alles opnieuw (ook bekende woorden)</button>
+          <button id="backToSettings" type="button">Terug naar instellingen</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="vocab-data.js"></script>
+  <script src="vocab-latin-nl.js"></script>
+  <script src="vocab-fr-nl-unite-2.js"></script>
+  <script src="vocab-nl-fr-unite-2.js"></script>
+  <script src="vocab-fr-nl-unite-3.js"></script>
+  <script>
+    const DATASET_KEY = "vocab-selected-dataset-v1";
+    const DATASETS = Array.isArray(window.VOCAB_DATASETS) && window.VOCAB_DATASETS.length
+      ? window.VOCAB_DATASETS
+      : [
+        {
+          id: "default",
+          label: "Woordlijst",
+          language1: "Taal 1",
+          language2: "Taal 2",
+          showTransliteration: true,
+          data: window.RAW_VOCAB || ""
+        }
+      ];
+    const selectedDatasetId = localStorage.getItem(DATASET_KEY) || DATASETS[0].id;
+    const activeDataset = DATASETS.find((dataset) => dataset.id === selectedDatasetId) || DATASETS[0];
+    const DATASET_ID = activeDataset.id || "default";
+    const LANGUAGE1_LABEL = activeDataset.language1 || "Taal 1";
+    const LANGUAGE2_LABEL = activeDataset.language2 || "Taal 2";
+    const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
+    const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
+    const LEGACY_DATASET_ID = "grc-nl";
+
+    if (!localStorage.getItem(DATASET_KEY) && activeDataset.id) {
+      localStorage.setItem(DATASET_KEY, activeDataset.id);
+    }
+
+    const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-master-v1"
+      : `vocab-master-${DATASET_ID}-v1`;
+    const FACTS = [
+      "Wist je dat de Oude Grieken de Olympische Spelen begonnen in Olympia, en dat daar alleen mannen mochten meedoen?",
+      "Wist je dat het woord ‘theater’ uit het Grieks komt en letterlijk ‘plaats om te kijken’ betekent?",
+      "In de Griekse mythologie droeg Zeus vaak een bliksemschicht als wapen.",
+      "Wist je dat veel moderne wetenschappelijke termen, zoals ‘biologie’ en ‘astronomie’, uit het Grieks komen?",
+      "In Athene werd democratie letterlijk ‘heerschappij van het volk’ genoemd (demos + kratos).",
+      "Wist je dat de Grieken hun goden als heel menselijk zagen, met emoties en ruzies?",
+      "In Sparta kregen jongens een strenge militaire opvoeding vanaf jonge leeftijd.",
+      "Wist je dat de Griekse filosoof Aristoteles lesgaf aan Alexander de Grote?",
+      "De oude Grieken gebruikten vaak amforen (grote kruiken) om wijn en olie te bewaren.",
+      "Wist je dat het alfabet dat wij gebruiken is geïnspireerd op het Griekse alfabet?",
+      "In de mythologie was Athena de godin van wijsheid en strategie.",
+      "Wist je dat de Griekse wiskundige Euclides de basis legde voor meetkunde?",
+      "De tempel van het Parthenon in Athene was gewijd aan Athena.",
+      "Wist je dat de Grieken al toneelstukken met acteurs en maskers opvoerden?",
+      "In de Odyssee reist Odysseus tien jaar lang terug naar huis na de Trojaanse oorlog.",
+      "Wist je dat ‘polis’ de Griekse term is voor stadstaat, zoals Athene of Sparta?",
+      "In de mythologie beschermde de god Poseidon de zeeën en aardbevingen.",
+      "Wist je dat het woord ‘geschiedenis’ verwant is aan het Griekse ‘historia’ (onderzoek)?",
+      "De Grieken bouwden vaak tempels op heuvels om dichter bij hun goden te zijn.",
+      "Wist je dat de oude Grieken tijd rekenden met zonnewijzers?"
+    ];
+
+    const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-session-v2"
+      : `vocab-session-${DATASET_ID}-v2`;
+    const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-known-v1"
+      : `vocab-known-${DATASET_ID}-v1`;
+    const AUTO_REMOVE_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-auto-remove-v1"
+      : `vocab-auto-remove-${DATASET_ID}-v1`;
+    const MNEMONIC_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-mnemonics-v1"
+      : `vocab-mnemonics-${DATASET_ID}-v1`;
+
+    function loadMasterVocab() {
+      return localStorage.getItem(MASTER_VOCAB_KEY);
+    }
+
+    function saveMasterVocab(text) {
+      localStorage.setItem(MASTER_VOCAB_KEY, text);
+    }
+
+    function clearMasterVocab() {
+      localStorage.removeItem(MASTER_VOCAB_KEY);
+    }
+
+    const RAW_VOCAB = loadMasterVocab() || activeDataset.data || "";
+
+    const vocab = parseVocab(RAW_VOCAB);
+    const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
+
+    const knownIds = loadKnown();
+    const userMnemonics = loadUserMnemonics();
+
+    let session = null;
+
+    const startBtn = document.getElementById("startBtn");
+    const datasetSelect = document.getElementById("datasetSelect");
+    const datasetHint = document.getElementById("datasetHint");
+    const resumeBtn = document.getElementById("resumeBtn");
+    const intervalInput = document.getElementById("intervalInput");
+    const intervalHint = document.getElementById("intervalHint");
+    const directionRadios = document.querySelectorAll("input[name=\"directionMode\"]");
+    const knownCount = document.getElementById("knownCount");
+    const knownList = document.getElementById("knownList");
+    const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const exportUnknownBtn = document.getElementById("exportUnknownBtn");
+    const importUnknownBtn = document.getElementById("importUnknownBtn");
+    const importUnknownKnownRestBtn = document.getElementById("importUnknownKnownRestBtn");
+    const importKnownBtn = document.getElementById("importKnownBtn");
+    const importArea = document.getElementById("importArea");
+    const importStatus = document.getElementById("importStatus");
+    const includeMnemonicsToggle = document.getElementById("includeMnemonicsToggle");
+    const importMasterBtn = document.getElementById("importMasterBtn");
+    const resetMasterBtn = document.getElementById("resetMasterBtn");
+    const masterArea = document.getElementById("masterArea");
+    const masterStatus = document.getElementById("masterStatus");
+    const backToTestBtn = document.getElementById("backToTestBtn");
+    const testArea = document.getElementById("testArea");
+    const summaryCard = document.getElementById("summaryCard");
+    const navList = document.getElementById("navList");
+    const navHint = document.getElementById("navHint");
+    const progressDisplay = document.getElementById("progressDisplay");
+    const revealStatus = document.getElementById("revealStatus");
+    const greekText = document.getElementById("greekText");
+    const translitText = document.getElementById("translitText");
+    const targetLanguageLabel = document.getElementById("targetLanguageLabel");
+    const userAnswer = document.getElementById("userAnswer");
+    const saveAnswer = document.getElementById("saveAnswer");
+    const revealNow = document.getElementById("revealNow");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const knownToggle = document.getElementById("knownToggle");
+    const answerBlock = document.getElementById("answerBlock");
+    const mnemonicBlock = document.getElementById("mnemonicBlock");
+    const mnemonicList = document.getElementById("mnemonicList");
+    const mnemonicInput = document.getElementById("mnemonicInput");
+    const saveMnemonicBtn = document.getElementById("saveMnemonicBtn");
+    const intervalBlock = document.getElementById("intervalBlock");
+    const summaryText = document.getElementById("summaryText");
+    const resultTable = document.getElementById("resultTable");
+    const retryUnknown = document.getElementById("retryUnknown");
+    const retryAll = document.getElementById("retryAll");
+    const backToSettings = document.getElementById("backToSettings");
+    const resetSessionBtn = document.getElementById("resetSessionBtn");
+    const homeLink = document.getElementById("homeLink");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDescription = document.getElementById("pageDescription");
+    const factText = document.getElementById("factText");
+    const factInline = document.getElementById("factInline");
+    const newFactBtn = document.getElementById("newFactBtn");
+    const factBox = document.getElementById("factBox");
+    const autoRemoveToggle = document.getElementById("autoRemoveToggle");
+    const shuffleToggle = document.getElementById("shuffleToggle");
+    const autoNotice = document.getElementById("autoNotice");
+    const setupCards = Array.from(document.querySelectorAll(".setup-card"));
+    const manageKnownBtn = document.getElementById("manageKnownBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const mnemonicBtn = document.getElementById("mnemonicBtn");
+    const knownCard = document.getElementById("knownCard");
+    const knownNotice = document.getElementById("knownNotice");
+
+    let mnemonicOpenFor = null;
+
+    function applyDatasetUI() {
+      if (datasetSelect) {
+        datasetSelect.innerHTML = "";
+        DATASETS.forEach((dataset) => {
+          const option = document.createElement("option");
+          option.value = dataset.id;
+          option.textContent = dataset.label || `${dataset.language1 || "Taal 1"} -> ${dataset.language2 || "Taal 2"}`;
+          option.selected = dataset.id === activeDataset.id;
+          datasetSelect.appendChild(option);
+        });
+      }
+
+      if (datasetHint) {
+        datasetHint.textContent = `Taal 1: ${LANGUAGE1_LABEL} • Taal 2: ${LANGUAGE2_LABEL}`;
+      }
+
+      const label = activeDataset.label || `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`;
+      const titleText = `${label} vocabtrainer`;
+      if (pageTitle) {
+        pageTitle.textContent = titleText;
+      }
+      document.title = titleText;
+
+      updateDirectionCopy(getDirectionMode());
+    }
+
+    function getDirectionMode() {
+      const selected = document.querySelector("input[name=\"directionMode\"]:checked");
+      return selected ? selected.value : "l1-to-l2";
+    }
+
+    function getDirectionCopy(mode) {
+      const translitSuffix = SHOW_TRANSLIT ? " (met eventuele transliteratie)" : "";
+      if (mode === "l2-to-l1") {
+        return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE2_LABEL} en vertaalt naar ${LANGUAGE1_LABEL}.`;
+      }
+      if (mode === "alternate") {
+        return `Oefen met woordenschat. Je wisselt om en om tussen ${LANGUAGE1_LABEL}${translitSuffix} en ${LANGUAGE2_LABEL} als brontaal, en vertaalt steeds naar de andere taal.`;
+      }
+      if (mode === "random") {
+        return `Oefen met woordenschat. De brontaal is willekeurig ${LANGUAGE1_LABEL}${translitSuffix} of ${LANGUAGE2_LABEL}. Jij vertaalt telkens naar de andere taal.`;
+      }
+      return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE1_LABEL}${translitSuffix} en vertaalt naar ${LANGUAGE2_LABEL}.`;
+    }
+
+    function updateDirectionCopy(mode) {
+      if (pageDescription) {
+        pageDescription.textContent = getDirectionCopy(mode);
+      }
+    }
+
+    function getDirectionTargetLabel(direction) {
+      return direction === "l2" ? LANGUAGE1_LABEL : LANGUAGE2_LABEL;
+    }
+
+    function formatPairHint() {
+      return `${LANGUAGE1_LABEL} en ${LANGUAGE2_LABEL}`;
+    }
+
+    function parseVocab(raw) {
+      const lines = raw.trim().split("\n");
+      return lines.map((line, index) => {
+        const parts = line.split("\t");
+        const greek = (parts[0] ?? "").trim();
+        const dutch = (parts[1] ?? "").trim();
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
+        if (!greek || !dutch) return null;
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
+        return {
+          id: String(index),
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          rawTranslation: dutch,
+          mnemonics
+        };
+      }).filter(Boolean);
+    }
+
+    function buildDirectionMap(activeIds, mode, existingMap = {}) {
+      const map = {};
+      activeIds.forEach((id, index) => {
+        if (mode === "l2-to-l1") {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "alternate") {
+          map[id] = index % 2 === 0 ? "l1" : "l2";
+          return;
+        }
+        if (mode === "random") {
+          map[id] = existingMap[id] || (Math.random() < 0.5 ? "l1" : "l2");
+          return;
+        }
+        map[id] = "l1";
+      });
+      return map;
+    }
+
+    function getDirectionForId(id) {
+      if (!session || !session.directionMap) return "l1";
+      return session.directionMap[id] || "l1";
+    }
+
+    function getSourceTerm(item, direction) {
+      if (direction === "l2") {
+        return item.translations.join(", ");
+      }
+      return item.greek;
+    }
+
+    function getTargetAnswer(item, direction) {
+      if (direction === "l2") {
+        return item.greek;
+      }
+      return item.translations.join(", ");
+    }
+
+    function shouldShowTranslit(direction) {
+      return SHOW_TRANSLIT && direction === "l1";
+    }
+
+    function transliterateGreek(text) {
+      let t = text.normalize("NFD");
+      t = t.replace(/([αεηιουωΑΕΗΙΟΥΩ])\u0314/g, "h$1");
+      t = t.replace(/([ρΡ])\u0314/g, "rh");
+      t = t.replace(/[\u0300-\u036f]/g, "");
+      t = t.replace(/[··;]/g, "");
+      t = t.toLowerCase();
+
+      const digraphs = [
+        ["αι", "ai"],
+        ["ει", "ei"],
+        ["οι", "oi"],
+        ["υι", "ui"],
+        ["ου", "ou"],
+        ["ευ", "eu"],
+        ["αυ", "au"],
+        ["ηυ", "eu"]
+      ];
+
+      digraphs.forEach(([from, to]) => {
+        t = t.split(from).join(to);
+      });
+
+      const map = {
+        "α": "a",
+        "β": "b",
+        "γ": "g",
+        "δ": "d",
+        "ε": "e",
+        "ζ": "z",
+        "η": "e",
+        "θ": "th",
+        "ι": "i",
+        "κ": "k",
+        "λ": "l",
+        "μ": "m",
+        "ν": "n",
+        "ξ": "x",
+        "ο": "o",
+        "π": "p",
+        "ρ": "r",
+        "σ": "s",
+        "ς": "s",
+        "τ": "t",
+        "υ": "u",
+        "φ": "ph",
+        "χ": "ch",
+        "ψ": "ps",
+        "ω": "o"
+      };
+
+      let out = "";
+      for (const ch of t) {
+        out += map[ch] ?? ch;
+      }
+      return out;
+    }
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[()\[\]]/g, "")
+        .replace(/-/g, "")
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function normalizeGreek(text) {
+      return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function cleanMeaning(text) {
+      return text
+        .replace(/\([^)]*\)/g, "")
+        .replace(/[,;]/g, "")
+        .trim();
+    }
+
+    function getEtymologyHint(item, translit, meaning) {
+      const greek = normalizeGreek(item.greek);
+      const hints = [
+        { match: (g) => g.includes("θεο"), hint: "Etymologie: theo- (theologie) = god." },
+        { match: (g) => g.includes("λογ"), hint: "Etymologie: logo-/log- (logica, logboek) = woord/verhaal." },
+        { match: (g) => g.includes("φω"), hint: "Etymologie: photo- (fotografie) = licht." },
+        { match: (g) => g.includes("βιο"), hint: "Etymologie: bio- (biologie) = leven." },
+        { match: (g) => g.includes("ανθρωπ"), hint: "Etymologie: anthropo- (antropologie) = mens." },
+        { match: (g) => g.includes("ελλην") || g.includes("ελλ"), hint: "Etymologie: Hellen- (Hellenisme) = Grieks/Griekenland." },
+        { match: (g) => g.includes("ηλιο"), hint: "Etymologie: heli- (heliocentrisch, helium) = zon." },
+        { match: (g) => g.includes("θαλατ"), hint: "Etymologie: thalasso- (thalassotherapie) = zee." },
+        { match: (g) => g.includes("υδωρ") || g.includes("υδατ"), hint: "Etymologie: hydro- (hydrauliek) = water." },
+        { match: (g) => g.includes("πυρ"), hint: "Etymologie: pyro- (pyrotechniek) = vuur." },
+        { match: (g) => g.includes("τεχν"), hint: "Etymologie: techno- (techniek) = kunst/vaardigheid." },
+        { match: (g) => g.includes("σοφι"), hint: "Etymologie: -sofia in filosofie = wijsheid." },
+        { match: (g) => g.includes("φιλο"), hint: "Etymologie: philo- (filantropie, filosofie) = vriend." },
+        { match: (g) => g.includes("πολεμ"), hint: "Etymologie: polem- (polemiek) = oorlog/strijd." },
+        { match: (g) => g.includes("νικ"), hint: "Etymologie: Nike (merk) = overwinning." },
+        { match: (g) => g.includes("οικ"), hint: "Etymologie: eco-/oiko- (ecologie) = huis/omgeving." },
+        { match: (g) => g.includes("ονομ"), hint: "Etymologie: -onym (pseudoniem) = naam." },
+        { match: (g) => g.includes("γυν"), hint: "Etymologie: gyn- (gynaecologie) = vrouw." },
+        { match: (g) => g.includes("ανδρ"), hint: "Etymologie: andro- (android, androloog) = man." },
+        { match: (g) => g.includes("αδελφ"), hint: "Etymologie: adelph- (Philadelphia) = broer/zus." },
+        { match: (g) => g.includes("ιππ"), hint: "Etymologie: hippo- (hippodroom) = paard." },
+        { match: (g) => g.includes("θανατ"), hint: "Etymologie: thanato- (thanatologie) = dood." },
+        { match: (g) => g.includes("πατρ"), hint: "Etymologie: patri- (patriarch) = vader." },
+        { match: (g) => g.includes("μητρ"), hint: "Etymologie: metr- (metropool) = moeder." },
+        { match: (g) => g.includes("οπλ"), hint: "Etymologie: hopliet (gewapende soldaat) komt van ὅπλον." },
+        { match: (g) => g.includes("θρον"), hint: "Etymologie: throne/tron = troon." },
+        { match: (g) => g.includes("ποταμ"), hint: "Etymologie: potam- (potamologie) = rivier." },
+        { match: (g) => g.includes("αντι"), hint: "Etymologie: anti- (antibiotica) = tegen/in plaats van." },
+        { match: (g) => g.includes("συν"), hint: "Etymologie: syn- (synthese) = samen/met." },
+        { match: (g) => g.includes("δια"), hint: "Etymologie: dia- (diagnose, diagram) = door/uit elkaar." },
+        { match: (g) => g.includes("μετα"), hint: "Etymologie: meta- (metafoor, metadata) = na/over." },
+        { match: (g) => g.includes("περι"), hint: "Etymologie: peri- (perimeter) = rondom." },
+        { match: (g) => g.includes("υπερ"), hint: "Etymologie: hyper- (hyperactief) = boven/overmatig." },
+        { match: (g) => g.includes("επι"), hint: "Etymologie: epi- (epicentrum) = op/bij." },
+        { match: (g) => g.includes("κατα"), hint: "Etymologie: kata- (katastrofe) = neer/naar beneden." }
+      ];
+
+      const match = hints.find((entry) => entry.match(greek));
+      if (match) return match.hint;
+      if (meaning) {
+        return `Etymologie-hint: denk aan NL/EN woorden rond "${meaning}" die vaak Griekse stammen gebruiken.`;
+      }
+      return "Etymologie-hint: gebruik de klank- en beeldhint om dit woord te onthouden.";
+    }
+
+    function hashIndex(text, modulo) {
+      let hash = 0;
+      for (let i = 0; i < text.length; i += 1) {
+        hash = (hash + text.charCodeAt(i) * (i + 1)) % modulo;
+      }
+      return hash;
+    }
+
+    function getMnemonics(item) {
+      const translit = transliterateGreek(item.greek);
+      const meaning = cleanMeaning(item.translations[0] || "de betekenis");
+      const etymology = getEtymologyHint(item, translit, meaning);
+      const userHints = getUserMnemonics(item).map((hint) => `Jouw ezelsbruggetje: ${hint}`);
+      const baseHints = (item.mnemonics || []).map((hint) => `Ezelsbruggetje: ${hint}`);
+
+      const soundTemplates = [
+        (t, m) => `Klank: "${t}" klinkt als een mini-uitroep. Stel je ${m} voor die "${t}!" roept.`,
+        (t, m) => `Klank: zeg "${t}" hardop en plak het op ${m} in je hoofd.`,
+        (t, m) => `Klank: "${t}" → maak een korte zin met ${m} en herhaal het ritme.`
+      ];
+      const imageTemplates = [
+        (t, m) => `Beeld: schrijf "${t}" groot boven een ${m}.`,
+        (t, m) => `Beeld: maak van ${m} een vorm die lijkt op "${t}".`,
+        (t, m) => `Beeld: geef ${m} een label "${t}" alsof het een sticker is.`
+      ];
+
+      const sound = soundTemplates[hashIndex(translit + meaning, soundTemplates.length)](translit, meaning);
+      const image = imageTemplates[hashIndex(meaning + translit, imageTemplates.length)](translit, meaning);
+
+      return [...userHints, ...baseHints, etymology, sound, image];
+    }
+
+    function renderMnemonics(item) {
+      const hints = getMnemonics(item);
+      mnemonicList.innerHTML = "";
+      hints.forEach((hint) => {
+        const li = document.createElement("li");
+        li.textContent = hint;
+        mnemonicList.appendChild(li);
+      });
+      mnemonicBlock.classList.remove("hidden");
+      mnemonicOpenFor = item.id;
+    }
+
+    function isCorrectAnswer(answer, translations, rawTranslation) {
+      if (!answer) return false;
+      const normalized = normalizeText(answer);
+      if (rawTranslation) {
+        const rawNormalized = normalizeText(rawTranslation);
+        if (rawNormalized && normalized === rawNormalized) {
+          return true;
+        }
+      }
+      return translations.some((translation) => {
+        const cleaned = normalizeText(translation);
+        if (!cleaned) return false;
+        return normalized === cleaned;
+      });
+    }
+
+    function isCorrectAnswerForDirection(answer, item, direction) {
+      if (direction === "l2") {
+        const normalizedAnswer = normalizeGreek(answer);
+        const normalizedTarget = normalizeGreek(item.greek);
+        if (!normalizedAnswer || !normalizedTarget) return false;
+        return normalizedAnswer === normalizedTarget;
+      }
+      return isCorrectAnswer(answer, item.translations, item.rawTranslation);
+    }
+
+    function loadKnown() {
+      const raw = localStorage.getItem(KNOWN_KEY);
+      if (!raw) return new Set();
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return new Set();
+        return new Set(parsed);
+      } catch (error) {
+        return new Set();
+      }
+    }
+
+    function loadAutoRemove() {
+      const raw = localStorage.getItem(AUTO_REMOVE_KEY);
+      if (raw === null) return false;
+      return raw === "true";
+    }
+
+    function saveAutoRemove(value) {
+      localStorage.setItem(AUTO_REMOVE_KEY, value ? "true" : "false");
+    }
+
+    function saveKnown() {
+      localStorage.setItem(KNOWN_KEY, JSON.stringify(Array.from(knownIds)));
+    }
+
+    function loadUserMnemonics() {
+      const raw = localStorage.getItem(MNEMONIC_KEY);
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return {};
+        const cleaned = {};
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            cleaned[key] = value.map((entry) => String(entry).trim()).filter(Boolean);
+          }
+        });
+        return cleaned;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveUserMnemonics() {
+      localStorage.setItem(MNEMONIC_KEY, JSON.stringify(userMnemonics));
+    }
+
+    function getUserMnemonics(item) {
+      if (!item || !item.greek) return [];
+      return userMnemonics[item.greek] || [];
+    }
+
+    function addUserMnemonic(item, text) {
+      if (!item || !item.greek) return false;
+      const cleaned = String(text || "").trim();
+      if (!cleaned) return false;
+      const list = userMnemonics[item.greek] || [];
+      const exists = list.some((entry) => entry.toLowerCase() === cleaned.toLowerCase());
+      if (!exists) {
+        list.push(cleaned);
+        userMnemonics[item.greek] = list;
+        saveUserMnemonics();
+      }
+      return true;
+    }
+
+    function buildActiveIds(includeKnown) {
+      if (includeKnown) return vocab.map((item) => item.id);
+      return vocab.filter((item) => !knownIds.has(item.id)).map((item) => item.id);
+    }
+
+    function buildUnknownList() {
+      return vocab.filter((item) => !knownIds.has(item.id));
+    }
+
+    function shuffleArray(values) {
+      const arr = values.slice();
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleActiveIds(keepCurrent = true) {
+      if (!session || session.activeIds.length === 0) return;
+      const currentId = session.activeIds[session.currentIndex];
+      if (!keepCurrent || !currentId) {
+        session.activeIds = shuffleArray(session.activeIds);
+        session.currentIndex = 0;
+      } else {
+        const rest = session.activeIds.filter((id) => id !== currentId);
+        const shuffled = shuffleArray(rest);
+        const insertIndex = Math.min(session.currentIndex, shuffled.length);
+        shuffled.splice(insertIndex, 0, currentId);
+        session.activeIds = shuffled;
+        session.currentIndex = insertIndex;
+      }
+      session.shuffle = true;
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
+      saveSession();
+      updateDisplay();
+    }
+
+    function exportUnknowns() {
+      const unknowns = buildUnknownList();
+      const includeMnemonics = includeMnemonicsToggle ? includeMnemonicsToggle.checked : false;
+      const lines = unknowns.map((item) => {
+        const base = `${item.greek}\t${item.translations.join(", ")}`;
+        if (!includeMnemonics) return base;
+        const mnemonics = getUserMnemonics(item);
+        if (!mnemonics.length) return base;
+        return `${base}\t${mnemonics.join(" | ")}`;
+      });
+      importArea.value = lines.join("\n");
+      importStatus.textContent = `Geëxporteerd: ${unknowns.length} onbekende woorden.`;
+    }
+
+    function parseImportLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      return lines.map((line) => {
+        const parts = line.split("\t").map((part) => part.trim());
+        if (parts.length < 2) return null;
+        const greek = parts[0];
+        const dutch = parts[1];
+        if (!greek || !dutch) return null;
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
+        return {
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          mnemonics
+        };
+      }).filter(Boolean);
+    }
+
+    function parseMasterLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      const validLines = lines.filter((line) => {
+        const splitIndex = line.indexOf("\t");
+        if (splitIndex === -1) return false;
+        const left = line.slice(0, splitIndex).trim();
+        const right = line.slice(splitIndex + 1).trim();
+        return Boolean(left && right);
+      });
+      return validLines;
+    }
+
+    function getImportItems(text) {
+      if (!text) return [];
+      let items = [];
+      if (text.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            items = parsed.map((entry) => ({
+              greek: String(entry.greek || "").trim(),
+              translations: Array.isArray(entry.translations) ? entry.translations : [String(entry.translation || "").trim()]
+            })).filter((entry) => entry.greek);
+          }
+        } catch (error) {
+          items = [];
+        }
+      }
+
+      if (items.length === 0) {
+        items = parseImportLines(text);
+      }
+
+      return items;
+    }
+
+    function applyImportedMnemonics(items) {
+      let added = 0;
+      items.forEach((entry) => {
+        if (!entry.greek || !Array.isArray(entry.mnemonics) || entry.mnemonics.length === 0) return;
+        const existing = userMnemonics[entry.greek] || [];
+        entry.mnemonics.forEach((hint) => {
+          const cleaned = String(hint || "").trim();
+          if (!cleaned) return;
+          const exists = existing.some((value) => value.toLowerCase() === cleaned.toLowerCase());
+          if (!exists) {
+            existing.push(cleaned);
+            added += 1;
+          }
+        });
+        if (existing.length > 0) {
+          userMnemonics[entry.greek] = existing;
+        }
+      });
+      if (added > 0) {
+        saveUserMnemonics();
+      }
+      return added;
+    }
+
+    function importUnknowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (knownIds.has(id)) {
+          knownIds.delete(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar onbekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importUnknownsKnownRest() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const confirmMessage = "Deze import zet alle niet-genoemde woorden op bekend. Doorgaan?";
+      if (!confirm(confirmMessage)) return;
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      const unknownIds = new Set();
+      let matched = 0;
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!unknownIds.has(id)) {
+          unknownIds.add(id);
+          matched += 1;
+        }
+      });
+
+      knownIds.clear();
+      vocab.forEach((item) => {
+        if (!unknownIds.has(item.id)) {
+          knownIds.add(item.id);
+        }
+      });
+
+      saveKnown();
+      renderKnownList();
+      if (session) {
+        rebuildActiveIds();
+        updateDisplay();
+      }
+
+      importStatus.textContent = `Import klaar. Onbekend: ${matched}. Bekend gemaakt: ${vocab.length - unknownIds.size}. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importKnowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!knownIds.has(id)) {
+          knownIds.add(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importMasterList() {
+      const text = masterArea.value.trim();
+      if (!text) {
+        masterStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const validLines = parseMasterLines(text);
+      if (validLines.length === 0) {
+        masterStatus.textContent = `Geen geldige regels gevonden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const confirmMessage = `Je gaat ${validLines.length} regels importeren. Dit vervangt de volledige vocab-lijst en wist je voortgang en bekende woorden. Doorgaan?`;
+      if (!confirm(confirmMessage)) return;
+
+      saveMasterVocab(validLines.join("\n"));
+      knownIds.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Masterlijst opgeslagen. Pagina wordt herladen...";
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    function resetMasterList() {
+      if (!confirm("Standaardlijst herstellen? Dit wist je aangepaste masterlijst en reset je voortgang.")) {
+        return;
+      }
+      clearMasterVocab();
+      knownIds.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Standaardlijst hersteld. Pagina wordt herladen...";
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    function getRevealMode() {
+      const selected = document.querySelector("input[name=\"revealMode\"]:checked");
+      return selected ? selected.value : "end";
+    }
+
+    function getIntervalValue() {
+      const value = Number(intervalInput.value);
+      if (!Number.isInteger(value) || value < 1) return 1;
+      return Math.min(value, vocab.length);
+    }
+
+    function updateIntervalHint() {
+      intervalInput.max = String(vocab.length || 1);
+      intervalHint.textContent = `Maximaal ${vocab.length} woorden.`;
+    }
+
+    function setFact(target) {
+      if (!FACTS.length) return;
+      const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
+      target.textContent = fact;
+    }
+
+    function renderKnownList() {
+      if (!knownList) return;
+      knownList.innerHTML = "";
+      const knownItems = vocab.filter((item) => knownIds.has(item.id));
+      knownCount.textContent = `Bekende woorden: ${knownItems.length} / ${vocab.length}`;
+      knownNotice.classList.toggle("hidden", !session);
+
+      if (knownItems.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "hint";
+        empty.textContent = "Nog geen bekende woorden gemarkeerd.";
+        knownList.appendChild(empty);
+        return;
+      }
+
+      knownItems.forEach((item) => {
+        const wrapper = document.createElement("label");
+        wrapper.className = "known-item";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.addEventListener("change", () => {
+          if (!checkbox.checked) {
+            knownIds.delete(item.id);
+            saveKnown();
+            if (session) {
+              rebuildActiveIds();
+              updateDisplay();
+            }
+            renderKnownList();
+          }
+        });
+
+        const greek = document.createElement("strong");
+        greek.textContent = item.greek;
+        const dutch = document.createElement("small");
+        dutch.textContent = `${LANGUAGE2_LABEL}: ${item.translations.join(", ")}`;
+
+        wrapper.appendChild(checkbox);
+        wrapper.appendChild(greek);
+        if (SHOW_TRANSLIT) {
+          const translit = document.createElement("small");
+          translit.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+          wrapper.appendChild(translit);
+        }
+        wrapper.appendChild(dutch);
+        knownList.appendChild(wrapper);
+      });
+    }
+
+    function createSession(options) {
+      const includeKnown = options.includeKnown;
+      const activeIds = options.shuffle ? shuffleArray(buildActiveIds(includeKnown)) : buildActiveIds(includeKnown);
+      const directionMode = options.directionMode || "l1-to-l2";
+      session = {
+        activeIds,
+        currentIndex: 0,
+        answers: {},
+        attempts: [],
+        revealMode: options.revealMode,
+        interval: options.interval,
+        includeKnown,
+        shuffle: Boolean(options.shuffle),
+        directionMode,
+        directionMap: buildDirectionMap(activeIds, directionMode)
+      };
+      saveSession();
+    }
+
+    function saveSession() {
+      if (!session) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEY);
+      session = null;
+    }
+
+    function loadSession() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.activeIds)) return null;
+        if (!parsed.activeIds.every((id) => vocabById[id])) return null;
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function rebuildActiveIds() {
+      if (!session) return;
+      const currentId = session.activeIds[session.currentIndex];
+      session.activeIds = buildActiveIds(session.includeKnown);
+      session.attempts = session.attempts.filter((id) => session.activeIds.includes(id));
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
+      if (session.activeIds.length === 0) {
+        showSummary();
+        return;
+      }
+      const newIndex = currentId ? session.activeIds.indexOf(currentId) : -1;
+      session.currentIndex = newIndex >= 0 ? newIndex : Math.min(session.currentIndex, session.activeIds.length - 1);
+      saveSession();
+    }
+
+    function updateNav() {
+      navList.innerHTML = "";
+      navHint.textContent = `Totaal in deze ronde: ${session.activeIds.length}.`;
+
+      session.activeIds.forEach((id, index) => {
+        const item = vocabById[id];
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = `${index + 1}. ${sourceTerm}`;
+        if (index === session.currentIndex) btn.classList.add("current");
+        if (session.answers[id]) btn.classList.add("answered");
+        btn.addEventListener("click", () => {
+          session.currentIndex = index;
+          updateDisplay();
+        });
+        navList.appendChild(btn);
+      });
+    }
+
+    function updateDisplay() {
+      if (!session || session.activeIds.length === 0) {
+        return;
+      }
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      const direction = getDirectionForId(id);
+      const sourceTerm = getSourceTerm(item, direction);
+      const targetLabel = getDirectionTargetLabel(direction);
+
+      greekText.textContent = sourceTerm;
+      if (shouldShowTranslit(direction)) {
+        translitText.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+        translitText.classList.remove("hidden");
+      } else {
+        translitText.textContent = "";
+        translitText.classList.add("hidden");
+      }
+      if (targetLanguageLabel) {
+        targetLanguageLabel.textContent = targetLabel;
+      }
+
+      userAnswer.value = session.answers[id] || "";
+      knownToggle.checked = knownIds.has(id);
+
+      const answeredCount = session.attempts.length;
+      progressDisplay.textContent = `Woord ${session.currentIndex + 1} van ${session.activeIds.length} • Ingevuld: ${answeredCount}`;
+      revealStatus.textContent = describeRevealMode();
+
+      answerBlock.classList.add("hidden");
+      mnemonicBlock.classList.add("hidden");
+      mnemonicOpenFor = null;
+      mnemonicInput.value = "";
+      intervalBlock.classList.add("hidden");
+      autoNotice.classList.add("hidden");
+
+      updateNav();
+      saveSession();
+
+      if (session.revealMode === "immediate" && session.answers[id]) {
+        showAnswer(id);
+      }
+
+      userAnswer.focus();
+    }
+
+    function describeRevealMode() {
+      if (!session) return "";
+      if (session.revealMode === "immediate") return "Antwoorden: direct";
+      if (session.revealMode === "interval") return `Antwoorden: om de ${session.interval} woorden`;
+      return "Antwoorden: aan het einde";
+    }
+
+    function showAnswer(id) {
+      const item = vocabById[id];
+      const answer = session.answers[id] || "";
+      const direction = getDirectionForId(id);
+      const correct = isCorrectAnswerForDirection(answer, item, direction);
+      const correctLabel = correct ? "✅ (automatisch herkend)" : "✍️ controleer zelf";
+      const targetLabel = getDirectionTargetLabel(direction);
+      const targetAnswer = getTargetAnswer(item, direction);
+      answerBlock.className = "answer-block";
+      answerBlock.classList.add(correct ? "correct" : "wrong");
+      answerBlock.innerHTML = `
+        <div><strong>Jouw antwoord:</strong> ${answer || "[leeg]"}</div>
+        <div><strong>Correct (${targetLabel}):</strong> ${targetAnswer}</div>
+        <div class="hint">${correctLabel} - jij bepaalt of je het woord als bekend markeert.</div>
+      `;
+      answerBlock.classList.remove("hidden");
+    }
+
+    function showAutoNotice(text) {
+      autoNotice.textContent = text;
+      autoNotice.classList.remove("hidden");
+    }
+
+    function showIntervalSummary(ids) {
+      intervalBlock.innerHTML = "";
+      const title = document.createElement("h4");
+      title.textContent = `Korte check na ${session.interval} woorden`;
+      intervalBlock.appendChild(title);
+
+      ids.forEach((id) => {
+        const item = vocabById[id];
+        const answer = session.answers[id] || "";
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
+        const targetLabel = getDirectionTargetLabel(direction);
+        const targetAnswer = getTargetAnswer(item, direction);
+        const row = document.createElement("div");
+        const translit = shouldShowTranslit(direction) ? ` (${transliterateGreek(item.greek)})` : "";
+        row.innerHTML = `
+          <strong>${sourceTerm}</strong>${translit}<br>
+          Jouw antwoord: ${answer || "[leeg]"} • Correct (${targetLabel}): ${targetAnswer}
+        `;
+        intervalBlock.appendChild(row);
+      });
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "Verder met de toets";
+      btn.addEventListener("click", () => {
+        intervalBlock.classList.add("hidden");
+      });
+      intervalBlock.appendChild(btn);
+
+      intervalBlock.classList.remove("hidden");
+    }
+
+    function handleSave() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      session.answers[id] = userAnswer.value.trim();
+      if (!session.attempts.includes(id)) {
+        session.attempts.push(id);
+      }
+
+      const autoRemoveEnabled = autoRemoveToggle.checked;
+      const direction = getDirectionForId(id);
+      const correctNow = isCorrectAnswerForDirection(session.answers[id], item, direction);
+      if (autoRemoveEnabled && correctNow) {
+        if (!knownIds.has(id)) {
+          knownIds.add(id);
+          saveKnown();
+          renderKnownList();
+        }
+        rebuildActiveIds();
+        if (session && session.activeIds.length > 0) {
+          updateDisplay();
+        }
+        showAutoNotice("✅ Juist! Dit woord verdwijnt uit deze ronde.");
+        return true;
+      }
+
+      if (session.revealMode === "immediate") {
+        showAnswer(id);
+      }
+
+      if (session.revealMode === "interval") {
+        const interval = Math.max(1, session.interval);
+        if (session.attempts.length % interval === 0) {
+          const lastIds = session.attempts.slice(-interval);
+          showIntervalSummary(lastIds);
+        }
+      }
+
+      maybeRotateFact();
+      updateNav();
+      saveSession();
+      return false;
+    }
+
+    function handleRevealNow() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      showAnswer(id);
+    }
+
+    function goToRelative(step) {
+      if (!session || session.activeIds.length === 0) return;
+      const nextIndex = Math.min(Math.max(session.currentIndex + step, 0), session.activeIds.length - 1);
+      session.currentIndex = nextIndex;
+      updateDisplay();
+    }
+
+    function toggleKnownCurrent(checked) {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      if (checked) {
+        knownIds.add(id);
+        saveKnown();
+        rebuildActiveIds();
+        renderKnownList();
+        if (session && session.activeIds.length > 0) {
+          updateDisplay();
+        }
+      } else {
+        knownIds.delete(id);
+        saveKnown();
+        rebuildActiveIds();
+        renderKnownList();
+        updateDisplay();
+      }
+    }
+
+    function showSummary() {
+      testArea.classList.add("hidden");
+      summaryCard.classList.remove("hidden");
+      setSetupVisibility(false);
+      knownNotice.classList.add("hidden");
+
+      const answeredCount = session ? session.attempts.length : 0;
+      const knownCountValue = knownIds.size;
+      const remainingUnknown = buildActiveIds(false).length;
+      summaryText.textContent = `Je hebt ${answeredCount} antwoorden ingevuld. Bekende woorden: ${knownCountValue}. Nog niet gemarkeerd als bekend: ${remainingUnknown}.`;
+
+      resultTable.innerHTML = "";
+      const header = document.createElement("tr");
+      const translitHeader = SHOW_TRANSLIT ? `<th>${TRANSLIT_LABEL}</th>` : "";
+      header.innerHTML = `<th>${LANGUAGE1_LABEL}</th>${translitHeader}<th>Jouw antwoord</th><th>${LANGUAGE2_LABEL}</th>`;
+      resultTable.appendChild(header);
+
+      if (session) {
+        session.activeIds.forEach((id) => {
+          const item = vocabById[id];
+          const row = document.createElement("tr");
+          const translitCell = SHOW_TRANSLIT ? `<td>${transliterateGreek(item.greek)}</td>` : "";
+          row.innerHTML = `
+            <td>${item.greek}</td>
+            ${translitCell}
+            <td>${session.answers[id] || ""}</td>
+            <td>${item.translations.join(", ")}</td>
+          `;
+          resultTable.appendChild(row);
+        });
+      }
+
+      retryUnknown.disabled = remainingUnknown === 0;
+
+      clearSession();
+    }
+
+    function startTest(options) {
+      createSession(options);
+      if (session.activeIds.length === 0) {
+        summaryText.textContent = "Alle woorden staan nu als bekend. Vink woorden uit in de lijst om opnieuw te oefenen.";
+        resultTable.innerHTML = "";
+        summaryCard.classList.remove("hidden");
+        testArea.classList.add("hidden");
+        knownNotice.classList.add("hidden");
+        return;
+      }
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      knownNotice.classList.add("hidden");
+    }
+
+    function resetSession(keepKnown) {
+      if (!keepKnown) {
+        if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
+          return;
+        }
+        if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
+          return;
+        }
+        knownIds.clear();
+        saveKnown();
+      }
+      clearSession();
+      summaryCard.classList.add("hidden");
+      testArea.classList.add("hidden");
+      renderKnownList();
+      knownNotice.classList.add("hidden");
+      updateStartButtons();
+    }
+
+    function applySessionSettings(saved) {
+      if (!saved) return;
+      document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+        input.checked = input.value === saved.revealMode;
+      });
+      intervalInput.value = saved.interval || 5;
+      shuffleToggle.checked = Boolean(saved.shuffle);
+      directionRadios.forEach((input) => {
+        input.checked = input.value === (saved.directionMode || "l1-to-l2");
+      });
+      updateDirectionCopy(getDirectionMode());
+    }
+
+    function updateStartButtons() {
+      const existing = loadSession();
+      if (existing) {
+        resumeBtn.classList.remove("hidden");
+        applySessionSettings(existing);
+      } else {
+        resumeBtn.classList.add("hidden");
+      }
+    }
+
+    function maybeRotateFact() {
+      if (!session) return;
+      if (session.attempts.length > 0 && session.attempts.length % 3 === 0) {
+        setFact(factInline);
+      }
+    }
+
+    function setSetupVisibility(show) {
+      setupCards.forEach((card) => {
+        card.classList.toggle("hidden", !show);
+      });
+      if (!show) {
+        knownNotice.classList.add("hidden");
+      }
+    }
+
+    function openKnownManager() {
+      if (session) {
+        saveSession();
+      }
+      setSetupVisibility(true);
+      knownNotice.classList.remove("hidden");
+      knownCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function returnToTest() {
+      if (!session) return;
+      setSetupVisibility(false);
+      testArea.scrollIntoView({ behavior: "smooth", block: "start" });
+      updateDisplay();
+    }
+
+    applyDatasetUI();
+
+    if (datasetSelect) {
+      datasetSelect.addEventListener("change", () => {
+        const nextId = datasetSelect.value;
+        if (!nextId || nextId === activeDataset.id) return;
+        localStorage.setItem(DATASET_KEY, nextId);
+        window.location.reload();
+      });
+    }
+
+    startBtn.addEventListener("click", () => {
+      const mode = getRevealMode();
+      const interval = getIntervalValue();
+      startTest({
+        revealMode: mode,
+        interval,
+        includeKnown: false,
+        shuffle: shuffleToggle.checked,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    resumeBtn.addEventListener("click", () => {
+      const saved = loadSession();
+      if (!saved) return;
+      session = saved;
+      session.directionMode = session.directionMode || getDirectionMode();
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode,
+        session.directionMap || {}
+      );
+      rebuildActiveIds();
+      applySessionSettings(saved);
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      setSetupVisibility(false);
+    });
+
+    saveAnswer.addEventListener("click", handleSave);
+    userAnswer.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (!session || session.activeIds.length === 0) return;
+        const autoRemoved = handleSave();
+        if (autoRemoved) return;
+        if (session.revealMode === "immediate") {
+          nextBtn.focus();
+          return;
+        }
+        if (session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      }
+    });
+    revealNow.addEventListener("click", handleRevealNow);
+    prevBtn.addEventListener("click", () => goToRelative(-1));
+    nextBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      if (session.currentIndex === session.activeIds.length - 1) {
+        showSummary();
+      } else {
+        goToRelative(1);
+      }
+    });
+
+    knownToggle.addEventListener("change", () => {
+      toggleKnownCurrent(knownToggle.checked);
+    });
+
+    clearKnownBtn.addEventListener("click", () => {
+      resetSession(false);
+    });
+
+    exportUnknownBtn.addEventListener("click", () => {
+      exportUnknowns();
+    });
+
+    importUnknownBtn.addEventListener("click", () => {
+      importUnknowns();
+    });
+
+    importUnknownKnownRestBtn.addEventListener("click", () => {
+      importUnknownsKnownRest();
+    });
+
+    importKnownBtn.addEventListener("click", () => {
+      importKnowns();
+    });
+
+    importMasterBtn.addEventListener("click", () => {
+      importMasterList();
+    });
+
+    resetMasterBtn.addEventListener("click", () => {
+      resetMasterList();
+    });
+
+    manageKnownBtn.addEventListener("click", () => {
+      openKnownManager();
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      shuffleActiveIds(true);
+    });
+
+    mnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      if (!mnemonicBlock.classList.contains("hidden") && mnemonicOpenFor === id) {
+        mnemonicBlock.classList.add("hidden");
+        mnemonicOpenFor = null;
+        return;
+      }
+      renderMnemonics(item);
+    });
+
+    saveMnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      const added = addUserMnemonic(item, mnemonicInput.value);
+      if (added) {
+        mnemonicInput.value = "";
+        renderMnemonics(item);
+      }
+    });
+
+    backToTestBtn.addEventListener("click", () => {
+      returnToTest();
+    });
+
+    retryUnknown.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: false,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    retryAll.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: true,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    backToSettings.addEventListener("click", () => {
+      summaryCard.classList.add("hidden");
+      testArea.classList.add("hidden");
+      setSetupVisibility(true);
+    });
+
+    resetSessionBtn.addEventListener("click", () => {
+      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren.")) {
+        return;
+      }
+      const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
+      resetSession(!clearKnown);
+      setSetupVisibility(true);
+    });
+
+    autoRemoveToggle.addEventListener("change", () => {
+      saveAutoRemove(autoRemoveToggle.checked);
+    });
+
+    homeLink.addEventListener("click", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    newFactBtn.addEventListener("click", () => {
+      setFact(factText);
+      setFact(factInline);
+    });
+
+    window.addEventListener("beforeunload", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (testArea.classList.contains("hidden")) return;
+      if (document.activeElement === userAnswer) return;
+      if (event.key === "ArrowLeft") {
+        goToRelative(-1);
+      }
+      if (event.key === "ArrowRight") {
+        if (session && session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      }
+    });
+
+    intervalInput.addEventListener("input", () => {
+      if (session) {
+        session.interval = getIntervalValue();
+        saveSession();
+        revealStatus.textContent = describeRevealMode();
+      }
+    });
+
+    document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+      input.addEventListener("change", () => {
+        if (session) {
+          session.revealMode = getRevealMode();
+          saveSession();
+          revealStatus.textContent = describeRevealMode();
+        }
+      });
+    });
+
+    directionRadios.forEach((input) => {
+      input.addEventListener("change", () => {
+        updateDirectionCopy(getDirectionMode());
+        if (session) {
+          session.directionMode = getDirectionMode();
+          session.directionMap = buildDirectionMap(
+            session.activeIds,
+            session.directionMode,
+            session.directionMap || {}
+          );
+          saveSession();
+          updateDisplay();
+        }
+      });
+    });
+
+    updateIntervalHint();
+    renderKnownList();
+    updateStartButtons();
+    setFact(factText);
+    setFact(factInline);
+    autoRemoveToggle.checked = loadAutoRemove();
+    setSetupVisibility(true);
+  </script>
+</body>
+</html>
