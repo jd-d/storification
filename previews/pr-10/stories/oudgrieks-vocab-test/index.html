@@ -593,7 +593,7 @@
     const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-master-v1"
       : `vocab-master-${DATASET_ID}-v1`;
-    const FACTS = Array.isArray(activeDataset.facts) ? activeDataset.facts : [];
+    const FACTS = getFactsForDataset(activeDataset);
 
     const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-session-v5"
@@ -1412,6 +1412,15 @@
       intervalHint.textContent = `Maximaal ${vocab.length} woorden.`;
     }
 
+    function getFactsForDataset(dataset) {
+      if (!dataset) return [];
+      if (Array.isArray(dataset.facts)) return dataset.facts;
+      if (!dataset.factsKey) return [];
+      const factStore = window.VOCAB_DATA && window.VOCAB_DATA.FACTS;
+      const facts = factStore ? factStore[dataset.factsKey] : null;
+      return Array.isArray(facts) ? facts : [];
+    }
+
     function setFact(target) {
       if (!target || !FACTS.length) return;
       const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
@@ -1676,7 +1685,9 @@
 
     function handleSave() {
       let intervalShown = false;
-      if (!session || session.activeIds.length === 0) return;
+      if (!session || session.activeIds.length === 0) {
+        return { autoRemoved: false, intervalShown: false };
+      }
       const id = session.activeIds[session.currentIndex];
       const item = vocabById[id];
       session.answers[id] = userAnswer.value.trim();
