@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Studiegids Koningskind – Verhaaloverzicht</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f6fb;
+      --fg: #222;
+      --accent: #3056a3;
+      --accent-soft: #dbe3ff;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(120deg, #24428c, #3565c5);
+      color: #fff;
+      padding: 1.4rem 1.2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+    }
+
+    header p {
+      margin: 0.1rem 0 0;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 1rem auto 2.5rem;
+      padding: 0 1rem 2rem;
+    }
+
+    .page {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.6rem 1.4rem 1.2rem;
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+      margin-bottom: 1.2rem;
+      display: none;
+      position: relative;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 260ms ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 1.3rem;
+    }
+
+    h3 {
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+      font-size: 1.05rem;
+      color: #1f2933;
+    }
+
+    p {
+      margin: 0.25rem 0 0.55rem;
+      font-size: 0.98rem;
+    }
+
+    .hint {
+      background: var(--accent-soft);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    nav#pager {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+      margin-bottom: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .pager-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border-radius: 999px;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      padding: 0.45rem 0.9rem;
+      background: #fff;
+      color: var(--accent);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    button:hover {
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .page-indicator {
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+
+    .toc-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .toc-links a {
+      font-size: 0.85rem;
+      padding: 0.12rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      text-decoration: none;
+      color: #1f2933;
+      transition: background 0.12s, color 0.12s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    .toc-links a:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 7px rgba(15, 23, 42, 0.2);
+    }
+
+    figure {
+      width: 100%;
+      /* vult de breedte van main */
+      aspect-ratio: 3 / 2;
+      /* houdt 3:2 verhouding (zoals 900x600) */
+      overflow: hidden;
+      /* verbergt boven/onder bij te hoge afbeelding */
+      margin: 0.4rem 0 0.9rem;
+      border-radius: 12px;
+      background: #eef2ff;
+      border: 1px solid rgba(129, 140, 248, 0.4);
+    }
+
+    figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* snijdt bij en vult het frame */
+      object-position: center;
+      display: block;
+    }
+
+    figure figcaption {
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      color: #333;
+    }
+
+    a.inline-link {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(37, 99, 235, 0.4);
+      padding-bottom: 1px;
+    }
+
+    a.inline-link:hover {
+      border-bottom-style: solid;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-nav {
+      position: fixed;
+      left: 0;
+      top: 112px;
+      width: 280px;
+      height: calc(100vh - 112px);
+      background: var(--card-bg);
+      box-shadow: 2px 0 10px rgba(15, 23, 42, 0.1);
+      overflow-y: auto;
+      padding: 1.5rem 1rem;
+      z-index: 9;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-nav.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+      position: fixed;
+      left: 1rem;
+      top: 120px;
+      z-index: 11;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+      transition: background 0.2s, transform 0.2s;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .sidebar-toggle:hover {
+      background: #24428c;
+      transform: scale(1.05);
+    }
+
+    .sidebar-nav h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-soft);
+    }
+
+    .sidebar-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-nav li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-nav a {
+      display: block;
+      padding: 0.6rem 0.8rem;
+      color: #1f2933;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: background 0.15s, color 0.15s, transform 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-nav a:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      transform: translateX(4px);
+      border-left-color: var(--accent);
+    }
+
+    .sidebar-nav a.active {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      border-left-color: #24428c;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 8;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 1.35rem;
+      }
+
+      main {
+        margin-top: 0.6rem;
+      }
+
+      .page {
+        padding: 1.2rem 1rem 1rem;
+      }
+
+      .sidebar-nav {
+        width: 260px;
+      }
+
+      .sidebar-toggle {
+        left: 0.5rem;
+        top: 116px;
+        padding: 0.5rem 0.7rem;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle navigatie">☰</button>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav" aria-label="Hoofdstuk navigatie">
+    <h3>Hoofdstukken</h3>
+    <ul id="chapterList">
+      <li><a href="#" data-page="0">1. Inleiding: wat voor boek is Koningskind?</a></li>
+      <li><a href="#" data-page="1">2. Lydia en koning Salomo</a></li>
+      <li><a href="#" data-page="2">3. De geboorte van Zissel</a></li>
+      <li><a href="#" data-page="3">4. Zissel groeit op</a></li>
+      <li><a href="#" data-page="4">5. Berel, Sion en de babywisseling</a></li>
+      <li><a href="#" data-page="5">6. Naar Sion</a></li>
+      <li><a href="#" data-page="6">7. In Sion: de rechtszaak</a></li>
+      <li><a href="#" data-page="7">8. Het Salomonsoordeel</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Koningskind – Verhaaloverzicht</h1>
+    <p>Een studiegids voor leerlingen (ca. 15 jaar) – het verhaal stap voor stap, met alle belangrijke details.</p>
+  </header>
+
+  <main>
+    <nav id="pager" aria-label="Paginanavigatie">
+      <div class="pager-buttons">
+        <button id="prevBtn" type="button">← Vorige</button>
+        <button id="nextBtn" type="button">Volgende →</button>
+      </div>
+      <div class="page-indicator">
+        Pagina <span id="pageNumber">1</span> van <span id="pageTotal">8</span>
+      </div>
+    </nav>
+
+    <section class="page active" data-page="1" id="pagina-1">
+      <h2>1. Inleiding: wat voor boek is <em>Koningskind</em>?</h2>
+      <div class="hint">
+        Deze gids is bedoeld als hulp bij het lezen of herhalen van <em>Koningskind</em> van Selma Noort. Je leest hier
+        het verhaal
+        stap voor stap, met alle belangrijke details die je nodig hebt voor een boekverslag of toets.
+      </div>
+      <figure class="image-frame">
+        <img src="A.png" alt="Illustratie A: Lydia verlaat haar dorp en loopt richting het rijk van koning Salomo.">
+        <figcaption>Beeld A – Een meisje verlaat haar dorp. Dit past bij Lydia, die wegloopt uit haar oude leven.
+        </figcaption>
+      </figure>
+      <p><em>Koningskind</em> vertelt een nieuw, verzonnen verhaal rond de bijbelse koning Salomo. In de Bijbel kennen
+        mensen vooral
+        het “Salomonsoordeel”: twee vrouwen die ruzie maken om één baby, en een koning die een schijnbaar wreed plan
+        gebruikt om te
+        ontdekken wie de echte moeder is. Selma Noort vraagt zich af: wat zou er achter dat verhaal gebeurd kunnen zijn?
+      </p>
+      <p>Het boek laat de wereld zien door de ogen van gewone mensen: vooral <strong>Lydia</strong>, haar dochter
+        <strong>Zissel</strong>, de voormalige slaaf <strong>Jabin</strong> en de getraumatiseerde jongeman
+        <strong>Berel</strong>.
+        Zo ontstaat een “onbekend verhaal” onder het bekende bijbelse verhaal.
+      </p>
+      <div class="toc-links">
+        <span style="font-size:0.8rem; opacity:0.8;">Snel naar:</span>
+        <a href="#pagina-2">Lydia &amp; de koning</a>
+        <a href="#pagina-3">Geboorte van Zissel</a>
+        <a href="#pagina-4">Zissel, pesten &amp; Jabin</a>
+        <a href="#pagina-5">Babywisseling</a>
+        <a href="#pagina-7">Rechtszaak &amp; oordeel</a>
+      </div>
+    </section>
+
+    <section class="page" data-page="2" id="pagina-2">
+      <h2>2. Lydia en koning Salomo: het begin van het koningskind</h2>
+      <h3>Lydia in haar dorp</h3>
+      <p>Lydia is ongeveer vijftien jaar oud. Ze woont bij haar ouders in een dorp in het rijk van koning Salomo. Ze
+        valt op:
+        ze is sterk, mooi, eigenwijs en niet bang om haar mond open te doen. In het dorp weten mensen dat, en er wordt
+        over haar
+        gepraat.</p>
+      <h3>Het bezoek van de koning</h3>
+      <p>Op een dag komt koning Salomo met zijn gevolg langs. Voor het dorp lijkt dit een grote eer. Hij komt zelfs in
+        het huis
+        van Lydia’s ouders om te rusten en water te drinken. Maar achter de gesloten deur gebeurt iets anders:</p>
+      <ul>
+        <li>De koning gebruikt zijn macht en misbruikt Lydia seksueel.</li>
+        <li>Zij heeft in werkelijkheid geen keuze: niemand durft de koning tegen te spreken.</li>
+        <li>Op een moment van verzet bijt Lydia in zijn hand, zo hard dat er bloed stroomt.</li>
+      </ul>
+      <p>De druppels bloed trekken in de drempelsteen van het huis. De zwarte vlekken verdwijnen nooit helemaal. Dat is
+        een
+        symbool in het boek: wat er is gebeurd, kun je niet zomaar uitwissen.</p>
+      <h3>Zwangerschap en vertrek</h3>
+      <p>Lydia raakt zwanger van de koning. Ze is bang, boos, beschaamd. In het dorp wordt geroddeld: iedereen heeft
+        gezien dat de
+        koning bij haar thuis was. Niemand kent het hele verhaal, maar iedereen heeft een mening.</p>
+      <p>Als ze acht maanden zwanger is, besluit Lydia te vertrekken. Ze neemt alleen wat spullen mee, een mes en een
+        stok om zich te
+        verdedigen. Ze wil niet de rest van haar leven “het meisje van de koning” zijn in dat dorp.</p>
+      <p>Na haar vertrek sterft haar moeder (officieel aan tyfus) en haar vader verdwijnt, terwijl hij haar probeert te
+        zoeken. Hun
+        huis verandert langzaam in een ruïne. Lydia zwerft ondertussen alleen door het land, zwanger en kwetsbaar.</p>
+    </section>
+
+    <section class="page" data-page="3" id="pagina-3">
+      <h2>3. De geboorte van Zissel en de ontmoeting met Steenhouwer</h2>
+      <h3>Geboorte in de poel</h3>
+      <figure>
+        <img src="B.png" alt="Illustratie B: Lydia bevalt in een waterpoel in de nacht.">
+        <figcaption>Beeld B – Lydia bevalt van haar kind in een poel, alleen in de nacht.</figcaption>
+      </figure>
+      <p>Lydia komt bij een rivier en een waterpoel terecht. Daar, in het water, in de nacht, bevalt ze van haar kind.
+        Jakhalzen
+        huilen in de verte, de rotsen om haar heen zijn scherp en koud.</p>
+      <p>Het kind glijdt in het water. Even lijkt het alsof het meisje verdrinkt, maar Lydia grijpt haar en tilt haar
+        op. Dan ziet
+        ze het duidelijk:</p>
+      <ul>
+        <li>Het is een meisje.</li>
+        <li>Ze heeft één normaal armpje en één kort “reigerpootje” met twee ontbrekende of misvormde vingers.</li>
+        <li>Later blijkt dat ze wel kan horen, maar niet kan spreken.</li>
+      </ul>
+      <p>Lydia noemt haar dochter <strong>Zissel</strong>, dat “zoet” betekent. Ze wil dat dit kind, ondanks alles, zoet
+        en geliefd
+        zal zijn.</p>
+      <h3>De komst van Steenhouwer</h3>
+      <p>Als Lydia en de baby uitgeput zijn, verschijnt een oudere man: <strong>Steenhouwer</strong>. Hij werkt met
+        steen en heeft
+        als arbeider aan de tempel en het paleis van Salomo gebouwd. Hij zelf leeft nog, maar veel van zijn collega’s
+        zijn gestorven
+        door de zware arbeid.</p>
+      <p>Steenhouwer:</p>
+      <ul>
+        <li>Neemt Lydia en Zissel mee naar zijn huis.</li>
+        <li>Geeft hen eten, schone doeken en een bed.</li>
+        <li>Vertelt dat zijn eigen dochter gestorven is; hij heeft haar zelf moeten begraven.</li>
+      </ul>
+      <p>Langzaam vormt zich een nieuw gezin: de oude man, Lydia en het “koningskind” Zissel.</p>
+    </section>
+
+    <section class="page" data-page="4" id="pagina-4">
+      <h2>4. Zissel groeit op: pesten, liefde en Jabin</h2>
+      <h3>Pesten in het dorp</h3>
+      <p>Als Zissel ouder wordt, merken de kinderen in het dorp goed dat ze anders is. Ze kunnen heel hard en gemeen
+        zijn:</p>
+      <ul>
+        <li>Ze roepen haar “Reigerpoot” na, vanwege haar korte arm.</li>
+        <li>Ze noemen haar “Zwijgerpoot”, omdat ze niet praat.</li>
+        <li>Sommigen zeggen spottend “koningskind”, verwijzend naar het verhaal dat haar vader de koning zou zijn.</li>
+      </ul>
+      <p>Zissel voelt zich buitenstaander. Ze begrijpt alles, hoort alles, maar kan niet terugpraten. Toch is ze niet
+        dom of zwak;
+        ze is alert en dapper, zeker in de natuur rond de rivier.</p>
+      <h3>Liefde thuis en de raad van Steenhouwer</h3>
+      <p>Thuis bij Lydia en Steenhouwer is de sfeer anders:</p>
+      <ul>
+        <li>Lydia houdt onvoorwaardelijk van haar dochter.</li>
+        <li>Steenhouwer accepteert Zissel zoals ze is en leert haar over de wereld.</li>
+        <li>Hun huis is eenvoudig, maar voelt veilig.</li>
+      </ul>
+      <p>Steenhouwer wordt op een bepaald moment ziek. Hij hoest veel, wordt zwakker en weet dat hij niet lang meer zal
+        leven. Op
+        een belangrijke avond zegt hij tegen Zissel:</p>
+      <p><strong>“Je zwakte kan je kracht zijn.”</strong></p>
+      <p>Dat betekent: juist wat anderen als “gebrek” zien (haar arm, haar zwijgen), kan haar later beschermen en macht
+        geven. Kort
+        daarna sterft Steenhouwer. Zijn woorden blijven Zissel haar hele leven achtervolgen.</p>
+      <h3>Jabin: de jongen in de braamstruiken</h3>
+      <figure>
+        <img src="C.png" alt="Illustratie C: Zissel en Jabin bij braamstruiken langs de rivier.">
+        <figcaption>Beeld C – Zissel vindt Jabin, half verstopt en mishandeld, tussen de struiken.</figcaption>
+      </figure>
+      <p>Op een dag gaat Zissel naar de rivier. Ze hoort een zacht, wanhopig geluid uit de braamstruiken komen. Tussen
+        de doornen
+        vindt ze een naakte jongen, onder de littekens, verzwakt door honger en mishandeling.</p>
+      <p>Ze gaat terug naar huis voor water en een stok, komt terug en geeft de jongen te drinken. Uiteindelijk draagt
+        ze hem naar
+        Lydia. De jongen is zo uitgedroogd en geslagen dat hij dagenlang alleen maar slaapt en eet.</p>
+      <p>Lydia en Zissel nemen hem op en geven hem de naam <strong>Jabin</strong>. Langzaam wordt hij wakker uit zijn
+        nachtmerrie:
+        hij is een ontsnapte slaaf, getraumatiseerd, maar in dit huis is hij veilig.</p>
+      <h3>Gebaren en fluit</h3>
+      <p>Zissel en Jabin ontwikkelen hun eigen manier van praten:</p>
+      <ul>
+        <li>Een eenvoudige <strong>gebarentaal</strong> met handen en gezichtsuitdrukking.</li>
+        <li>Een <strong>fluit</strong> met verschillende tonen voor verschillende boodschappen, zodat ze op afstand met
+          elkaar kunnen
+          communiceren.</li>
+      </ul>
+      <p>Ze worden als broer en zus. Lydia, Zissel en Jabin vormen samen een nieuw, hecht maar kwetsbaar gezin.</p>
+    </section>
+
+    <section class="page" data-page="5" id="pagina-5">
+      <h2>5. Berel, Sion en de nacht van de twee geboortes</h2>
+      <h3>Berel en de schaduw van Sion</h3>
+      <p>In het dorp van Lydia woont ook de <strong>rietvlechter</strong>. Hij vlecht manden, matten en wiegen. Een van
+        zijn zonen
+        is <strong>Berel</strong>. Hij is als dwangarbeider naar <strong>Sion</strong> gestuurd geweest, de stad waar
+        koning Salomo
+        tempel en paleis laat bouwen.</p>
+      <p>Berel is teruggekeerd, maar zwaar getekend:</p>
+      <ul>
+        <li>Hij spreekt nauwelijks.</li>
+        <li>Hij slaapt veel en schrikt van geluiden.</li>
+        <li>Hij heeft dingen gezien (slaven, doden, mishandeling) die hij niet kan vergeten.</li>
+      </ul>
+      <p>Via Berel krijgen we een beeld van de harde kant van Salomo’s rijk: het is niet alleen een “wijzenkoningland”;
+        het is ook
+        een systeem van uitbuiting.</p>
+      <h3>De komst van Bracha en Dinah</h3>
+      <p>Op een dag arriveert een stoet edelen in het dal. Een jonge, zwangere vrouw, <strong>Bracha</strong>, haar
+        oudere, dominante
+        zus <strong>Dinah</strong>, bedienden en bewakers. Bracha’s man is een belangrijke man aan het hof.</p>
+      <p>Bracha is hoogzwanger en bang:</p>
+      <ul>
+        <li>Ze heeft verhalen gehoord over mannen die hun vrouw verstoten als de baby sterft.</li>
+        <li>Ze voelt dat er veel druk op haar rust.</li>
+      </ul>
+      <p>Ze krijgt te vroeg weeën en wordt door Dinah naar het huisje van de rietvlechter gebracht om daar te bevallen.
+      </p>
+      <h3>Tegelijkertijd: Lydia’s bevalling</h3>
+      <p>In hetzelfde dal, niet ver daarvandaan, krijgt Lydia ook weeën. Zij staat op het punt te bevallen van het kind
+        van
+        Steenhouwer. De nacht valt, in twee huizen wordt een baby geboren:</p>
+      <ul>
+        <li>Bij Lydia: een <strong>gezonde zoon</strong>, Menachem.</li>
+        <li>Bij Bracha: een <strong>te vroeg geboren, zwakke baby</strong> die even later sterft.</li>
+      </ul>
+      <h3>De babywisseling</h3>
+      <figure>
+        <img src="D.png" alt="Illustratie D: nachtelijke babywisseling in Lydia's huis.">
+        <figcaption>Beeld D – In de nacht wordt Menachem stiekem verwisseld met het dode kind van Bracha.</figcaption>
+      </figure>
+      <p>Als Bracha’s baby sterft, raakt Dinah in paniek. Ze vreest dat haar zus alles kwijt raakt. Dinah besluit een
+        hard plan uit
+        te voeren:</p>
+      <ul>
+        <li>Ze neemt met de oudste bediende het dode kindje in doeken mee.</li>
+        <li>Ze gaan ’s nachts het huis van Lydia binnen, waar Lydia uitgeput ligt te slapen met haar levende zoon.</li>
+      </ul>
+      <p>In het halfdonker gebeurt de ruil:</p>
+      <ul>
+        <li>De bediende neemt voorzichtig Menachem van Lydia’s buik.</li>
+        <li>Hij bindt hem in de doeken van het dode kind van Bracha.</li>
+        <li>Het dode kind wordt in Lydia’s bed gelegd, in de eigen dekens van Lydia.</li>
+      </ul>
+      <p><strong>Zissel is wakker</strong> en ziet het allemaal gebeuren. Ze begrijpt dat haar broertje wordt gestolen
+        en dat er
+        gelogen gaat worden.</p>
+      <h3>De dreiging aan Zissel</h3>
+      <p>De oudste bediende sleurt Zissel naar buiten, waar Dinah wacht. Dinah legt haar het “officiële verhaal” op:</p>
+      <ul>
+        <li>Volgens dat verhaal heeft Zissel het leven in het kind “gevonden” met haar bijzondere hand.</li>
+        <li>Zij zou dus een soort priesteres of genezeres zijn.</li>
+      </ul>
+      <p>Daarna komt de dreiging: als Zissel ooit spreekt, eraan denkt of er zelfs maar over droomt dat de baby
+        verwisseld is, zal
+        ze sterven. Zissel knikt; ze begrijpt de doodsangst die hierachter zit. Haar zwijgen is nu niet alleen
+        lichamelijk, maar ook
+        opgelegd.</p>
+    </section>
+
+    <section class="page" data-page="6" id="pagina-6">
+      <h2>6. Naar Sion: Zissel als “genezeres” en de komst van Lydia</h2>
+      <h3>De volgende ochtend</h3>
+      <p>Als Lydia wakker wordt en het dode kind ziet, voelt ze meteen dat er iets niet klopt:</p>
+      <ul>
+        <li>De doeken waarin het kind ligt, zijn niet haar eigen geweven doeken.</li>
+        <li>Het voelt niet als haar kind aan.</li>
+      </ul>
+      <p>De vrouw van de rietvlechter komt binnen met het gewassen dode kind en zegt vlak dat dit Lydia’s zoon is, die
+        in de nacht
+        is gestorven. Lydia huilt en is in de war, maar diep vanbinnen weet ze dat dit niet haar Menachem is.</p>
+      <h3>Zissel wordt meegenomen</h3>
+      <p>Dinah heeft nu een verhaal nodig waarin Bracha’s kind toch “wonderbaarlijk” leeft. Ze grijpt terug op de rol
+        van Zissel:</p>
+      <ul>
+        <li>Zissel zou met haar reigerpootje het leven in de baby hebben ontdekt.</li>
+        <li>Ze wordt als priesteres/genezeres gezien.</li>
+        <li>Dinah besluit dat Zissel met hen mee naar Sion moet om het kind te beschermen.</li>
+      </ul>
+      <p>Ze binden Zissel vast aan een muildier en voeren haar uit het dal weg.</p>
+      <h3>Jabin en Berel volgen</h3>
+      <p>Jabin en Berel zien hoe Zissel wordt meegenomen. Ze besluiten hen stiekem te volgen. In de bergen, als de stoet
+        kamp maakt,
+        duiken ze op uit de struiken wanneer Zissel hen een duidelijk gebaar geeft.</p>
+      <p>Zissel bedenkt razendsnel een plan:</p>
+      <ul>
+        <li>Ze laat Jabin doen alsof hij al zijn leven lang haar bediende en tolk is.</li>
+        <li>Jabin vertelt Dinahs broer dat Zissel doof en stom is en dat hij haar “stem” is.</li>
+        <li>Dinahs broer gelooft dit en accepteert Jabin als deel van het reisgezelschap.</li>
+      </ul>
+      <p>Ook Berel blijft in de buurt. Hij kent de weg naar Sion en voelt dat hij iets recht te zetten heeft, na alles
+        wat hij daar
+        heeft meegemaakt.</p>
+      <h3>Lydia als zoogster</h3>
+      <p>Zissel wil haar moeder én haar broertje terug bij elkaar brengen. Ze bedenkt een list:</p>
+      <ul>
+        <li>Ze gebaart naar Jabin dat er in hun dal een vrouw is wiens eigen kind gestorven is, maar die nog melk heeft.
+        </li>
+        <li>Jabin vertelt Dinahs broer dat hij zo’n vrouw kent: een perfecte zoogster voor de “zieke” baby van Bracha.
+        </li>
+        <li>Die vrouw is natuurlijk Lydia.</li>
+      </ul>
+      <p>Zo wordt Lydia officieel naar Sion gehaald om de baby te voeden. In werkelijkheid wordt ze opnieuw moeder voor
+        haar eigen
+        zoon, maar dan in het geheim.</p>
+    </section>
+
+    <section class="page" data-page="7" id="pagina-7">
+      <h2>7. In Sion: wonderen, herkenning en de rechtszaak</h2>
+      <h3>Sion: macht en misbruik</h3>
+      <figure>
+        <img src="E.png" alt="Illustratie E: de rechtszaal van koning Salomo.">
+        <figcaption>Beeld E – In de troonzaal staat één kind centraal, met twee vrouwen tegenover de koning.
+        </figcaption>
+      </figure>
+      <p>Sion is een stad vol tegenstellingen: prachtige gebouwen, rijkdom en goud, maar ook slaven, honger en geweld.
+        Berel kent
+        deze wereld al uit eigen ervaring. Het boek laat zo zien dat de “wijze koning” zijn rijk bouwt op de rug van
+        gewone
+        mensen.</p>
+      <h3>Zissel als genezeres</h3>
+      <p>In Sion wordt Zissel gezien als een wonderlijke priesteres:</p>
+      <ul>
+        <li>Mensen denken dat ze doof en stom is.</li>
+        <li>Ze draagt haar korte arm zichtbaar, wat haar bijzonder maakt.</li>
+        <li>Ze reageert niet op gewone gesprekken, zodat het lijkt alsof ze niets hoort.</li>
+      </ul>
+      <p>In werkelijkheid hoort Zissel alles. Ze kiest ervoor om niet te reageren, zodat mensen haar niet doorzien. Dat
+        is precies
+        wat Steenhouwer bedoelde: haar zwakte (niet praten, anders zijn) wordt haar kracht.</p>
+      <h3>Geënsceneerde wonderen</h3>
+      <p>Om haar reputatie te verstevigen, bedenken Zissel en Jabin samen “wonderen”:</p>
+      <ul>
+        <li><strong>De schorpioen</strong>: Jabin legt een (weer tot leven gewekte) schorpioen bij Menachems bed. Bracha
+          gilt,
+          Zissel stormt binnen en stampt het dier dood. Het hele huis gelooft dat zij het kind heeft gered.</li>
+        <li><strong>De ademnood</strong>: Menachem heeft het kort benauwd. Zissel tilt hem theatraal op en laat hem
+          zakken, waarna hij
+          een grote boer laat. Lydia speelt mee. Voor Dinah is dit opnieuw bewijs van Zissels bijzondere kracht.</li>
+      </ul>
+      <h3>Ontmoetingen met de koning</h3>
+      <p>Koning Salomo hoort over de vreemde genezeres met de reigerpoot. Hij laat haar komen voor vermaak aan zijn
+        tafel. Hij ziet
+        haar als een soort curiositeit: een “bijzonder ding” in zijn grote verzameling.</p>
+      <p>Wanneer hij haar op zijn hand laat staan en haar dwingt hem aan te kijken, gebeurt er iets belangrijks:</p>
+      <ul>
+        <li>Hij herkent in haar ogen dezelfde kleur als in Lydia’s ogen.</li>
+        <li>Ze wijst naar het litteken aan de binnenkant van zijn duim – het litteken van de beet van Lydia.</li>
+        <li>Ze vormt zonder geluid het woord “Mama”.</li>
+      </ul>
+      <p>Later vertelt ze hem ook echt, via gebaren en via Jabin, dat Lydia haar moeder is. De koning begrijpt:
+        <strong>Zissel is
+          zijn dochter</strong>. Lydia bevestigt dat in een gesprek: “Mijn dochter is uw dochter.”
+      </p>
+      <h3>De rechtszaak</h3>
+      <p>Dinah voelt dat het gevaarlijk wordt. Er zijn te veel mensen die (een deel van) de waarheid kennen. Ze sleept
+        Lydia en
+        Zissel naar de koning en klaagt Lydia aan.</p>
+      <p>In de rechtszaal:</p>
+      <ul>
+        <li>Dinah vertelt dat Lydia haar baby zou hebben willen stelen.</li>
+        <li>Lydia vertelt dat haar zoon is verwisseld met een dood kind.</li>
+        <li>Voor het publiek lijkt het woord tegen woord.</li>
+      </ul>
+      <p>Salomo weet al meer, maar kan niet zomaar zijn eigen schuld op tafel leggen. Hij heeft een oordeel nodig dat
+        iedereen kan
+        volgen.</p>
+    </section>
+
+    <section class="page" data-page="8" id="pagina-8">
+      <h2>8. Het Salomonsoordeel en het einde van het verhaal</h2>
+      <h3>Het beroemde Salomonsoordeel</h3>
+      <p>De koning vraagt een strijdbijl. Hij geeft een schokkend bevel: het kind moet in tweeën gehakt worden, zodat
+        elke vrouw een
+        helft krijgt. Iedereen schrikt.</p>
+      <p>De reacties zijn beslissend:</p>
+      <ul>
+        <li><strong>Bracha</strong> protesteert, maar verward en halfslachtig, gevangen tussen schuld en angst.</li>
+        <li><strong>Lydia</strong> roept in pure moederpaniek dat het kind dan maar bij de andere vrouw moet blijven,
+          als het maar
+          in leven blijft.</li>
+      </ul>
+      <p>Daarmee laat Lydia zien dat het leven van haar zoon belangrijker is dan haar eigen erkenning als moeder. Dat is
+        voor
+        Salomo het bewijs dat zij de echte moeder is.</p>
+      <p>Hij draait het bevel terug en verklaart dat de vrouw die bereid was haar aanspraak op te geven om het kind te
+        redden, de
+        ware moeder is. Voor iedereen is duidelijk dat hij Lydia bedoelt.</p>
+      <h3>Wat de koning wel en niet herstelt</h3>
+      <p>Na het oordeel laat Salomo Lydia, Zissel, Jabin en Menachem niet zomaar los. Hij geeft het bevel dat ze via een
+        geheime
+        poort in de tuinmuur het paleis moeten verlaten. Een paleisvrouw brengt hen erheen en wenst hun een behouden
+        thuiskomst.</p>
+      <p>Wat betekent dat?</p>
+      <ul>
+        <li>Hij zorgt ervoor dat ze kunnen ontsnappen aan Dinah en het hof.</li>
+        <li>Hij zet de ergste onrechtvaardigheid recht: Menachem mag bij zijn echte moeder zijn.</li>
+        <li>Hij maakt echter niet bekend dat Zissel zijn dochter is, en hij bekent zijn eigen schuld niet.</li>
+      </ul>
+      <h3>Terug naar het dal en naar “het bekende verhaal”</h3>
+      <p>Lydia, Zissel, Jabin en Menachem keren terug naar hun dal. Menachem groeit op als gewone jongen in een gewone
+        familie. De
+        littekens van het verleden blijven, maar ze zijn bij elkaar.</p>
+      <p>In de Bijbel is alleen het korte, heldere verhaal overgebleven: een wijze koning, twee vrouwen, één kind en een
+        slim
+        oordeel. <em>Koningskind</em> laat zien dat achter zo’n verhaal een hele wereld van gewone mensen, pijn,
+        slavernij en
+        moed schuil kan gaan.</p>
+      <p>Als je dit verhaal goed begrijpt, kun je beter nadenken over vragen als:</p>
+      <ul>
+        <li>Wat is “wijsheid” als je zelf onrecht hebt veroorzaakt?</li>
+        <li>Wie heeft een stem in het verhaal, en wie niet (zoals Zissel)?</li>
+        <li>Hoe kunnen zwaktes (zoals anders zijn, niet kunnen spreken) toch een kracht worden?</li>
+      </ul>
+      <p>Met dit overzicht heb je de belangrijkste feiten en gebeurtenissen uit het boek helder. Nu kun je verder werken
+        aan een
+        boekverslag, presentatie of toetsvoorbereiding.</p>
+      <p style="margin-top:1rem; font-size:0.85rem;">
+        Tip: wil je snel terug naar het begin van deze gids? <a href="#pagina-1" class="inline-link">Klik hier om naar
+          pagina&nbsp;1
+          te springen.</a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const pages = Array.from(document.querySelectorAll('.page'));
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pageNumberEl = document.getElementById('pageNumber');
+      const pageTotalEl = document.getElementById('pageTotal');
+
+      const total = pages.length;
+      let current = 0;
+
+      pageTotalEl.textContent = String(total);
+
+      function showPage(index, scroll) {
+        if (index < 0 || index >= total) return;
+        pages.forEach(p => p.classList.remove('active'));
+        pages[index].classList.add('active');
+        current = index;
+        pageNumberEl.textContent = String(current + 1);
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === total - 1;
+        if (scroll !== false) {
+          const header = document.querySelector('header');
+          const headerHeight = header ? header.offsetHeight : 0;
+          const main = document.querySelector('main');
+          const top = main.getBoundingClientRect().top + window.scrollY - headerHeight - 10;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
+
+      prevBtn.addEventListener('click', () => showPage(current - 1));
+      nextBtn.addEventListener('click', () => showPage(current + 1));
+
+      // Update sidebar active state
+      function updateSidebarActive() {
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+        sidebarLinks.forEach((link, index) => {
+          if (index === current) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+
+      // Enhanced showPage to update sidebar
+      const originalShowPage = showPage;
+      showPage = function(index, scroll) {
+        originalShowPage(index, scroll);
+        updateSidebarActive();
+      };
+
+      // Sidebar toggle functionality
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebarNav = document.getElementById('sidebarNav');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function toggleSidebar() {
+        sidebarNav.classList.toggle('open');
+        sidebarOverlay.classList.toggle('visible');
+      }
+
+      function closeSidebar() {
+        sidebarNav.classList.remove('open');
+        sidebarOverlay.classList.remove('visible');
+      }
+
+      sidebarToggle.addEventListener('click', toggleSidebar);
+      sidebarOverlay.addEventListener('click', closeSidebar);
+
+      // Sidebar chapter navigation
+      document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const pageIndex = parseInt(link.getAttribute('data-page'), 10);
+          if (!isNaN(pageIndex)) {
+            showPage(pageIndex);
+            closeSidebar();
+          }
+        });
+      });
+
+      // Klik op inhoudslinks: spring naar juiste pagina
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="#pagina-"]');
+        if (!link) return;
+        const targetId = link.getAttribute('href').slice(1);
+        const page = pages.find(p => p.id === targetId);
+        if (!page) return;
+        e.preventDefault();
+        const index = pages.indexOf(page);
+        if (index !== -1) {
+          showPage(index);
+        }
+      });
+
+      // Initialize sidebar active state
+      updateSidebarActive();
+    })();
+  </script>
+</body>
+
+</html>
