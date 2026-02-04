@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../../assets/css/style.css" />
   <style>
     :root {
+      color-scheme: light;
       --bg: #f3f4f6;
       --fg: #1f2937;
       --accent: #2563eb;
@@ -15,6 +16,94 @@
       --muted: #4b5563;
       --danger: #dc2626;
       --success: #16a34a;
+      --header-grad-start: #223c7a;
+      --header-grad-end: #3a66d6;
+      --header-text: #ffffff;
+      --header-subtext: #f8fafc;
+      --header-hint: #e2e8f0;
+      --line: #e5e7eb;
+      --panel-bg: #fafafa;
+      --input-border: #cbd5e1;
+      --input-bg: #ffffff;
+      --translit: #94a3b8;
+      --auto-notice: #166534;
+      --success-bg: #dcfce7;
+      --success-border: #16a34a;
+      --success-text: #14532d;
+      --danger-bg: #fee2e2;
+      --danger-border: #dc2626;
+      --danger-text: #7f1d1d;
+      --answer-border: rgba(29, 78, 216, 0.35);
+      --backup-bg: #fff7ed;
+      --backup-accent: #9a3412;
+      --backup-confirm: #fca5a5;
+      --known-item-bg: #f9fafb;
+      --fact-bg: #fef9c3;
+      --fact-border: #facc15;
+      --fact-text: #854d0e;
+      --interval-bg: #f0f7ff;
+      --interval-border: #93c5fd;
+      --interval-title: #1e40af;
+      --mnemonic-bg: #fef3c7;
+      --mnemonic-border: #fcd34d;
+      --mnemonic-text: #92400e;
+      --setup-note-bg: #f8fafc;
+      --setup-note-border: #cbd5e1;
+      --button-bg: #ffffff;
+      --button-border: rgba(29, 78, 216, 0.4);
+      --button-contrast: #ffffff;
+      --button-primary-hover: #1e40af;
+      --button-danger-hover: #b91c1c;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --fg: #e2e8f0;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.2);
+      --card-bg: #111827;
+      --muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --header-grad-start: #0f172a;
+      --header-grad-end: #1e3a8a;
+      --header-text: #f8fafc;
+      --header-subtext: #e2e8f0;
+      --header-hint: #cbd5f5;
+      --line: #1f2937;
+      --panel-bg: #0b1220;
+      --input-border: #334155;
+      --input-bg: #0b1220;
+      --translit: #94a3b8;
+      --auto-notice: #86efac;
+      --success-bg: #0f2e1f;
+      --success-border: #22c55e;
+      --success-text: #86efac;
+      --danger-bg: #3b1111;
+      --danger-border: #ef4444;
+      --danger-text: #fecaca;
+      --answer-border: rgba(96, 165, 250, 0.4);
+      --backup-bg: #2b1f13;
+      --backup-accent: #fdba74;
+      --backup-confirm: rgba(239, 68, 68, 0.6);
+      --known-item-bg: #0f172a;
+      --fact-bg: #3b2f14;
+      --fact-border: #fbbf24;
+      --fact-text: #fde68a;
+      --interval-bg: #0b2548;
+      --interval-border: #60a5fa;
+      --interval-title: #93c5fd;
+      --mnemonic-bg: #3b2b0a;
+      --mnemonic-border: #fbbf24;
+      --mnemonic-text: #fde68a;
+      --setup-note-bg: #0b1220;
+      --setup-note-border: #334155;
+      --button-bg: #0f172a;
+      --button-border: rgba(96, 165, 250, 0.4);
+      --button-contrast: #ffffff;
+      --button-primary-hover: #3b82f6;
+      --button-danger-hover: #dc2626;
     }
 
     * { box-sizing: border-box; }
@@ -28,24 +117,30 @@
     }
 
     header {
-      background: linear-gradient(120deg, #223c7a, #3a66d6);
-      color: #fff;
+      background: linear-gradient(120deg, var(--header-grad-start), var(--header-grad-end));
+      color: var(--header-text);
       padding: 1.6rem 1.2rem 1.2rem;
-      text-align: left;
+      text-align: center;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
     }
 
-    .title-bar {
+    .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 1rem;
       flex-wrap: wrap;
-      margin-bottom: 0.6rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .home-link {
-      color: #fff;
+      color: var(--header-text);
       text-decoration: none;
       font-weight: 700;
       letter-spacing: 0.2px;
@@ -54,22 +149,84 @@
     .home-link:hover { text-decoration: underline; }
 
     header h1 {
-      margin: 0;
+      margin: 0.8rem 0 0;
       font-size: 2rem;
       text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
     }
 
     header p {
       margin: 0.4rem 0 0;
-      color: #f8fafc;
+      color: var(--header-subtext);
       opacity: 1;
       text-shadow: 0 1px 6px rgba(15, 23, 42, 0.3);
       max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     header .hint {
-      color: #e2e8f0;
+      color: var(--header-hint);
       opacity: 1;
+    }
+
+    #pageDescription {
+      white-space: nowrap;
+    }
+
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--header-text);
+    }
+
+    .theme-switch input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .switch-track {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.25);
+      transition: background 0.2s ease, border 0.2s ease;
+    }
+
+    .switch-track::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--header-text);
+      transition: transform 0.2s ease;
+    }
+
+    .theme-switch input:checked + .switch-track {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .theme-switch input:checked + .switch-track::after {
+      transform: translateX(20px);
+    }
+
+    .theme-switch input:focus-visible + .switch-track {
+      outline: 2px solid var(--header-text);
+      outline-offset: 2px;
+    }
+
+    .switch-label {
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
     }
 
     main { max-width: 1200px; margin: 1.5rem auto 2.5rem; padding: 0 1rem; }
@@ -81,7 +238,7 @@
       background: var(--card-bg);
       border-radius: 14px;
       padding: 1.2rem 1.3rem 1rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--line);
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       text-align: left !important;
     }
@@ -96,9 +253,9 @@
 
     button {
       border-radius: 12px;
-      border: 1px solid rgba(29, 78, 216, 0.4);
+      border: 1px solid var(--button-border);
       padding: 0.55rem 1rem;
-      background: #fff;
+      background: var(--button-bg);
       color: var(--accent);
       font-size: 0.95rem;
       cursor: pointer;
@@ -109,11 +266,11 @@
       transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
     }
 
-    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.primary { background: var(--accent); color: var(--button-contrast); border-color: var(--accent); }
     button:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14); }
-    button.primary:hover { background: #1e40af; color: #fff; }
-    button.danger { border-color: rgba(220, 38, 38, 0.5); color: #fff; background: var(--danger); }
-    button.danger:hover { background: #b91c1c; }
+    button.primary:hover { background: var(--button-primary-hover); color: var(--button-contrast); }
+    button.danger { border-color: rgba(220, 38, 38, 0.5); color: var(--button-contrast); background: var(--danger); }
+    button.danger:hover { background: var(--button-danger-hover); }
     button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
 
     label { cursor: pointer; }
@@ -132,10 +289,10 @@
     }
 
     .settings-block {
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--line);
       border-radius: 12px;
       padding: 0.8rem 0.9rem;
-      background: #fafafa;
+      background: var(--panel-bg);
     }
 
     .option-row {
@@ -151,10 +308,10 @@
       width: 100%;
       padding: 0.6rem 0.7rem;
       border-radius: 10px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--input-border);
       font-size: 0.95rem;
       font-family: inherit;
-      background: #fff;
+      background: var(--input-bg);
     }
 
     .hint {
@@ -187,7 +344,7 @@
 
     .auto-notice {
       font-size: 0.9rem;
-      color: #166534;
+      color: var(--auto-notice);
       font-weight: 600;
       margin: 0.4rem 0 0;
     }
@@ -212,7 +369,7 @@
     .nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
     .nav-list button { width: 100%; justify-content: flex-start; border-radius: 10px; }
     .nav-list button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
-    .nav-list button.answered { border-color: var(--success); color: #166534; }
+    .nav-list button.answered { border-color: var(--success); color: var(--auto-notice); }
 
     .question-card h3 { margin-top: 0; margin-bottom: 0.35rem; color: var(--accent); }
     .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; }
@@ -227,7 +384,7 @@
 
     .translit {
       font-size: 0.9rem;
-      color: #94a3b8;
+      color: var(--translit);
       font-style: italic;
       margin-bottom: 1.5rem;
       font-weight: 300;
@@ -238,18 +395,61 @@
       padding: 0.65rem 0.75rem;
       background: var(--accent-soft);
       border-radius: 10px;
-      border: 1px solid rgba(29, 78, 216, 0.35);
+      border: 1px solid var(--answer-border);
     }
 
     .answer-block strong { color: var(--accent); }
-    .answer-block.correct { background: #dcfce7; border-color: #16a34a; color: #14532d; }
-    .answer-block.wrong { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+    .answer-block.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+    .answer-block.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
 
     .toggle-row {
       margin-top: 0.6rem;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
+    }
+
+    .known-toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .known-toggle-btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--accent);
+      box-shadow: none;
+      transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .known-toggle-btn.single {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .known-toggle-btn.both {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .known-toggle-btn[aria-pressed="true"] {
+      color: var(--button-contrast);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+    }
+
+    .known-toggle-btn.single[aria-pressed="true"] {
+      background: var(--accent);
+    }
+
+    .known-toggle-btn.both[aria-pressed="true"] {
+      background: var(--success);
     }
 
     .known-list {
@@ -259,6 +459,54 @@
       max-height: 240px;
       overflow: auto;
       padding-right: 0.2rem;
+    }
+
+    .backup-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .backup-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.6rem 0.7rem;
+      background: var(--backup-bg);
+    }
+
+    .backup-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .backup-meta strong { color: var(--backup-accent); }
+
+    .backup-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .backup-confirm {
+      border-top: 1px dashed var(--backup-confirm);
+      padding-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .backup-confirm label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
     }
 
     .import-area {
@@ -271,55 +519,109 @@
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--line);
       border-radius: 10px;
       padding: 0.5rem 0.6rem;
-      background: #f9fafb;
+      background: var(--known-item-bg);
     }
 
     .known-item small { color: var(--muted); }
 
+    .known-direction-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .known-direction-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 60;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      color: var(--fg);
+      border-radius: 16px;
+      padding: 1.2rem 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
+      text-align: left;
+    }
+
+    .modal-card h3 {
+      margin: 0 0 0.5rem;
+      color: var(--accent);
+    }
+
+    .modal-checkbox {
+      margin: 0.6rem 0 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .modal-actions {
+      justify-content: flex-end;
+    }
+
     .fact-box {
-      background: #fef9c3;
-      border: 1px solid #facc15;
+      background: var(--fact-bg);
+      border: 1px solid var(--fact-border);
       border-radius: 10px;
       padding: 0.7rem 0.8rem;
       margin: 0.6rem 0;
-      color: #854d0e;
+      color: var(--fact-text);
     }
 
     .fact-note {
       font-size: 0.85rem;
-      color: #854d0e;
+      color: var(--fact-text);
       margin-top: 0;
     }
 
     .interval-summary {
       margin-top: 0.8rem;
-      border: 1px dashed #93c5fd;
+      border: 1px dashed var(--interval-border);
       border-radius: 12px;
       padding: 0.7rem 0.9rem;
-      background: #f0f7ff;
+      background: var(--interval-bg);
     }
 
-    .interval-summary h4 { margin: 0 0 0.4rem; color: #1e40af; }
+    .interval-summary h4 { margin: 0 0 0.4rem; color: var(--interval-title); }
 
     .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
-    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     .result-table th { color: var(--accent); }
 
     .mnemonic-block {
       margin-top: 0.9rem;
       padding: 0.7rem 0.9rem;
       border-radius: 12px;
-      border: 1px solid #fcd34d;
-      background: #fef3c7;
-      color: #92400e;
+      border: 1px solid var(--mnemonic-border);
+      background: var(--mnemonic-bg);
+      color: var(--mnemonic-text);
     }
 
     .mnemonic-block h4 {
       margin: 0 0 0.4rem;
-      color: #92400e;
+      color: var(--mnemonic-text);
     }
 
     .mnemonic-block ul {
@@ -343,14 +645,18 @@
       .question-card { order: 1; }
     }
 
+    @media (max-width: 720px) {
+      #pageDescription { white-space: normal; }
+    }
+
     @media (max-width: 640px) {
       header h1 { font-size: 1.6rem; }
       .greek-term { font-size: 1.6rem; }
     }
 
     .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
-    .setup-card:first-of-type { border: 1px dashed #cbd5e1; box-shadow: none; background: #f8fafc; }
-    .setup-primary { border: 2px solid var(--accent); background: #fff; }
+    .setup-card:first-of-type { border: 1px dashed var(--setup-note-border); box-shadow: none; background: var(--setup-note-bg); }
+    .setup-primary { border: 2px solid var(--accent); background: var(--card-bg); }
 
     .section-title {
       margin-top: 1.2rem;
@@ -371,13 +677,39 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+
+    .controls.start-controls {
+      justify-content: center;
+    }
+
+    .controls.start-controls #startBtn,
+    .controls.start-controls #resetRestartBtn {
+      width: auto;
+      max-width: none;
+      display: inline-flex;
+      margin: 0;
+      flex: 1 1 240px;
+      justify-content: center;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="title-bar">
+    <div class="header-top">
       <a href="../../index.html" class="home-link" id="homeLink">← Storification</a>
-      <button type="button" class="danger" id="resetSessionBtn">Reset toets</button>
+      <div class="header-actions">
+        <label class="theme-switch" for="themeToggle">
+          <input type="checkbox" id="themeToggle" aria-label="Donkere modus">
+          <span class="switch-track" aria-hidden="true"></span>
+          <span class="switch-label">Donker</span>
+        </label>
+        <button type="button" class="danger" id="resetSessionBtn">Vocabtrainer Full Reset</button>
+      </div>
     </div>
     <h1 id="pageTitle">Vocabtrainer</h1>
     <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en vertaalt naar taal 2.</p>
@@ -446,13 +778,13 @@
             <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
           </div>
         </div>
-        <div class="controls">
+        <div class="controls start-controls">
           <button class="primary" id="startBtn" type="button">Start de toets</button>
           <button id="resetRestartBtn" type="button" class="danger hidden">RESET &amp; HERSTART TOETS</button>
         </div>
       </article>
 
-      <article class="card setup-card" id="knownCard">
+      <article class="card full setup-card" id="knownCard">
         <h2>Bekende woorden</h2>
         <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer verdergaan.</p>
         <p id="knownCount"></p>
@@ -462,6 +794,11 @@
           <button type="button" id="backToTestBtn">Terug naar toets</button>
         </div>
         <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
+        <h3 class="section-title">Back-ups bekende woorden</h3>
+        <p class="hint">Bij het resetten met bekende woorden opgeslagen maken we een back-up. We bewaren de laatste 3.</p>
+        <div class="backup-list" id="knownBackupList"></div>
+        <p class="hint hidden" id="knownBackupEmpty">Nog geen back-ups opgeslagen.</p>
+        <p class="hint" id="knownBackupStatus"></p>
         <h3 class="section-title">Export / import onbekende woorden</h3>
         <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
         <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
@@ -510,21 +847,20 @@
             <div class="translit" id="translitText"></div>
             <p><strong>Vertaal naar <span id="targetLanguageLabel">taal 2</span>.</strong></p>
 
-            <label for="userAnswer"><strong>Jouw antwoord</strong></label>
-            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus>
+            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus aria-label="Jouw antwoord">
 
             <div class="controls">
-              <button id="saveAnswer" type="button" class="primary">Bewaar antwoord</button>
               <button id="revealNow" type="button">Toon antwoord nu</button>
               <button id="prevBtn" type="button">← Vorige</button>
               <button id="nextBtn" type="button">Volgende →</button>
-            </div>
-            <div class="controls">
               <button id="mnemonicBtn" type="button">Ezelsbruggetjes</button>
             </div>
 
             <div class="toggle-row">
-              <label><input type="checkbox" id="knownToggle"> Ik weet dit woord (niet meer tonen)</label>
+              <div class="known-toggle-group">
+                <button type="button" class="known-toggle-btn both" id="knownToggleBothBtn" aria-pressed="false">Ik weet dit woord in beide richtingen (nooit meer tonen)</button>
+                <button type="button" class="known-toggle-btn single" id="knownToggleSingleBtn" aria-pressed="false">Ik weet dit woord alleen in deze vertaalrichting (niet meer tonen)</button>
+              </div>
               <p class="hint">Je kunt dit altijd terugzetten in het blok 'Bekende woorden'.</p>
             </div>
             <p class="auto-notice hidden" id="autoNotice"></p>
@@ -557,6 +893,21 @@
     </section>
   </main>
 
+  <div class="modal-overlay hidden" id="resetOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="resetOverlayTitle">
+      <h3 id="resetOverlayTitle"></h3>
+      <p id="resetOverlayBody"></p>
+      <label class="modal-checkbox hidden" id="resetOverlayKnownRow">
+        <input type="checkbox" id="resetOverlayKnownToggle">
+        Wis ook mijn lijst met bekende woorden
+      </label>
+      <div class="controls modal-actions">
+        <button type="button" id="resetOverlayCancel">Annuleren</button>
+        <button type="button" class="danger" id="resetOverlayConfirm">Reset</button>
+      </div>
+    </div>
+  </div>
+
   <script src="vocab-greek-facts.js"></script>
   <script src="vocab-data.js"></script>
   <script src="vocab-latin-nl.js"></script>
@@ -585,9 +936,19 @@
     const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
     const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
     const LEGACY_DATASET_ID = "grc-nl";
+    const STORAGE_SCHEMA_VERSION = 4;
+    const STORAGE_SCHEMA_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-storage-schema-v4"
+      : `vocab-storage-schema-${DATASET_ID}-v4`;
 
     if (!localStorage.getItem(DATASET_KEY) && activeDataset.id) {
       localStorage.setItem(DATASET_KEY, activeDataset.id);
+    }
+
+    const storedSchemaVersion = localStorage.getItem(STORAGE_SCHEMA_KEY);
+    if (storedSchemaVersion !== String(STORAGE_SCHEMA_VERSION)) {
+      localStorage.setItem(STORAGE_SCHEMA_KEY, String(STORAGE_SCHEMA_VERSION));
+      window.location.reload();
     }
 
     const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
@@ -607,6 +968,10 @@
     const MNEMONIC_KEY = DATASET_ID === LEGACY_DATASET_ID
       ? "oudgrieks-vocab-mnemonics-v1"
       : `vocab-mnemonics-${DATASET_ID}-v1`;
+    const KNOWN_BACKUP_KEY = DATASET_ID === LEGACY_DATASET_ID
+      ? "oudgrieks-vocab-known-backups-v1"
+      : `vocab-known-backups-${DATASET_ID}-v1`;
+    const KNOWN_BACKUP_LIMIT = 3;
 
     function loadMasterVocab() {
       return localStorage.getItem(MASTER_VOCAB_KEY);
@@ -625,7 +990,9 @@
     const vocab = parseVocab(RAW_VOCAB);
     const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
 
-    const knownIds = loadKnown();
+    const knownState = loadKnown();
+    const knownL1Ids = knownState.l1;
+    const knownL2Ids = knownState.l2;
     const userMnemonics = loadUserMnemonics();
 
     let session = null;
@@ -640,6 +1007,9 @@
     const knownCount = document.getElementById("knownCount");
     const knownList = document.getElementById("knownList");
     const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const knownBackupList = document.getElementById("knownBackupList");
+    const knownBackupEmpty = document.getElementById("knownBackupEmpty");
+    const knownBackupStatus = document.getElementById("knownBackupStatus");
     const exportUnknownBtn = document.getElementById("exportUnknownBtn");
     const importUnknownBtn = document.getElementById("importUnknownBtn");
     const importUnknownKnownRestBtn = document.getElementById("importUnknownKnownRestBtn");
@@ -662,11 +1032,11 @@
     const translitText = document.getElementById("translitText");
     const targetLanguageLabel = document.getElementById("targetLanguageLabel");
     const userAnswer = document.getElementById("userAnswer");
-    const saveAnswer = document.getElementById("saveAnswer");
     const revealNow = document.getElementById("revealNow");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
-    const knownToggle = document.getElementById("knownToggle");
+    const knownToggleBothBtn = document.getElementById("knownToggleBothBtn");
+    const knownToggleSingleBtn = document.getElementById("knownToggleSingleBtn");
     const answerBlock = document.getElementById("answerBlock");
     const mnemonicBlock = document.getElementById("mnemonicBlock");
     const mnemonicList = document.getElementById("mnemonicList");
@@ -679,6 +1049,13 @@
     const retryAll = document.getElementById("retryAll");
     const backToSettings = document.getElementById("backToSettings");
     const resetSessionBtn = document.getElementById("resetSessionBtn");
+    const resetOverlay = document.getElementById("resetOverlay");
+    const resetOverlayTitle = document.getElementById("resetOverlayTitle");
+    const resetOverlayBody = document.getElementById("resetOverlayBody");
+    const resetOverlayKnownRow = document.getElementById("resetOverlayKnownRow");
+    const resetOverlayKnownToggle = document.getElementById("resetOverlayKnownToggle");
+    const resetOverlayCancel = document.getElementById("resetOverlayCancel");
+    const resetOverlayConfirm = document.getElementById("resetOverlayConfirm");
     const homeLink = document.getElementById("homeLink");
     const pageTitle = document.getElementById("pageTitle");
     const pageDescription = document.getElementById("pageDescription");
@@ -779,9 +1156,23 @@
 
     function buildDirectionMap(activeIds, mode, existingMap = {}) {
       const map = {};
-      if (mode === "alternate") {
-        let toggleIndex = 0;
-        activeIds.forEach((id) => {
+      let toggleIndex = 0;
+      activeIds.forEach((id) => {
+        const knownL1 = isKnownL1(id);
+        const knownL2 = isKnownL2(id);
+        if (!knownL1 && knownL2) {
+          map[id] = "l1";
+          return;
+        }
+        if (knownL1 && !knownL2) {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "l2-to-l1") {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "alternate") {
           const existingDir = existingMap[id];
           if (existingDir === "l1" || existingDir === "l2") {
             map[id] = existingDir;
@@ -789,12 +1180,6 @@
           }
           map[id] = toggleIndex % 2 === 0 ? "l1" : "l2";
           toggleIndex += 1;
-        });
-        return map;
-      }
-      activeIds.forEach((id) => {
-        if (mode === "l2-to-l1") {
-          map[id] = "l2";
           return;
         }
         if (mode === "random") {
@@ -1033,13 +1418,18 @@
 
     function loadKnown() {
       const raw = localStorage.getItem(KNOWN_KEY);
-      if (!raw) return new Set();
+      if (!raw) return { l1: new Set(), l2: new Set() };
       try {
         const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return new Set();
-        return new Set(parsed);
+        if (Array.isArray(parsed)) {
+          const set = new Set(parsed);
+          return { l1: new Set(set), l2: new Set(set) };
+        }
+        const l1 = parsed && Array.isArray(parsed.l1) ? parsed.l1 : [];
+        const l2 = parsed && Array.isArray(parsed.l2) ? parsed.l2 : [];
+        return { l1: new Set(l1), l2: new Set(l2) };
       } catch (error) {
-        return new Set();
+        return { l1: new Set(), l2: new Set() };
       }
     }
 
@@ -1054,7 +1444,92 @@
     }
 
     function saveKnown() {
-      localStorage.setItem(KNOWN_KEY, JSON.stringify(Array.from(knownIds)));
+      localStorage.setItem(KNOWN_KEY, JSON.stringify({
+        l1: Array.from(knownL1Ids),
+        l2: Array.from(knownL2Ids)
+      }));
+    }
+
+    function isKnownL1(id) {
+      return knownL1Ids.has(id);
+    }
+
+    function isKnownL2(id) {
+      return knownL2Ids.has(id);
+    }
+
+    function isKnownAny(id) {
+      return isKnownL1(id) || isKnownL2(id);
+    }
+
+    function isKnownBoth(id) {
+      return isKnownL1(id) && isKnownL2(id);
+    }
+
+    function setKnownInDirection(id, direction, value) {
+      const target = direction === "l2" ? knownL2Ids : knownL1Ids;
+      if (value) {
+        target.add(id);
+      } else {
+        target.delete(id);
+      }
+    }
+
+    function setKnownBothDirections(id, value) {
+      setKnownInDirection(id, "l1", value);
+      setKnownInDirection(id, "l2", value);
+    }
+
+    function getKnownAnyCount() {
+      return new Set([...knownL1Ids, ...knownL2Ids]).size;
+    }
+
+    function formatTimestamp(date) {
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function loadKnownBackups() {
+      const raw = localStorage.getItem(KNOWN_BACKUP_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((entry) => entry && typeof entry.timestamp === "string" && Array.isArray(entry.words))
+          .slice(0, KNOWN_BACKUP_LIMIT);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveKnownBackups(backups) {
+      localStorage.setItem(KNOWN_BACKUP_KEY, JSON.stringify(backups.slice(0, KNOWN_BACKUP_LIMIT)));
+    }
+
+    function setBackupStatus(message) {
+      if (!knownBackupStatus) return;
+      knownBackupStatus.textContent = message || "";
+    }
+
+    function createKnownBackup() {
+      const knownWords = vocab
+        .filter((item) => isKnownAny(item.id))
+        .map((item) => ({
+          greek: item.greek,
+          l1: isKnownL1(item.id),
+          l2: isKnownL2(item.id)
+        }));
+      if (knownWords.length === 0) {
+        setBackupStatus("Geen bekende woorden om te back-uppen.");
+        return null;
+      }
+      const entry = { timestamp: formatTimestamp(new Date()), words: knownWords };
+      const backups = loadKnownBackups();
+      backups.unshift(entry);
+      saveKnownBackups(backups);
+      setBackupStatus(`Back-up opgeslagen: ${entry.timestamp} (${knownWords.length} woorden).`);
+      renderKnownBackups();
+      return entry;
     }
 
     function loadUserMnemonics() {
@@ -1098,13 +1573,20 @@
       return true;
     }
 
-    function buildActiveIds(includeKnown) {
+    function buildActiveIds(includeKnown, directionMode) {
       if (includeKnown) return vocab.map((item) => item.id);
-      return vocab.filter((item) => !knownIds.has(item.id)).map((item) => item.id);
+      const mode = directionMode || getDirectionMode();
+      if (mode === "l1-to-l2") {
+        return vocab.filter((item) => !isKnownL1(item.id)).map((item) => item.id);
+      }
+      if (mode === "l2-to-l1") {
+        return vocab.filter((item) => !isKnownL2(item.id)).map((item) => item.id);
+      }
+      return vocab.filter((item) => !isKnownBoth(item.id)).map((item) => item.id);
     }
 
     function buildUnknownList() {
-      return vocab.filter((item) => !knownIds.has(item.id));
+      return vocab.filter((item) => !isKnownBoth(item.id));
     }
 
     function shuffleArray(values) {
@@ -1254,8 +1736,9 @@
       items.forEach((entry) => {
         const id = greekToId.get(entry.greek);
         if (!id) return;
-        if (knownIds.has(id)) {
-          knownIds.delete(id);
+        if (isKnownAny(id)) {
+          knownL1Ids.delete(id);
+          knownL2Ids.delete(id);
           moved += 1;
         }
       });
@@ -1264,6 +1747,8 @@
         saveKnown();
         renderKnownList();
         if (session) {
+          session.retiredIds = [];
+          saveSession();
           rebuildActiveIds();
           updateDisplay();
         }
@@ -1301,16 +1786,20 @@
         }
       });
 
-      knownIds.clear();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
       vocab.forEach((item) => {
         if (!unknownIds.has(item.id)) {
-          knownIds.add(item.id);
+          knownL1Ids.add(item.id);
+          knownL2Ids.add(item.id);
         }
       });
 
       saveKnown();
       renderKnownList();
       if (session) {
+        session.retiredIds = [];
+        saveSession();
         rebuildActiveIds();
         updateDisplay();
       }
@@ -1338,8 +1827,9 @@
       items.forEach((entry) => {
         const id = greekToId.get(entry.greek);
         if (!id) return;
-        if (!knownIds.has(id)) {
-          knownIds.add(id);
+        if (!isKnownBoth(id)) {
+          knownL1Ids.add(id);
+          knownL2Ids.add(id);
           moved += 1;
         }
       });
@@ -1348,6 +1838,8 @@
         saveKnown();
         renderKnownList();
         if (session) {
+          session.retiredIds = [];
+          saveSession();
           rebuildActiveIds();
           updateDisplay();
         }
@@ -1373,7 +1865,9 @@
       if (!confirm(confirmMessage)) return;
 
       saveMasterVocab(validLines.join("\n"));
-      knownIds.clear();
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
       saveKnown();
       clearSession();
       masterStatus.textContent = "Masterlijst opgeslagen. Pagina wordt herladen...";
@@ -1387,7 +1881,9 @@
         return;
       }
       clearMasterVocab();
-      knownIds.clear();
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
       saveKnown();
       clearSession();
       masterStatus.textContent = "Standaardlijst hersteld. Pagina wordt herladen...";
@@ -1430,8 +1926,8 @@
     function renderKnownList() {
       if (!knownList) return;
       knownList.innerHTML = "";
-      const knownItems = vocab.filter((item) => knownIds.has(item.id));
-      knownCount.textContent = `Bekende woorden: ${knownItems.length} / ${vocab.length}`;
+      const knownItems = vocab.filter((item) => isKnownAny(item.id));
+      knownCount.textContent = `Bekende woorden: ${getKnownAnyCount()} / ${vocab.length}`;
       knownNotice.classList.toggle("hidden", !session);
 
       if (knownItems.length === 0) {
@@ -1443,49 +1939,264 @@
       }
 
       knownItems.forEach((item) => {
-        const wrapper = document.createElement("label");
+        const wrapper = document.createElement("div");
         wrapper.className = "known-item";
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = true;
-        checkbox.addEventListener("change", () => {
-          if (!checkbox.checked) {
-            knownIds.delete(item.id);
-            saveKnown();
-            if (session) {
-              rebuildActiveIds();
-              updateDisplay();
-            }
-            renderKnownList();
-          }
-        });
 
         const greek = document.createElement("strong");
         greek.textContent = item.greek;
-        const dutch = document.createElement("small");
-        dutch.textContent = `${LANGUAGE2_LABEL}: ${item.translations.join(", ")}`;
 
-        wrapper.appendChild(checkbox);
+        const details = document.createElement("small");
+        details.textContent = `${LANGUAGE2_LABEL}: ${item.translations.join(", ")}`;
+
+        const directionRow = document.createElement("div");
+        directionRow.className = "known-direction-row";
+        const directionLabel = document.createElement("span");
+        directionLabel.textContent = "Ik weet:";
+
+        const l1Label = document.createElement("label");
+        const l1Checkbox = document.createElement("input");
+        l1Checkbox.type = "checkbox";
+        l1Label.appendChild(l1Checkbox);
+        l1Label.appendChild(document.createTextNode(` alleen ${LANGUAGE1_LABEL} → ${LANGUAGE2_LABEL}`));
+
+        const l2Label = document.createElement("label");
+        const l2Checkbox = document.createElement("input");
+        l2Checkbox.type = "checkbox";
+        l2Label.appendChild(l2Checkbox);
+        l2Label.appendChild(document.createTextNode(` alleen ${LANGUAGE2_LABEL} → ${LANGUAGE1_LABEL}`));
+
+        const bothLabel = document.createElement("label");
+        const bothCheckbox = document.createElement("input");
+        bothCheckbox.type = "checkbox";
+        bothLabel.appendChild(bothCheckbox);
+        bothLabel.appendChild(document.createTextNode(` ${LANGUAGE1_LABEL} ↔ ${LANGUAGE2_LABEL} (beide richtingen)`));
+
+        const sync = () => {
+          const knownL1 = isKnownL1(item.id);
+          const knownL2 = isKnownL2(item.id);
+          l1Checkbox.checked = knownL1;
+          l2Checkbox.checked = knownL2;
+          bothCheckbox.checked = knownL1 && knownL2;
+        };
+
+        l1Checkbox.addEventListener("change", () => {
+          setKnownInDirection(item.id, "l1", l1Checkbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        l2Checkbox.addEventListener("change", () => {
+          setKnownInDirection(item.id, "l2", l2Checkbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        bothCheckbox.addEventListener("change", () => {
+          setKnownBothDirections(item.id, bothCheckbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        sync();
+
+        directionRow.appendChild(directionLabel);
+        directionRow.appendChild(l1Label);
+        directionRow.appendChild(l2Label);
+        directionRow.appendChild(bothLabel);
+
         wrapper.appendChild(greek);
         if (SHOW_TRANSLIT) {
           const translit = document.createElement("small");
           translit.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
           wrapper.appendChild(translit);
         }
-        wrapper.appendChild(dutch);
+        wrapper.appendChild(details);
+        wrapper.appendChild(directionRow);
         knownList.appendChild(wrapper);
+      });
+    }
+
+    function deleteKnownBackup(index) {
+      const backups = loadKnownBackups();
+      backups.splice(index, 1);
+      saveKnownBackups(backups);
+      setBackupStatus("Back-up verwijderd.");
+      renderKnownBackups();
+    }
+
+    function restoreKnownBackup(backup) {
+      if (!backup || !Array.isArray(backup.words)) return;
+      const confirmMessage = "Back-up herstellen? Klik OK om je huidige bekende woorden te vervangen, Annuleren om samen te voegen.";
+      const replaceExisting = confirm(confirmMessage);
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      const entries = backup.words.map((entry) => {
+        if (typeof entry === "string") {
+          return { greek: entry, l1: true, l2: true };
+        }
+        if (entry && typeof entry === "object") {
+          return { greek: entry.greek, l1: Boolean(entry.l1), l2: Boolean(entry.l2) };
+        }
+        return null;
+      }).filter(Boolean);
+      if (replaceExisting) {
+        knownL1Ids.clear();
+        knownL2Ids.clear();
+      }
+      const addedWords = new Set();
+      let missing = 0;
+      entries.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) {
+          missing += 1;
+          return;
+        }
+        if (entry.l1) {
+          if (!knownL1Ids.has(id)) {
+            knownL1Ids.add(id);
+            addedWords.add(id);
+          }
+        }
+        if (entry.l2) {
+          if (!knownL2Ids.has(id)) {
+            knownL2Ids.add(id);
+            addedWords.add(id);
+          }
+        }
+      });
+      saveKnown();
+      renderKnownList();
+      renderKnownBackups();
+      if (session) {
+        rebuildActiveIds();
+        updateDisplay();
+      }
+      const added = addedWords.size;
+      const missingNote = missing > 0 ? `, ${missing} niet gevonden` : "";
+      const modeLabel = replaceExisting ? "vervangen" : "samengevoegd";
+      setBackupStatus(`Back-up hersteld (${added} woorden ${modeLabel}${missingNote}).`);
+    }
+
+    function renderKnownBackups() {
+      if (!knownBackupList || !knownBackupEmpty) return;
+      knownBackupList.innerHTML = "";
+      const backups = loadKnownBackups();
+      knownBackupEmpty.classList.toggle("hidden", backups.length > 0);
+      if (backups.length === 0) return;
+
+      backups.forEach((backup, index) => {
+        const item = document.createElement("div");
+        item.className = "backup-item";
+
+        const meta = document.createElement("div");
+        meta.className = "backup-meta";
+        const title = document.createElement("strong");
+        title.textContent = backup.timestamp;
+        const count = document.createElement("span");
+        const total = Array.isArray(backup.words) ? backup.words.length : 0;
+        count.textContent = `${total} woorden`;
+        meta.appendChild(title);
+        meta.appendChild(count);
+
+        const actions = document.createElement("div");
+        actions.className = "backup-actions";
+        const restoreBtn = document.createElement("button");
+        restoreBtn.type = "button";
+        restoreBtn.textContent = "Herstel";
+        restoreBtn.addEventListener("click", () => {
+          restoreKnownBackup(backup);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "danger";
+        deleteBtn.textContent = "Verwijder";
+
+        actions.appendChild(restoreBtn);
+        actions.appendChild(deleteBtn);
+
+        const confirmWrap = document.createElement("div");
+        confirmWrap.className = "backup-confirm hidden";
+        const confirmText = document.createElement("div");
+        confirmText.textContent = "Weet je zeker dat je deze back-up wilt verwijderen?";
+        const confirmLabel = document.createElement("label");
+        const confirmCheck = document.createElement("input");
+        confirmCheck.type = "checkbox";
+        confirmLabel.appendChild(confirmCheck);
+        confirmLabel.appendChild(document.createTextNode(" Ik begrijp dat dit onomkeerbaar is."));
+
+        const confirmActions = document.createElement("div");
+        confirmActions.className = "backup-actions";
+        const confirmDeleteBtn = document.createElement("button");
+        confirmDeleteBtn.type = "button";
+        confirmDeleteBtn.className = "danger";
+        confirmDeleteBtn.textContent = "Verwijder definitief";
+        confirmDeleteBtn.disabled = true;
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.textContent = "Annuleren";
+
+        confirmCheck.addEventListener("change", () => {
+          confirmDeleteBtn.disabled = !confirmCheck.checked;
+        });
+        confirmDeleteBtn.addEventListener("click", () => {
+          deleteKnownBackup(index);
+        });
+        cancelBtn.addEventListener("click", () => {
+          confirmWrap.classList.add("hidden");
+          confirmCheck.checked = false;
+          confirmDeleteBtn.disabled = true;
+        });
+        deleteBtn.addEventListener("click", () => {
+          document.querySelectorAll(".backup-confirm").forEach((el) => {
+            if (el !== confirmWrap) el.classList.add("hidden");
+          });
+          confirmWrap.classList.toggle("hidden");
+          confirmCheck.checked = false;
+          confirmDeleteBtn.disabled = true;
+        });
+
+        confirmActions.appendChild(confirmDeleteBtn);
+        confirmActions.appendChild(cancelBtn);
+
+        confirmWrap.appendChild(confirmText);
+        confirmWrap.appendChild(confirmLabel);
+        confirmWrap.appendChild(confirmActions);
+
+        item.appendChild(meta);
+        item.appendChild(actions);
+        item.appendChild(confirmWrap);
+        knownBackupList.appendChild(item);
       });
     }
 
     function createSession(options) {
       const includeKnown = options.includeKnown;
-      const activeIds = options.shuffle ? shuffleArray(buildActiveIds(includeKnown)) : buildActiveIds(includeKnown);
+      const activeIds = options.shuffle
+        ? shuffleArray(buildActiveIds(includeKnown, options.directionMode))
+        : buildActiveIds(includeKnown, options.directionMode);
       const directionMode = options.directionMode || "l1-to-l2";
       session = {
         activeIds,
         currentIndex: 0,
         answers: {},
         attempts: [],
+        hasInteracted: false,
+        retiredIds: [],
         revealMode: options.revealMode,
         interval: options.interval,
         includeKnown,
@@ -1501,6 +2212,35 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
     }
 
+    function hasSessionProgress(saved) {
+      if (!saved) return false;
+      if (saved.hasInteracted) return true;
+      if (Array.isArray(saved.attempts) && saved.attempts.length > 0) return true;
+      if (saved.answers && typeof saved.answers === "object" && Object.keys(saved.answers).length > 0) return true;
+      return false;
+    }
+
+    function markSessionInteracted() {
+      if (!session || session.hasInteracted) return;
+      session.hasInteracted = true;
+      saveSession();
+    }
+
+    function updateSessionRetired(id) {
+      if (!session) return;
+      if (!Array.isArray(session.retiredIds)) {
+        session.retiredIds = [];
+      }
+      const retired = new Set(session.retiredIds);
+      if (isKnownAny(id)) {
+        retired.add(id);
+      } else {
+        retired.delete(id);
+      }
+      session.retiredIds = Array.from(retired);
+      saveSession();
+    }
+
     function clearSession() {
       localStorage.removeItem(STORAGE_KEY);
       session = null;
@@ -1513,6 +2253,9 @@
         const parsed = JSON.parse(raw);
         if (!parsed || !Array.isArray(parsed.activeIds)) return null;
         if (!parsed.activeIds.every((id) => vocabById[id])) return null;
+        if (!Array.isArray(parsed.retiredIds)) {
+          parsed.retiredIds = [];
+        }
         return parsed;
       } catch (error) {
         return null;
@@ -1522,7 +2265,9 @@
     function rebuildActiveIds() {
       if (!session) return;
       const currentId = session.activeIds[session.currentIndex];
-      const allowedIds = buildActiveIds(session.includeKnown);
+      const retiredSet = new Set(Array.isArray(session.retiredIds) ? session.retiredIds : []);
+      const allowedIds = buildActiveIds(session.includeKnown, session.directionMode)
+        .filter((id) => !retiredSet.has(id));
       if (session.shuffle) {
         const allowedSet = new Set(allowedIds);
         const preserved = session.activeIds.filter((id) => allowedSet.has(id));
@@ -1561,6 +2306,8 @@
         if (index === session.currentIndex) btn.classList.add("current");
         if (session.answers[id]) btn.classList.add("answered");
         btn.addEventListener("click", () => {
+          markSessionInteracted();
+          commitCurrentAnswer();
           session.currentIndex = index;
           updateDisplay();
         });
@@ -1591,7 +2338,16 @@
       }
 
       userAnswer.value = session.answers[id] || "";
-      knownToggle.checked = knownIds.has(id);
+      const knownInL1 = isKnownL1(id);
+      const knownInL2 = isKnownL2(id);
+      if (knownToggleBothBtn) {
+        const bothActive = knownInL1 && knownInL2;
+        knownToggleBothBtn.setAttribute("aria-pressed", bothActive ? "true" : "false");
+      }
+      if (knownToggleSingleBtn) {
+        const singleActive = direction === "l2" ? knownInL2 : knownInL1;
+        knownToggleSingleBtn.setAttribute("aria-pressed", singleActive ? "true" : "false");
+      }
 
       const answeredCount = session.attempts.length;
       progressDisplay.textContent = `Woord ${session.currentIndex + 1} van ${session.activeIds.length} • Ingevuld: ${answeredCount}`;
@@ -1688,6 +2444,7 @@
       if (!session || session.activeIds.length === 0) {
         return { autoRemoved: false, intervalShown: false };
       }
+      markSessionInteracted();
       const id = session.activeIds[session.currentIndex];
       const item = vocabById[id];
       session.answers[id] = userAnswer.value.trim();
@@ -1699,11 +2456,13 @@
       const direction = getDirectionForId(id);
       const correctNow = isCorrectAnswerForDirection(session.answers[id], item, direction);
       if (autoRemoveEnabled && correctNow) {
-        if (!knownIds.has(id)) {
-          knownIds.add(id);
+        const alreadyKnown = direction === "l2" ? isKnownL2(id) : isKnownL1(id);
+        if (!alreadyKnown) {
+          setKnownInDirection(id, direction, true);
           saveKnown();
           renderKnownList();
         }
+        updateSessionRetired(id);
         rebuildActiveIds();
         if (session && session.activeIds.length > 0) {
           updateDisplay();
@@ -1731,35 +2490,59 @@
       return { autoRemoved: false, intervalShown };
     }
 
+    function commitCurrentAnswer() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      session.answers[id] = userAnswer.value.trim();
+      if (!session.attempts.includes(id)) {
+        session.attempts.push(id);
+      }
+      saveSession();
+      updateNav();
+    }
+
     function handleRevealNow() {
       if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      commitCurrentAnswer();
       const id = session.activeIds[session.currentIndex];
       showAnswer(id);
     }
 
     function goToRelative(step) {
       if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      commitCurrentAnswer();
       const nextIndex = Math.min(Math.max(session.currentIndex + step, 0), session.activeIds.length - 1);
       session.currentIndex = nextIndex;
       updateDisplay();
     }
 
-    function toggleKnownCurrent(checked) {
+    function toggleKnownCurrentBoth(checked) {
       if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
       const id = session.activeIds[session.currentIndex];
-      if (checked) {
-        knownIds.add(id);
-        saveKnown();
-        rebuildActiveIds();
-        renderKnownList();
-        if (session && session.activeIds.length > 0) {
-          updateDisplay();
-        }
-      } else {
-        knownIds.delete(id);
-        saveKnown();
-        rebuildActiveIds();
-        renderKnownList();
+      setKnownBothDirections(id, checked);
+      saveKnown();
+      updateSessionRetired(id);
+      rebuildActiveIds();
+      renderKnownList();
+      if (session && session.activeIds.length > 0) {
+        updateDisplay();
+      }
+    }
+
+    function toggleKnownCurrentSingle(checked) {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      const id = session.activeIds[session.currentIndex];
+      const direction = getDirectionForId(id);
+      setKnownInDirection(id, direction, checked);
+      saveKnown();
+      updateSessionRetired(id);
+      rebuildActiveIds();
+      renderKnownList();
+      if (session && session.activeIds.length > 0) {
         updateDisplay();
       }
     }
@@ -1771,8 +2554,8 @@
       knownNotice.classList.add("hidden");
 
       const answeredCount = session ? session.attempts.length : 0;
-      const knownCountValue = knownIds.size;
-      const remainingUnknown = buildActiveIds(false).length;
+      const knownCountValue = getKnownAnyCount();
+      const remainingUnknown = buildActiveIds(false, session ? session.directionMode : getDirectionMode()).length;
       summaryText.textContent = `Je hebt ${answeredCount} antwoorden ingevuld. Bekende woorden: ${knownCountValue}. Nog niet gemarkeerd als bekend: ${remainingUnknown}.`;
 
       resultTable.innerHTML = "";
@@ -1819,7 +2602,9 @@
 
     function resetSession(keepKnown) {
       if (!keepKnown) {
-        knownIds.clear();
+        createKnownBackup();
+        knownL1Ids.clear();
+        knownL2Ids.clear();
         saveKnown();
       }
       clearSession();
@@ -1844,7 +2629,11 @@
     }
 
     function updateStartButtons() {
-      const existing = loadSession();
+      let existing = loadSession();
+      if (existing && !hasSessionProgress(existing)) {
+        clearSession();
+        existing = null;
+      }
       if (existing) {
         resetRestartBtn.classList.remove("hidden");
         startBtn.textContent = "Hervat de toets";
@@ -1899,21 +2688,33 @@
       updateDisplay();
     }
 
-    function confirmResetSessionFlow(options = {}) {
-      const { forceClearKnown = false } = options;
-      if (forceClearKnown) {
-        if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren, je bekende woorden worden gewist en de volgorde wordt opnieuw gestart.")) {
-          return false;
-        }
-        resetSession(false);
-        return true;
+    let resetOverlayMode = null;
+
+    function openResetOverlay(mode) {
+      if (!resetOverlay) return;
+      resetOverlayMode = mode;
+      resetOverlay.classList.remove("hidden");
+      resetOverlay.setAttribute("aria-hidden", "false");
+      if (mode === "restart") {
+        resetOverlayTitle.textContent = "Reset & herstart toets";
+        resetOverlayBody.textContent = "Je toets en voortgang worden gereset. Bekende woorden worden gewist.";
+        resetOverlayKnownRow.classList.add("hidden");
+        resetOverlayKnownToggle.checked = false;
+        resetOverlayConfirm.textContent = "Reset & herstart";
+      } else {
+        resetOverlayTitle.textContent = "Vocabtrainer Full Reset";
+        resetOverlayBody.textContent = "Je voortgang wordt gereset. Je kunt kiezen om je bekende woorden te behouden.";
+        resetOverlayKnownRow.classList.remove("hidden");
+        resetOverlayKnownToggle.checked = false;
+        resetOverlayConfirm.textContent = "Reset";
       }
-      if (!confirm("Wil je de huidige toets resetten? Je voortgang gaat dan verloren en de volgorde wordt opnieuw gestart.")) {
-        return false;
-      }
-      const clearKnown = confirm("Wil je ook je lijst met bekende woorden wissen? Dit kan niet ongedaan gemaakt worden.");
-      resetSession(!clearKnown);
-      return true;
+    }
+
+    function closeResetOverlay() {
+      if (!resetOverlay) return;
+      resetOverlay.classList.add("hidden");
+      resetOverlay.setAttribute("aria-hidden", "true");
+      resetOverlayMode = null;
     }
 
     function confirmClearKnownFlow() {
@@ -1923,15 +2724,51 @@
       if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
         return false;
       }
-      knownIds.clear();
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
       saveKnown();
       renderKnownList();
       if (session) {
+        session.retiredIds = [];
+        saveSession();
         rebuildActiveIds();
         updateDisplay();
       }
       return true;
     }
+
+    let storage = null;
+    try {
+      storage = window.localStorage;
+    } catch (error) {
+      storage = null;
+    }
+
+    const themeToggle = document.getElementById("themeToggle");
+
+    function setTheme(theme) {
+      const next = theme === "light" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      if (themeToggle) {
+        themeToggle.checked = next === "dark";
+      }
+      if (storage) {
+        storage.setItem("storification-theme", next);
+      }
+    }
+
+    const storedTheme = storage ? storage.getItem("storification-theme") : null;
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+
+    if (themeToggle) {
+      themeToggle.addEventListener("change", () => {
+        setTheme(themeToggle.checked ? "dark" : "light");
+      });
+    }
+
+    setTheme(initialTheme);
 
     applyDatasetUI();
 
@@ -1979,19 +2816,14 @@
     });
 
     resetRestartBtn.addEventListener("click", () => {
-      const confirmed = confirmResetSessionFlow({ forceClearKnown: true });
-      if (!confirmed) return;
-      startTest({
-        revealMode: getRevealMode(),
-        interval: getIntervalValue(),
-        includeKnown: false,
-        shuffle: shuffleToggle.checked,
-        directionMode: getDirectionMode()
-      });
-      setSetupVisibility(false);
+      openResetOverlay("restart");
     });
 
-    saveAnswer.addEventListener("click", handleSave);
+    userAnswer.addEventListener("input", () => {
+      if (session) {
+        markSessionInteracted();
+      }
+    });
     userAnswer.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -2021,9 +2853,19 @@
       }
     });
 
-    knownToggle.addEventListener("change", () => {
-      toggleKnownCurrent(knownToggle.checked);
-    });
+    if (knownToggleBothBtn) {
+      knownToggleBothBtn.addEventListener("click", () => {
+        const active = knownToggleBothBtn.getAttribute("aria-pressed") === "true";
+        toggleKnownCurrentBoth(!active);
+      });
+    }
+
+    if (knownToggleSingleBtn) {
+      knownToggleSingleBtn.addEventListener("click", () => {
+        const active = knownToggleSingleBtn.getAttribute("aria-pressed") === "true";
+        toggleKnownCurrentSingle(!active);
+      });
+    }
 
     clearKnownBtn.addEventListener("click", () => {
       confirmClearKnownFlow();
@@ -2062,11 +2904,13 @@
     });
 
     shuffleBtn.addEventListener("click", () => {
+      markSessionInteracted();
       shuffleActiveIds(true);
     });
 
     mnemonicBtn.addEventListener("click", () => {
       if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
       const id = session.activeIds[session.currentIndex];
       const item = vocabById[id];
       if (!item) return;
@@ -2119,10 +2963,50 @@
     });
 
     resetSessionBtn.addEventListener("click", () => {
-      const confirmed = confirmResetSessionFlow();
-      if (!confirmed) return;
-      showSettingsView();
+      openResetOverlay("full");
     });
+
+    if (resetOverlayCancel) {
+      resetOverlayCancel.addEventListener("click", () => {
+        closeResetOverlay();
+      });
+    }
+
+    if (resetOverlayConfirm) {
+      resetOverlayConfirm.addEventListener("click", () => {
+        if (!resetOverlayMode) {
+          closeResetOverlay();
+          return;
+        }
+        if (resetOverlayMode === "restart") {
+          resetSession(false);
+          startTest({
+            revealMode: getRevealMode(),
+            interval: getIntervalValue(),
+            includeKnown: false,
+            shuffle: shuffleToggle.checked,
+            directionMode: getDirectionMode()
+          });
+          setSetupVisibility(false);
+          closeResetOverlay();
+          return;
+        }
+        if (resetOverlayMode === "full") {
+          const clearKnown = resetOverlayKnownToggle && resetOverlayKnownToggle.checked;
+          resetSession(!clearKnown);
+          showSettingsView();
+          closeResetOverlay();
+        }
+      });
+    }
+
+    if (resetOverlay) {
+      resetOverlay.addEventListener("click", (event) => {
+        if (event.target === resetOverlay) {
+          closeResetOverlay();
+        }
+      });
+    }
 
     autoRemoveToggle.addEventListener("change", () => {
       saveAutoRemove(autoRemoveToggle.checked);
@@ -2195,6 +3079,7 @@
 
     updateIntervalHint();
     renderKnownList();
+    renderKnownBackups();
     updateStartButtons();
     setFact(factInline);
     autoRemoveToggle.checked = loadAutoRemove();

@@ -5,7 +5,6 @@ window.VOCAB_DATASETS.push({
   language1: "Oudgrieks",
   language2: "Nederlands",
   showTransliteration: true,
-  factsKey: "grc-nl",
   data: `
 ὁ ἄνθρωπος\tmens
 γάρ\twant, immers, namelijk

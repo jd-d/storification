@@ -24,6 +24,9 @@
 - [x] Oudgrieks vocab: import onbekend + rest naar bekend
 - [x] Oudgrieks vocab: eigen ezelsbruggetjes + export/import bewaren
 - [x] Oudgrieks vocab: correctheidscheck accepteert gecombineerde vertalingen zonder interpunctie
+- [x] Oudgrieks vocab: back-ups bekende woorden (laatste 3) + herstel/verwijderen
+- [x] Oudgrieks vocab: directionele bekende woorden + reset overlays + header/theme polish
+- [x] Vocabtrainer UX tweaks: session-retire known words, auto-save on nav, header/layout/button changes
 - [x] Vocabtrainer: meerdere woordlijsten (config-bestanden) kunnen kiezen
 - [x] Natuurkunde Begrippen Check: begrippensets via JSON/JS-config + dropdown
 - [x] Natuurkunde Begrippen Check: voorbeeld extra begrippenset toevoegen
