@@ -45,7 +45,7 @@ To add a new story/tool:
 
 ## Vocab Trainer (Generic)
 The vocab trainer lives here:
-- `stories/oudgrieks-vocab-test/index.html`
+- `stories/vocabtrainer/index.html`
 
 It supports:
 - Multiple vocab lists (datasets) chosen by the user.
@@ -67,7 +67,7 @@ rosa<TAB>roos<TAB>Roos klinkt als rose|Denk aan een roos
 ```
 
 ### Adding a New Vocab List
-Create a dataset file (e.g. `stories/oudgrieks-vocab-test/vocab-latin-nl.js`) that registers itself:
+Create a dataset file (e.g. `stories/vocabtrainer/vocab-latin-nl.js`) that registers itself:
 ```js
 window.VOCAB_DATASETS = window.VOCAB_DATASETS || [];
 window.VOCAB_DATASETS.push({
@@ -111,4 +111,4 @@ If you want full offline support, you can add a service worker and cache strateg
 - **Data import/export**: Expand import parsing or add new export formats.
 
 If you want the vocab trainer to split into reusable modules, the inline script in
-`stories/oudgrieks-vocab-test/index.html` can be moved to a dedicated JS file.
+`stories/vocabtrainer/index.html` can be moved to a dedicated JS file.
