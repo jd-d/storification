@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8">
   <title>Vocabtrainer</title>
@@ -106,7 +107,9 @@
       --button-danger-hover: #dc2626;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -146,7 +149,9 @@
       letter-spacing: 0.2px;
     }
 
-    .home-link:hover { text-decoration: underline; }
+    .home-link:hover {
+      text-decoration: underline;
+    }
 
     header h1 {
       margin: 0.8rem 0 0;
@@ -215,28 +220,40 @@
       transition: transform 0.2s ease, background-image 0.2s ease;
     }
 
-    .theme-switch input:checked + .switch-track {
+    .theme-switch input:checked+.switch-track {
       background: rgba(255, 255, 255, 0.55);
     }
 
-    .theme-switch input:checked + .switch-track::after {
+    .theme-switch input:checked+.switch-track::after {
       transform: translateX(20px);
       background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233a66d6'%3e%3cpath fill-rule='evenodd' d='M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 004.472-.69a.75.75 0 01.82.162a10.5 10.5 0 01-2.242 2.242A10.5 10.5 0 016.69 5.528a10.5 10.5 0 012.242-2.242a.75.75 0 01.596-.568z' clip-rule='evenodd'%3e%3c/path%3e%3c/svg%3e");
     }
 
-    .theme-switch input:focus-visible + .switch-track {
+    .theme-switch input:focus-visible+.switch-track {
       outline: 2px solid var(--header-text);
       outline-offset: 2px;
     }
 
-    main { max-width: 1200px; margin: 1.5rem auto 2.5rem; padding: 0 1rem; }
-    main > section {
-        background-color: var(--bg) !important;
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto 2.5rem;
+      padding: 0 1rem;
+    }
+
+    main>section {
+      background-color: var(--bg) !important;
     }
 
 
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-    .full { grid-column: 1 / -1; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
 
     .card {
       background: var(--card-bg);
@@ -247,13 +264,36 @@
       text-align: left !important;
     }
 
-    h2 { margin-top: 0; color: var(--accent); font-size: 1.25rem; }
-    .card h2, .card h1 { text-align: center; margin-bottom: 1.5rem; }
-    p { margin: 0.3rem 0 0.7rem; }
+    h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 1.25rem;
+    }
 
-    .controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.4rem; }
-    .mini-controls { align-items: center; }
-    .mini-controls .hint { margin: 0; }
+    .card h2,
+    .card h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      margin: 0.3rem 0 0.7rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+
+    .mini-controls {
+      align-items: center;
+    }
+
+    .mini-controls .hint {
+      margin: 0;
+    }
 
     button {
       border-radius: 12px;
@@ -270,14 +310,44 @@
       transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
     }
 
-    button.primary { background: var(--accent); color: var(--button-contrast); border-color: var(--accent); }
-    button:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14); }
-    button.primary:hover { background: var(--button-primary-hover); color: var(--button-contrast); }
-    button.danger { border-color: rgba(220, 38, 38, 0.5); color: var(--button-contrast); background: var(--danger); }
-    button.danger:hover { background: var(--button-danger-hover); }
-    button:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+    button.primary {
+      background: var(--accent);
+      color: var(--button-contrast);
+      border-color: var(--accent);
+    }
 
-    label { cursor: pointer; }
+    button:hover {
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14);
+    }
+
+    button.primary:hover {
+      background: var(--button-primary-hover);
+      color: var(--button-contrast);
+    }
+
+    button.danger {
+      border-color: rgba(220, 38, 38, 0.5);
+      color: var(--button-contrast);
+      background: var(--danger);
+    }
+
+    button.danger:hover {
+      background: var(--button-danger-hover);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
     .setup-card label {
       display: flex;
       align-items: center;
@@ -288,7 +358,7 @@
 
     .settings-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 0.9rem;
     }
 
@@ -307,8 +377,13 @@
       margin-bottom: 0.6rem;
     }
 
-    .option-row label { margin-bottom: 0; }
-    input[type="text"], input[type="number"], select {
+    .option-row label {
+      margin-bottom: 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
       width: 100%;
       padding: 0.6rem 0.7rem;
       border-radius: 10px;
@@ -328,12 +403,12 @@
       text-align: left;
       display: block;
       margin: 0 0 1.5rem;
-      max-width: 600px;
+      max-width: fit-content;
       padding-left: 1.5rem;
     }
 
     .setup-card p {
-      max-width: 600px;
+      max-width: fit-content;
       margin-left: 0;
       margin-right: 0;
     }
@@ -366,17 +441,57 @@
       margin-right: 0.4rem;
     }
 
-    .test-layout { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
+    .test-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
 
-    .nav-card { position: sticky; top: 90px; max-height: calc(100vh - 120px); overflow: auto; }
+    .nav-card {
+      position: sticky;
+      top: 90px;
+      max-height: calc(100vh - 120px);
+      overflow: auto;
+    }
 
-    .nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
-    .nav-list button { width: 100%; justify-content: flex-start; border-radius: 10px; }
-    .nav-list button.current { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); }
-    .nav-list button.answered { border-color: var(--success); color: var(--auto-notice); }
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
 
-    .question-card h3 { margin-top: 0; margin-bottom: 0.35rem; color: var(--accent); }
-    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.6rem; }
+    .nav-list button {
+      width: 100%;
+      justify-content: flex-start;
+      border-radius: 10px;
+    }
+
+    .nav-list button.current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--fg);
+    }
+
+    .nav-list button.answered {
+      border-color: var(--success);
+      color: var(--auto-notice);
+    }
+
+    .question-card h3 {
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+    }
 
     .greek-term {
       font-family: "Palatino Linotype", "Noto Serif", "Times New Roman", serif;
@@ -402,9 +517,21 @@
       border: 1px solid var(--answer-border);
     }
 
-    .answer-block strong { color: var(--accent); }
-    .answer-block.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
-    .answer-block.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+    .answer-block strong {
+      color: var(--accent);
+    }
+
+    .answer-block.correct {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .answer-block.wrong {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
 
     .toggle-row {
       margin-top: 0.6rem;
@@ -467,12 +594,14 @@
 
     .backup-list {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       gap: 0.6rem;
       margin-top: 0.6rem;
     }
 
     .backup-item {
+      flex: 1 1 280px;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
@@ -490,7 +619,9 @@
       gap: 0.4rem;
     }
 
-    .backup-meta strong { color: var(--backup-accent); }
+    .backup-meta strong {
+      color: var(--backup-accent);
+    }
 
     .backup-actions {
       display: flex;
@@ -529,7 +660,9 @@
       background: var(--known-item-bg);
     }
 
-    .known-item small { color: var(--muted); }
+    .known-item small {
+      color: var(--muted);
+    }
 
     .known-direction-row {
       display: flex;
@@ -608,11 +741,28 @@
       background: var(--interval-bg);
     }
 
-    .interval-summary h4 { margin: 0 0 0.4rem; color: var(--interval-title); }
+    .interval-summary h4 {
+      margin: 0 0 0.4rem;
+      color: var(--interval-title);
+    }
 
-    .result-table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; }
-    .result-table th, .result-table td { padding: 0.5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    .result-table th { color: var(--accent); }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6rem;
+    }
+
+    .result-table th,
+    .result-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .result-table th {
+      color: var(--accent);
+    }
 
     .mnemonic-block {
       margin-top: 0.9rem;
@@ -640,27 +790,63 @@
       gap: 0.4rem;
     }
 
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
 
     @media (max-width: 980px) {
-      .grid { grid-template-columns: 1fr; }
-      .test-layout { display: flex; flex-direction: column; }
-      .nav-card { position: relative; top: auto; max-height: 200px; order: 2; }
-      .question-card { order: 1; }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .test-layout {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .nav-card {
+        position: relative;
+        top: auto;
+        max-height: 200px;
+        order: 2;
+      }
+
+      .question-card {
+        order: 1;
+      }
     }
 
     @media (max-width: 720px) {
-      #pageDescription { white-space: normal; }
+      #pageDescription {
+        white-space: normal;
+      }
     }
 
     @media (max-width: 640px) {
-      header h1 { font-size: 1.6rem; }
-      .greek-term { font-size: 1.6rem; }
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .greek-term {
+        font-size: 1.6rem;
+      }
     }
 
-    .setup-card h2 { font-size: 1.1rem; opacity: 0.8; }
-    .setup-card:first-of-type { border: 1px dashed var(--setup-note-border); box-shadow: none; background: var(--setup-note-bg); }
-    .setup-primary { border: 2px solid var(--accent); background: var(--card-bg); }
+    .setup-card h2 {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .setup-card:first-of-type {
+      border: 1px dashed var(--setup-note-border);
+      box-shadow: none;
+      background: var(--setup-note-bg);
+    }
+
+    .setup-primary {
+      border: 2px solid var(--accent);
+      background: var(--card-bg);
+    }
 
     .section-title {
       margin-top: 1.2rem;
@@ -702,6 +888,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="header-top">
@@ -715,7 +902,8 @@
       </div>
     </div>
     <h1 id="pageTitle">Vocabtrainer</h1>
-    <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en vertaalt naar taal 2.</p>
+    <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en
+      vertaalt naar taal 2.</p>
     <p class="hint">Je voortgang en je lijst met bekende woorden worden automatisch opgeslagen.</p>
   </header>
 
@@ -723,17 +911,17 @@
     <section class="grid">
       <article class="card full setup-card setup-primary">
         <h2>Hoe werkt deze toets?</h2>
-        <p>Je krijgt elk woord precies één keer te zien (tenzij je kiest om opnieuw te oefenen). Jij vertaalt van taal 1 naar taal 2.</p>
+        <p>Je krijgt een woord te zien in een taal en je vertaalt het naar de andere taal!</p>
         <ul>
           <li>Je bepaalt wanneer je antwoorden ziet: direct, pas aan het einde, of om de X woorden.</li>
-          <li>Vink woorden aan die je kent. Dan verdwijnen ze uit de toets.</li>
-          <li>Je kunt bekende woorden altijd weer terugzetten.</li>
+          <li>Als je een vertaling kent kan je aangeven of je de vertaling al weet in beide richtingen of alleen de
+            huidige richting (2 knoppen). Je kunt bekende woorden altijd weer terugzetten.</li>
+          <li>Je kunt de onbekende woorden exporteren.</li>
         </ul>
-        <p class="hint">Dit is een oefenplek: zelfcontrole is toegestaan en zelfs aangemoedigd.</p>
       </article>
 
       <article class="card full setup-card">
-        <h2>Instellingen</h2>
+        <h2>INSTELLINGEN</h2>
         <div class="settings-grid">
           <div class="settings-block">
             <p><strong>Woordlijst</strong></p>
@@ -756,12 +944,14 @@
             <p class="hint" id="intervalHint"></p>
           </div>
           <div class="settings-block">
-            <p><strong>Vertaalrichting</strong></p>
+            <p><strong>Vertaalrichting toetsvragen</strong></p>
             <div class="option-row">
-              <label><input type="radio" name="directionMode" value="l1-to-l2" checked> Altijd taal 1 naar taal 2</label>
+              <label id="direction-l1-l2"><input type="radio" name="directionMode" value="l1-to-l2" checked> <span
+                  class="direction-label-text">Altijd taal 1 naar taal 2</span></label>
             </div>
             <div class="option-row">
-              <label><input type="radio" name="directionMode" value="l2-to-l1"> Altijd taal 2 naar taal 1</label>
+              <label id="direction-l2-l1"><input type="radio" name="directionMode" value="l2-to-l1"> <span
+                  class="direction-label-text">Altijd taal 2 naar taal 1</span></label>
             </div>
             <div class="option-row">
               <label><input type="radio" name="directionMode" value="alternate"> Om en om</label>
@@ -772,8 +962,10 @@
           </div>
           <div class="settings-block">
             <p><strong>Automatische bekend-markering</strong></p>
-            <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed antwoord</label>
-            <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het woord uit de toets.</p>
+            <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed
+              antwoord</label>
+            <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het
+              woord uit de toets.</p>
           </div>
           <div class="settings-block">
             <p><strong>Volgorde</strong></p>
@@ -788,39 +980,58 @@
       </article>
 
       <article class="card full setup-card" id="knownCard">
-        <h2>Bekende woorden</h2>
-        <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer verdergaan.</p>
-        <p id="knownCount"></p>
-        <div class="known-list" id="knownList"></div>
-        <div class="controls">
-          <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
-          <button type="button" id="backToTestBtn">Terug naar toets</button>
-        </div>
-        <p class="hint">Je wist-lijst wordt nooit gewist zonder extra bevestiging.</p>
-        <h3 class="section-title">Back-ups bekende woorden</h3>
-        <p class="hint">Bij het resetten met bekende woorden opgeslagen maken we een back-up. We bewaren de laatste 3.</p>
-        <div class="backup-list" id="knownBackupList"></div>
-        <p class="hint hidden" id="knownBackupEmpty">Nog geen back-ups opgeslagen.</p>
-        <p class="hint" id="knownBackupStatus"></p>
-        <h3 class="section-title">Export / import onbekende woorden</h3>
-        <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor ezelsbruggetjes (scheid met |).</p>
-        <textarea class="import-area" id="importArea" placeholder="Plak hier je lijst of klik op exporteren..."></textarea>
-        <div class="controls">
-          <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
-          <label><input type="checkbox" id="includeMnemonicsToggle"> Neem mijn ezelsbruggetjes mee</label>
-          <button type="button" id="importUnknownBtn">Importeer onbekend</button>
-          <button type="button" id="importUnknownKnownRestBtn">Importeer onbekend + rest bekend</button>
-          <button type="button" id="importKnownBtn">Importeer bekend</button>
-        </div>
-        <p class="hint" id="importStatus"></p>
-        <h3 class="section-title">Masterlijst (volledige overwrite)</h3>
-        <p class="hint">Let op: dit vervangt de hele vocab-lijst. TAB tussen taal 1 en taal 2.</p>
-        <textarea class="import-area" id="masterArea" placeholder="Plak hier de volledige lijst..."></textarea>
-        <div class="controls">
-          <button type="button" id="importMasterBtn">Importeer masterlijst</button>
-          <button type="button" id="resetMasterBtn">Herstel standaardlijst</button>
-        </div>
-        <p class="hint" id="masterStatus"></p>
+        <h2>WOORDEN BEHEER</h2>
+        <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer
+          verdergaan.</p>
+        <h3 class="section-title">LIJST VAN BEKENDE WOORDEN</h3>
+          <p id="knownCount"></p>
+          <div class="known-list" id="knownList"></div>
+          <div class="controls">
+            <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
+            <button type="button" id="backToTestBtn">Terug naar toets</button>
+          </div>
+          <h3 class="section-title">BACKUPS VAN BEKENDE WOORDEN</h3>
+          <p class="hint">Bij elke <em>Full Reset</em> of <em>Toets Reset</em> wordt je lijst bekende woorden automatisch hier gebackupt zodat je deze niet kwijt raakt. Alleen de laatste 3 worden bewaard.
+          </p>
+          <div class="backup-list" id="knownBackupList"></div>
+          <p class="hint hidden" id="knownBackupEmpty">Er zijn nog geen back-ups opgeslagen, zodra je een Full Reset of Toets Reset doet verschijnt hier een back-up!</p>
+          <p class="hint" id="knownBackupStatus"></p>
+          <div class="grid" style="margin-top: 1.5rem; gap: 2rem;">
+            <div style="min-width: 0;">
+              <h3 class="section-title" style="margin-top: 0;">IMPORT/EXPORT (ON)BEKENDE WOORDEN</h3>
+              <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor
+                ezelsbruggetjes (scheid met |).</p>
+              <textarea class="import-area" id="importArea" placeholder="Je kunt hier woorden importeren of exporteren.
+1) Of je plakt een woordenlijst en klikt 'Importeer' om deze te importeren. 
+2) Of je klikt 'Exporteer onbekende woorden' en worden ze hier getoond."></textarea>
+              <div class="controls">
+                <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
+                <label><input type="checkbox" id="includeMnemonicsToggle"> Neem mijn ezelsbruggetjes mee</label>
+                <button type="button" id="importUnknownBtn"
+                  title="Alleen woorden in de geimporteerde lijst uit de lijst 'Bekende woorden' halen (als ze daar in staan).">Importeer
+                  onbekend</button>
+                <button type="button" id="importUnknownKnownRestBtn"
+                  title="Woorden in de geimporteerde lijst uit de lijst 'Bekende woorden' halen (als ze daar in staan) en alle andere woorden in 'Bekende woorden' lijst zetten.">Importeer
+                  onbekend + rest bekend</button>
+                <button type="button" id="importKnownBtn" title="Zet de woorden in de lijst op 'bekend'.">Importeer
+                  bekend</button>
+              </div>
+              <p class="hint" id="importStatus"></p>
+            </div>
+            <div style="min-width: 0;">
+              <h3 class="section-title" style="margin-top: 0;"><em>TIJDELIJK HOOFDLIJST OVERSCHRIJVEN</em></h3>
+              <p class="hint">Met deze feature kan je tijdelijk het gehele vocab-lijst vervangen! Maak je geen zorgen, je raakt nooit de originele lijst kwijt, dit kan je altijd terugzetten!</p>
+              <p class="hint">Het formaat is één regel per woord, met TAB tussen taal 1 en taal 2 (zie voorbeeld in het tekstvak hieronder).</p>
+              <textarea class="import-area" id="masterArea" placeholder="en ville	in de stad
+la place	het plein
+l'arbre (m.)	de boom"></textarea>
+              <div class="controls">
+                <button type="button" id="importMasterBtn">Tijdelijk standaardlijst importeren</button>
+                <button type="button" id="resetMasterBtn">Herstel standaardlijst</button>
+              </div>
+              <p class="hint" id="masterStatus"></p>
+            </div>
+          </div>
       </article>
 
       <article class="card full hidden" id="testArea">
@@ -850,7 +1061,8 @@
             <div class="translit" id="translitText"></div>
             <p><strong>Vertaal naar <span id="targetLanguageLabel">taal 2</span>.</strong></p>
 
-            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus aria-label="Jouw antwoord">
+            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus
+              aria-label="Jouw antwoord">
 
             <div class="controls">
               <button id="revealNow" type="button">Toon antwoord nu</button>
@@ -861,8 +1073,10 @@
 
             <div class="toggle-row">
               <div class="known-toggle-group">
-                <button type="button" class="known-toggle-btn both" id="knownToggleBothBtn" aria-pressed="false">Ik weet dit woord in beide richtingen (nooit meer tonen)</button>
-                <button type="button" class="known-toggle-btn single" id="knownToggleSingleBtn" aria-pressed="false">Ik weet dit woord alleen in deze vertaalrichting (niet meer tonen)</button>
+                <button type="button" class="known-toggle-btn both" id="knownToggleBothBtn" aria-pressed="false">Ik weet
+                  dit woord in beide richtingen (nooit meer tonen)</button>
+                <button type="button" class="known-toggle-btn single" id="knownToggleSingleBtn" aria-pressed="false">Ik
+                  weet dit woord alleen in deze vertaalrichting (niet meer tonen)</button>
               </div>
               <p class="hint">Je kunt dit altijd terugzetten in het blok 'Bekende woorden'.</p>
             </div>
@@ -1101,6 +1315,17 @@
       document.title = titleText;
 
       updateDirectionCopy(getDirectionMode());
+
+      const l1Tol2Label = document.querySelector("#direction-l1-l2 .direction-label-text");
+      const l2Tol1Label = document.querySelector("#direction-l2-l1 .direction-label-text");
+
+      if (l1Tol2Label && l2Tol1Label) {
+        const cleanL1 = (LANGUAGE1_LABEL || 'Taal 1').replace(/\s*\(.*\)/, '').trim();
+        const cleanL2 = (LANGUAGE2_LABEL || 'Taal 2').replace(/\s*\(.*\)/, '').trim();
+
+        l1Tol2Label.textContent = `${cleanL1} → ${cleanL2}`;
+        l2Tol1Label.textContent = `${cleanL2} → ${cleanL1}`;
+      }
     }
 
     function getDirectionMode() {
@@ -1930,13 +2155,13 @@
       if (!knownList) return;
       knownList.innerHTML = "";
       const knownItems = vocab.filter((item) => isKnownAny(item.id));
-      knownCount.textContent = `Bekende woorden: ${getKnownAnyCount()} / ${vocab.length}`;
+      knownCount.textContent = `Aantal bekende woorden: ${getKnownAnyCount()} (van ${vocab.length})`;
       knownNotice.classList.toggle("hidden", !session);
 
       if (knownItems.length === 0) {
         const empty = document.createElement("p");
         empty.className = "hint";
-        empty.textContent = "Nog geen bekende woorden gemarkeerd.";
+        empty.textContent = "Je lijst van bekende woorden staat nog leeg, zodra je woorden als bekend markeert zullen ze hier verschijnen!";
         knownList.appendChild(empty);
         return;
       }
@@ -2140,7 +2365,7 @@
         const confirmCheck = document.createElement("input");
         confirmCheck.type = "checkbox";
         confirmLabel.appendChild(confirmCheck);
-        confirmLabel.appendChild(document.createTextNode(" Ik begrijp dat dit onomkeerbaar is."));
+        confirmLabel.appendChild(document.createTextNode("Ik begrijp dat dit onomkeerbaar is."));
 
         const confirmActions = document.createElement("div");
         confirmActions.className = "backup-actions";
@@ -3089,4 +3314,5 @@
     setSetupVisibility(true);
   </script>
 </body>
+
 </html>
