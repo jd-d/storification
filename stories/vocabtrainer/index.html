@@ -5,6 +5,30 @@
   <meta charset="UTF-8">
   <title>Vocabtrainer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function applyInitialTheme() {
+      const SILENT_RELOAD_KEY = "vocabtrainer-silent-reload-v1";
+      let storedTheme = null;
+      let silentReload = false;
+      try {
+        storedTheme = localStorage.getItem("storification-theme");
+        silentReload = sessionStorage.getItem(SILENT_RELOAD_KEY) === "1";
+      } catch (error) {
+        storedTheme = null;
+        silentReload = false;
+      }
+      const prefersDark = window.matchMedia
+        && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = storedTheme === "dark" || storedTheme === "light"
+        ? storedTheme
+        : (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", initialTheme);
+      if (silentReload) {
+        document.documentElement.setAttribute("data-silent-reload", "1");
+        document.documentElement.style.backgroundColor = initialTheme === "dark" ? "#0f172a" : "#f3f4f6";
+      }
+    }());
+  </script>
   <link rel="stylesheet" href="../../assets/css/style.css" />
   <style>
     :root {
@@ -117,6 +141,10 @@
       background: var(--bg);
       color: var(--fg);
       line-height: 1.6;
+    }
+
+    :root[data-silent-reload="1"] body {
+      visibility: hidden;
     }
 
     header {
@@ -369,6 +397,10 @@
       background: var(--panel-bg);
     }
 
+    .settings-block-wide {
+      grid-column: 1 / -1;
+    }
+
     .option-row {
       display: flex;
       align-items: center;
@@ -397,6 +429,101 @@
       font-size: 0.9rem;
       color: var(--muted);
       margin-top: 0.3rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .dataset-picker {
+      border: 0;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+      --dataset-pill-row-height: 2.2rem;
+    }
+
+    .dataset-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dataset-actions button {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 8px;
+    }
+
+    .dataset-options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      align-content: flex-start;
+      gap: 0.45rem;
+      max-height: calc((var(--dataset-pill-row-height) * 6) + (0.45rem * 5));
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.2rem;
+    }
+
+    .dataset-option {
+      margin-bottom: 0 !important;
+      display: inline-flex;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.4rem 0.65rem;
+      background: var(--card-bg);
+      align-items: center !important;
+      gap: 0.45rem !important;
+      width: fit-content;
+      max-width: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .dataset-option:focus-within {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .dataset-option input[type="checkbox"] {
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .dataset-options.none-selected input[type="checkbox"] {
+      outline: 1px solid var(--danger);
+      outline-offset: 1px;
+      border-radius: 3px;
+    }
+
+    .dataset-option-text {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .dataset-option-title {
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .hint.hint-error {
+      color: var(--danger);
+      font-weight: 600;
     }
 
     .setup-card ul {
@@ -922,12 +1049,19 @@
 
       <article class="card full setup-card">
         <h2>INSTELLINGEN</h2>
+        <div class="settings-block settings-block-wide">
+          <p><strong>Woordlijsten</strong></p>
+          <fieldset class="dataset-picker">
+            <legend class="sr-only">Kies één of meer woordlijsten</legend>
+            <div class="dataset-actions">
+              <button type="button" id="datasetSelectAllBtn">Alles kiezen</button>
+              <button type="button" id="datasetResetBtn">Reset selectie</button>
+            </div>
+            <div class="dataset-options" id="datasetOptions"></div>
+          </fieldset>
+          <p class="hint" id="datasetHint"></p>
+        </div>
         <div class="settings-grid">
-          <div class="settings-block">
-            <p><strong>Woordlijst</strong></p>
-            <select id="datasetSelect"></select>
-            <p class="hint" id="datasetHint"></p>
-          </div>
           <div class="settings-block">
             <p><strong>Antwoorden tonen</strong></p>
             <div class="option-row">
@@ -1128,11 +1262,15 @@ l'arbre (m.)	de boom"></textarea>
   <script src="vocab-greek-facts.js"></script>
   <script src="vocab-data.js"></script>
   <script src="vocab-latin-nl.js"></script>
+  <script src="vocab-latin-nl-les-27-thermae.js"></script>
+  <script src="vocab-latin-nl-les-29-hannibal.js"></script>
   <script src="vocab-fr-nl-unite-2.js"></script>
   <script src="vocab-nl-fr-unite-2.js"></script>
   <script src="vocab-fr-nl-unite-3.js"></script>
   <script>
-    const DATASET_KEY = "vocab-selected-dataset-v2";
+    const DATASET_KEY = "vocab-selected-dataset-v3";
+    const LEGACY_DATASET_KEY = "vocab-selected-dataset-v2";
+    const SILENT_RELOAD_KEY = "vocabtrainer-silent-reload-v1";
     const DATASETS = Array.isArray(window.VOCAB_DATASETS) && window.VOCAB_DATASETS.length
       ? window.VOCAB_DATASETS
       : [
@@ -1145,49 +1283,139 @@ l'arbre (m.)	de boom"></textarea>
           data: window.RAW_VOCAB || ""
         }
       ];
-    const selectedDatasetId = localStorage.getItem(DATASET_KEY) || DATASETS[0].id;
-    const activeDataset = DATASETS.find((dataset) => dataset.id === selectedDatasetId) || DATASETS[0];
-    const DATASET_ID = activeDataset.id || "default";
+    const DATASET_BY_ID = Object.fromEntries(DATASETS.map((dataset) => [dataset.id, dataset]));
+    const LEGACY_DATASET_ID = "grc-nl";
+    const STORAGE_SCHEMA_VERSION = 9;
+
+    function parseStoredDatasetIds(rawValue) {
+      if (typeof rawValue !== "string") return [];
+      const trimmed = rawValue.trim();
+      if (!trimmed) return [];
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          return parsed.filter((id) => typeof id === "string");
+        }
+      } catch (error) {
+        // Backward compatibility for pre-v3 storage that used one plain string.
+      }
+      return [trimmed];
+    }
+
+    function arraysEqual(left, right) {
+      if (left.length !== right.length) return false;
+      for (let index = 0; index < left.length; index += 1) {
+        if (left[index] !== right[index]) return false;
+      }
+      return true;
+    }
+
+    function setSilentReloadFlag() {
+      try {
+        sessionStorage.setItem(SILENT_RELOAD_KEY, "1");
+      } catch (error) {
+        // ignore storage failures (private mode / blocked storage)
+      }
+    }
+
+    function enterSilentReloadMode() {
+      setSilentReloadFlag();
+      document.documentElement.setAttribute("data-silent-reload", "1");
+      const theme = document.documentElement.getAttribute("data-theme");
+      document.documentElement.style.backgroundColor = theme === "dark" ? "#0f172a" : "#f3f4f6";
+    }
+
+    function clearSilentReloadMode() {
+      try {
+        sessionStorage.removeItem(SILENT_RELOAD_KEY);
+      } catch (error) {
+        // ignore storage failures (private mode / blocked storage)
+      }
+      document.documentElement.removeAttribute("data-silent-reload");
+      document.documentElement.style.removeProperty("background-color");
+    }
+
+    function normalizeDatasetIds(datasetIds, fallbackId = DATASETS[0].id, allowEmpty = false) {
+      const sourceIds = Array.isArray(datasetIds) ? datasetIds : [];
+      const uniqueIds = [];
+      sourceIds.forEach((id) => {
+        if (!DATASET_BY_ID[id]) return;
+        if (!uniqueIds.includes(id)) uniqueIds.push(id);
+      });
+
+      if (!uniqueIds.length) {
+        if (allowEmpty) return [];
+        return fallbackId && DATASET_BY_ID[fallbackId] ? [fallbackId] : [DATASETS[0].id];
+      }
+      return uniqueIds;
+    }
+
+    function saveSelectedDatasetIds(datasetIds) {
+      localStorage.setItem(DATASET_KEY, JSON.stringify(datasetIds));
+      if (datasetIds.length === 1) {
+        localStorage.setItem(LEGACY_DATASET_KEY, datasetIds[0]);
+      } else {
+        localStorage.removeItem(LEGACY_DATASET_KEY);
+      }
+    }
+
+    function loadSelectedDatasetIds() {
+      const v3Raw = localStorage.getItem(DATASET_KEY);
+      if (v3Raw !== null) return parseStoredDatasetIds(v3Raw);
+      const legacySingle = localStorage.getItem(LEGACY_DATASET_KEY);
+      return legacySingle ? [legacySingle] : null;
+    }
+
+    const loadedDatasetIds = loadSelectedDatasetIds();
+    const selectedDatasetIds = loadedDatasetIds === null
+      ? normalizeDatasetIds([], DATASETS[0].id, false)
+      : normalizeDatasetIds(loadedDatasetIds, DATASETS[0].id, true);
+    const activeDatasets = DATASETS.filter((dataset) => selectedDatasetIds.includes(dataset.id));
+    const hasSelectedDatasets = activeDatasets.length > 0;
+    const activeDataset = hasSelectedDatasets ? activeDatasets[0] : DATASETS[0];
+    const DATASET_SCOPE_ID = hasSelectedDatasets
+      ? activeDatasets.map((dataset) => dataset.id).join("__")
+      : "none";
+    const usesLegacyGreekKeys = hasSelectedDatasets
+      && activeDatasets.length === 1
+      && DATASET_SCOPE_ID === LEGACY_DATASET_ID;
     const LANGUAGE1_LABEL = activeDataset.language1 || "Taal 1";
     const LANGUAGE2_LABEL = activeDataset.language2 || "Taal 2";
     const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
     const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
-    const LEGACY_DATASET_ID = "grc-nl";
-    const STORAGE_SCHEMA_VERSION = 4;
-    const STORAGE_SCHEMA_KEY = DATASET_ID === LEGACY_DATASET_ID
-      ? "oudgrieks-vocab-storage-schema-v4"
-      : `vocab-storage-schema-${DATASET_ID}-v4`;
+    const STORAGE_SCHEMA_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-storage-schema-v9"
+      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v9`;
 
-    if (!localStorage.getItem(DATASET_KEY) && activeDataset.id) {
-      localStorage.setItem(DATASET_KEY, activeDataset.id);
-    }
+    saveSelectedDatasetIds(selectedDatasetIds);
 
     const storedSchemaVersion = localStorage.getItem(STORAGE_SCHEMA_KEY);
     if (storedSchemaVersion !== String(STORAGE_SCHEMA_VERSION)) {
       localStorage.setItem(STORAGE_SCHEMA_KEY, String(STORAGE_SCHEMA_VERSION));
+      setSilentReloadFlag();
       window.location.reload();
     }
 
-    const MASTER_VOCAB_KEY = DATASET_ID === LEGACY_DATASET_ID
+    const MASTER_VOCAB_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-master-v1"
-      : `vocab-master-${DATASET_ID}-v1`;
-    const FACTS = getFactsForDataset(activeDataset);
+      : `vocab-master-${DATASET_SCOPE_ID}-v1`;
+    const FACTS = hasSelectedDatasets ? getFactsForDataset(activeDataset) : [];
 
-    const STORAGE_KEY = DATASET_ID === LEGACY_DATASET_ID
+    const STORAGE_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-session-v5"
-      : `vocab-session-${DATASET_ID}-v5`;
-    const KNOWN_KEY = DATASET_ID === LEGACY_DATASET_ID
+      : `vocab-session-${DATASET_SCOPE_ID}-v5`;
+    const KNOWN_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-known-v1"
-      : `vocab-known-${DATASET_ID}-v1`;
-    const AUTO_REMOVE_KEY = DATASET_ID === LEGACY_DATASET_ID
+      : `vocab-known-${DATASET_SCOPE_ID}-v1`;
+    const AUTO_REMOVE_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-auto-remove-v1"
-      : `vocab-auto-remove-${DATASET_ID}-v1`;
-    const MNEMONIC_KEY = DATASET_ID === LEGACY_DATASET_ID
+      : `vocab-auto-remove-${DATASET_SCOPE_ID}-v1`;
+    const MNEMONIC_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-mnemonics-v1"
-      : `vocab-mnemonics-${DATASET_ID}-v1`;
-    const KNOWN_BACKUP_KEY = DATASET_ID === LEGACY_DATASET_ID
+      : `vocab-mnemonics-${DATASET_SCOPE_ID}-v1`;
+    const KNOWN_BACKUP_KEY = usesLegacyGreekKeys
       ? "oudgrieks-vocab-known-backups-v1"
-      : `vocab-known-backups-${DATASET_ID}-v1`;
+      : `vocab-known-backups-${DATASET_SCOPE_ID}-v1`;
     const KNOWN_BACKUP_LIMIT = 3;
 
     function loadMasterVocab() {
@@ -1202,7 +1430,13 @@ l'arbre (m.)	de boom"></textarea>
       localStorage.removeItem(MASTER_VOCAB_KEY);
     }
 
-    const RAW_VOCAB = loadMasterVocab() || activeDataset.data || "";
+    const mergedDatasetData = activeDatasets
+      .map((dataset) => dataset.data || "")
+      .filter(Boolean)
+      .join("\n");
+    const RAW_VOCAB = hasSelectedDatasets
+      ? (loadMasterVocab() || mergedDatasetData || activeDataset.data || "")
+      : "";
 
     const vocab = parseVocab(RAW_VOCAB);
     const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
@@ -1215,7 +1449,9 @@ l'arbre (m.)	de boom"></textarea>
     let session = null;
 
     const startBtn = document.getElementById("startBtn");
-    const datasetSelect = document.getElementById("datasetSelect");
+    const datasetOptions = document.getElementById("datasetOptions");
+    const datasetSelectAllBtn = document.getElementById("datasetSelectAllBtn");
+    const datasetResetBtn = document.getElementById("datasetResetBtn");
     const datasetHint = document.getElementById("datasetHint");
     const resetRestartBtn = document.getElementById("resetRestartBtn");
     const intervalInput = document.getElementById("intervalInput");
@@ -1291,24 +1527,85 @@ l'arbre (m.)	de boom"></textarea>
 
     let mnemonicOpenFor = null;
 
+    function getDatasetIdsFromUI() {
+      if (!datasetOptions) return [];
+      return Array.from(datasetOptions.querySelectorAll("input[type=\"checkbox\"]:checked"))
+        .map((input) => input.value);
+    }
+
+    function persistDatasetSelection(nextIds) {
+      const normalized = normalizeDatasetIds(nextIds, activeDataset.id, true);
+      if (arraysEqual(normalized, selectedDatasetIds)) {
+        applyDatasetUI();
+        return;
+      }
+      saveSelectedDatasetIds(normalized);
+      enterSilentReloadMode();
+      window.location.reload();
+    }
+
     function applyDatasetUI() {
-      if (datasetSelect) {
-        datasetSelect.innerHTML = "";
-        DATASETS.forEach((dataset) => {
-          const option = document.createElement("option");
-          option.value = dataset.id;
-          option.textContent = dataset.label || `${dataset.language1 || "Taal 1"} -> ${dataset.language2 || "Taal 2"}`;
-          option.selected = dataset.id === activeDataset.id;
-          datasetSelect.appendChild(option);
+      if (datasetOptions) {
+        datasetOptions.classList.toggle("none-selected", activeDatasets.length === 0);
+        datasetOptions.innerHTML = "";
+        DATASETS.forEach((dataset, index) => {
+          const checkboxId = `dataset-option-${dataset.id || index}`;
+          const isChecked = selectedDatasetIds.includes(dataset.id);
+          const wrapper = document.createElement("label");
+          wrapper.className = "dataset-option";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = checkboxId;
+          checkbox.value = dataset.id;
+          checkbox.checked = isChecked;
+
+          const textWrap = document.createElement("span");
+          textWrap.className = "dataset-option-text";
+
+          const title = document.createElement("span");
+          title.className = "dataset-option-title";
+          title.textContent = dataset.label || `${dataset.language1 || "Taal 1"} -> ${dataset.language2 || "Taal 2"}`;
+          textWrap.appendChild(title);
+          wrapper.appendChild(checkbox);
+          wrapper.appendChild(textWrap);
+          datasetOptions.appendChild(wrapper);
         });
       }
 
       if (datasetHint) {
-        datasetHint.textContent = `Taal 1: ${LANGUAGE1_LABEL} • Taal 2: ${LANGUAGE2_LABEL}`;
+        if (activeDatasets.length === 0) {
+          datasetHint.textContent = "Geen woordenlijst geselecteerd";
+          datasetHint.classList.add("hint-error");
+        } else {
+          datasetHint.classList.remove("hint-error");
+          const selectedCountLabel = activeDatasets.length === 1
+            ? "1 woordlijst geselecteerd"
+            : `${activeDatasets.length} woordlijsten geselecteerd`;
+          const selectedNames = activeDatasets.map((dataset) => dataset.label || dataset.id);
+          const preview = selectedNames.slice(0, 2).join(", ");
+          const extra = selectedNames.length > 2 ? ` +${selectedNames.length - 2} meer` : "";
+          const pairCount = new Set(activeDatasets.map((dataset) => `${dataset.language1 || "Taal 1"}->${dataset.language2 || "Taal 2"}`)).size;
+          const pairHint = pairCount > 1
+            ? "meerdere taalrichtingen geselecteerd"
+            : `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`;
+          datasetHint.textContent = `${selectedCountLabel} • ${pairHint} • ${preview}${extra}`;
+        }
       }
 
-      const label = activeDataset.label || `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`;
-      const titleText = `${label} vocabtrainer`;
+      if (datasetSelectAllBtn) {
+        datasetSelectAllBtn.disabled = activeDatasets.length >= DATASETS.length;
+      }
+      if (datasetResetBtn) {
+        datasetResetBtn.disabled = activeDatasets.length <= 1;
+      }
+
+      const label = activeDatasets.length === 0
+        ? "Vocabtrainer"
+        : (activeDatasets.length > 1
+          ? `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL} (${activeDatasets.length} lijsten)`
+          : (activeDataset.label || `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`));
+      const titleText = activeDatasets.length === 0 ? label : `${label} vocabtrainer`;
       if (pageTitle) {
         pageTitle.textContent = titleText;
       }
@@ -2100,6 +2397,7 @@ l'arbre (m.)	de boom"></textarea>
       clearSession();
       masterStatus.textContent = "Masterlijst opgeslagen. Pagina wordt herladen...";
       setTimeout(() => {
+        enterSilentReloadMode();
         window.location.reload();
       }, 300);
     }
@@ -2116,6 +2414,7 @@ l'arbre (m.)	de boom"></textarea>
       clearSession();
       masterStatus.textContent = "Standaardlijst hersteld. Pagina wordt herladen...";
       setTimeout(() => {
+        enterSilentReloadMode();
         window.location.reload();
       }, 300);
     }
@@ -2815,7 +3114,9 @@ l'arbre (m.)	de boom"></textarea>
     function startTest(options) {
       createSession(options);
       if (session.activeIds.length === 0) {
-        summaryText.textContent = "Alle woorden staan nu als bekend. Vink woorden uit in de lijst om opnieuw te oefenen.";
+        summaryText.textContent = vocab.length === 0
+          ? "Geen woordenlijst geselecteerd."
+          : "Alle woorden staan nu als bekend. Vink woorden uit in de lijst om opnieuw te oefenen.";
         resultTable.innerHTML = "";
         summaryCard.classList.remove("hidden");
         testArea.classList.add("hidden");
@@ -3000,12 +3301,23 @@ l'arbre (m.)	de boom"></textarea>
 
     applyDatasetUI();
 
-    if (datasetSelect) {
-      datasetSelect.addEventListener("change", () => {
-        const nextId = datasetSelect.value;
-        if (!nextId || nextId === activeDataset.id) return;
-        localStorage.setItem(DATASET_KEY, nextId);
-        window.location.reload();
+    if (datasetOptions) {
+      datasetOptions.addEventListener("change", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") return;
+        const nextSelection = getDatasetIdsFromUI();
+        persistDatasetSelection(nextSelection);
+      });
+    }
+    if (datasetSelectAllBtn) {
+      datasetSelectAllBtn.addEventListener("click", () => {
+        const nextSelection = DATASETS.map((dataset) => dataset.id);
+        persistDatasetSelection(nextSelection);
+      });
+    }
+    if (datasetResetBtn) {
+      datasetResetBtn.addEventListener("click", () => {
+        persistDatasetSelection([activeDataset.id]);
       });
     }
 
@@ -3312,6 +3624,9 @@ l'arbre (m.)	de boom"></textarea>
     setFact(factInline);
     autoRemoveToggle.checked = loadAutoRemove();
     setSetupVisibility(true);
+    window.requestAnimationFrame(() => {
+      clearSilentReloadMode();
+    });
   </script>
 </body>
 
