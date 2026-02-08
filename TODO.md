@@ -28,6 +28,13 @@
 - [x] Oudgrieks vocab: directionele bekende woorden + reset overlays + header/theme polish
 - [x] Vocabtrainer UX tweaks: session-retire known words, auto-save on nav, header/layout/button changes
 - [x] Vocabtrainer: meerdere woordlijsten (config-bestanden) kunnen kiezen
+- [x] Vocabtrainer: meerdere woordlijsten tegelijk selecteren (multi-select UX)
+- [x] Vocabtrainer: fix woordlijsten-checkboxes + woordlijsten-paneel full-width boven instellingen
+- [x] Vocabtrainer: woordlijsten als auto-breedte pills, wrap-rijen, scroll pas na >6 rijen
+- [x] Vocabtrainer: voeg Latijn -> Nederlands lijsten toe (Les 27 Thermae, Les 29 Hannibal)
+- [x] Vocabtrainer: sta lege lijstselectie toe + rode checkbox-borders + melding "Geen woordenlijst geselecteerd"
+- [x] Vocabtrainer: voorkom witte flash bij lijstselectie in dark mode (pre-paint theme)
+- [x] Vocabtrainer: verberg UI tijdens lijst-reload om element-flash te voorkomen
 - [x] Natuurkunde Begrippen Check: begrippensets via JSON/JS-config + dropdown
 - [x] Natuurkunde Begrippen Check: voorbeeld extra begrippenset toevoegen
 - [x] Natuurkunde Begrippen Check: README bij configs met format/voorbeelden
