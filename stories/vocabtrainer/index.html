@@ -1260,7 +1260,19 @@ l'arbre (m.)	de boom"></textarea>
   </div>
 
   <script src="vocab-greek-facts.js"></script>
-  <script src="vocab-data.js"></script>
+  <script src="vocab-greek-nl-lessen-2-tot-16.js"></script>
+  <script src="vocab-greek-nl-les-2-kosmos.js"></script>
+  <script src="vocab-greek-nl-les-3-kronos.js"></script>
+  <script src="vocab-greek-nl-les-4-zeus.js"></script>
+  <script src="vocab-greek-nl-les-6-goden.js"></script>
+  <script src="vocab-greek-nl-les-7-held.js"></script>
+  <script src="vocab-greek-nl-les-8-argonauten.js"></script>
+  <script src="vocab-greek-nl-les-9-argonautentocht.js"></script>
+  <script src="vocab-greek-nl-les-11-agamemnon-achilles.js"></script>
+  <script src="vocab-greek-nl-les-12-hektor-andromache.js"></script>
+  <script src="vocab-greek-nl-les-13-hektor-achilles.js"></script>
+  <script src="vocab-greek-nl-les-14-een-houten-paard.js"></script>
+  <script src="vocab-greek-nl-les-16-pythia.js"></script>
   <script src="vocab-latin-nl.js"></script>
   <script src="vocab-latin-nl-les-27-thermae.js"></script>
   <script src="vocab-latin-nl-les-29-hannibal.js"></script>
@@ -1285,7 +1297,7 @@ l'arbre (m.)	de boom"></textarea>
       ];
     const DATASET_BY_ID = Object.fromEntries(DATASETS.map((dataset) => [dataset.id, dataset]));
     const LEGACY_DATASET_ID = "grc-nl";
-    const STORAGE_SCHEMA_VERSION = 9;
+    const STORAGE_SCHEMA_VERSION = 12;
 
     function parseStoredDatasetIds(rawValue) {
       if (typeof rawValue !== "string") return [];
@@ -1384,8 +1396,8 @@ l'arbre (m.)	de boom"></textarea>
     const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
     const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
     const STORAGE_SCHEMA_KEY = usesLegacyGreekKeys
-      ? "oudgrieks-vocab-storage-schema-v9"
-      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v9`;
+      ? "oudgrieks-vocab-storage-schema-v12"
+      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v12`;
 
     saveSelectedDatasetIds(selectedDatasetIds);
 

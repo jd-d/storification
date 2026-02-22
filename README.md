@@ -82,7 +82,7 @@ window.VOCAB_DATASETS.push({
 
 Then include it in the vocab trainer page (before the inline script):
 ```html
-<script src="vocab-data.js"></script>
+<script src="vocab-greek-nl-lessen-2-tot-16.js"></script>
 <script src="vocab-latin-nl.js"></script>
 ```
 
