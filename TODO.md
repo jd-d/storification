@@ -36,6 +36,7 @@
 - [x] Vocabtrainer: hernoem Oudgrieks leslijst-bestanden met lesnaam in bestandsnaam
 - [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 7 Held, Les 8 Argonauten, Les 9 Argonautentocht, Les 11 Agamemnon & Achilles)
 - [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 12 Hektor & Andromache, Les 13 Hektor & Achilles, Les 14 Een houten paard, Les 16 Pythia)
+- [x] Vocabtrainer: transliteratie spiritus asper op begin-diftongen corrigeren (bijv. εἷλον -> heilon)
 - [x] Vocabtrainer: sta lege lijstselectie toe + rode checkbox-borders + melding "Geen woordenlijst geselecteerd"
 - [x] Vocabtrainer: voorkom witte flash bij lijstselectie in dark mode (pre-paint theme)
 - [x] Vocabtrainer: verberg UI tijdens lijst-reload om element-flash te voorkomen
