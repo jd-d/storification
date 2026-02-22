@@ -1753,6 +1753,7 @@ l'arbre (m.)	de boom"></textarea>
 
     function transliterateGreek(text) {
       let t = text.normalize("NFD");
+      t = t.replace(/([αεηοωΑΕΗΟΩ])([ιυΙΥ])\u0314/g, "h$1$2");
       t = t.replace(/([αεηιουωΑΕΗΙΟΥΩ])\u0314/g, "h$1");
       t = t.replace(/([ρΡ])\u0314/g, "rh");
       t = t.replace(/[\u0300-\u036f]/g, "");
