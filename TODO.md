@@ -32,6 +32,10 @@
 - [x] Vocabtrainer: fix woordlijsten-checkboxes + woordlijsten-paneel full-width boven instellingen
 - [x] Vocabtrainer: woordlijsten als auto-breedte pills, wrap-rijen, scroll pas na >6 rijen
 - [x] Vocabtrainer: voeg Latijn -> Nederlands lijsten toe (Les 27 Thermae, Les 29 Hannibal)
+- [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 2 Kosmos, Les 3 Kronos, Les 4 Zeus, Les 6 Goden)
+- [x] Vocabtrainer: hernoem Oudgrieks leslijst-bestanden met lesnaam in bestandsnaam
+- [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 7 Held, Les 8 Argonauten, Les 9 Argonautentocht, Les 11 Agamemnon & Achilles)
+- [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 12 Hektor & Andromache, Les 13 Hektor & Achilles, Les 14 Een houten paard, Les 16 Pythia)
 - [x] Vocabtrainer: sta lege lijstselectie toe + rode checkbox-borders + melding "Geen woordenlijst geselecteerd"
 - [x] Vocabtrainer: voorkom witte flash bij lijstselectie in dark mode (pre-paint theme)
 - [x] Vocabtrainer: verberg UI tijdens lijst-reload om element-flash te voorkomen

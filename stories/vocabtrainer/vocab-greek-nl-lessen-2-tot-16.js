@@ -1,7 +1,7 @@
 window.VOCAB_DATASETS = window.VOCAB_DATASETS || [];
 window.VOCAB_DATASETS.push({
   id: "grc-nl",
-  label: "Oudgrieks → Nederlands",
+  label: "Oudgrieks → Nederlands (lessen 2 t/m 16 in één)",
   language1: "Oudgrieks",
   language2: "Nederlands",
   showTransliteration: true,
