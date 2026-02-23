@@ -1,0 +1,3646 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vocabtrainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function applyInitialTheme() {
+      const SILENT_RELOAD_KEY = "vocabtrainer-silent-reload-v1";
+      let storedTheme = null;
+      let silentReload = false;
+      try {
+        storedTheme = localStorage.getItem("storification-theme");
+        silentReload = sessionStorage.getItem(SILENT_RELOAD_KEY) === "1";
+      } catch (error) {
+        storedTheme = null;
+        silentReload = false;
+      }
+      const prefersDark = window.matchMedia
+        && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = storedTheme === "dark" || storedTheme === "light"
+        ? storedTheme
+        : (prefersDark ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", initialTheme);
+      if (silentReload) {
+        document.documentElement.setAttribute("data-silent-reload", "1");
+        document.documentElement.style.backgroundColor = initialTheme === "dark" ? "#0f172a" : "#f3f4f6";
+      }
+    }());
+  </script>
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f4f6;
+      --fg: #1f2937;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --card-bg: #ffffff;
+      --muted: #4b5563;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --header-grad-start: #223c7a;
+      --header-grad-end: #3a66d6;
+      --header-text: #ffffff;
+      --header-subtext: #f8fafc;
+      --header-hint: #e2e8f0;
+      --line: #e5e7eb;
+      --panel-bg: #fafafa;
+      --input-border: #cbd5e1;
+      --input-bg: #ffffff;
+      --translit: #94a3b8;
+      --auto-notice: #166534;
+      --success-bg: #dcfce7;
+      --success-border: #16a34a;
+      --success-text: #14532d;
+      --danger-bg: #fee2e2;
+      --danger-border: #dc2626;
+      --danger-text: #7f1d1d;
+      --answer-border: rgba(29, 78, 216, 0.35);
+      --backup-bg: #fff7ed;
+      --backup-accent: #9a3412;
+      --backup-confirm: #fca5a5;
+      --known-item-bg: #f9fafb;
+      --fact-bg: #fef9c3;
+      --fact-border: #facc15;
+      --fact-text: #854d0e;
+      --interval-bg: #f0f7ff;
+      --interval-border: #93c5fd;
+      --interval-title: #1e40af;
+      --mnemonic-bg: #fef3c7;
+      --mnemonic-border: #fcd34d;
+      --mnemonic-text: #92400e;
+      --setup-note-bg: #f8fafc;
+      --setup-note-border: #cbd5e1;
+      --button-bg: #ffffff;
+      --button-border: rgba(29, 78, 216, 0.4);
+      --button-contrast: #ffffff;
+      --button-primary-hover: #1e40af;
+      --button-danger-hover: #b91c1c;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --fg: #e2e8f0;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.2);
+      --card-bg: #111827;
+      --muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --header-grad-start: #0f172a;
+      --header-grad-end: #1e3a8a;
+      --header-text: #f8fafc;
+      --header-subtext: #e2e8f0;
+      --header-hint: #cbd5f5;
+      --line: #1f2937;
+      --panel-bg: #0b1220;
+      --input-border: #334155;
+      --input-bg: #0b1220;
+      --translit: #94a3b8;
+      --auto-notice: #86efac;
+      --success-bg: #0f2e1f;
+      --success-border: #22c55e;
+      --success-text: #86efac;
+      --danger-bg: #3b1111;
+      --danger-border: #ef4444;
+      --danger-text: #fecaca;
+      --answer-border: rgba(96, 165, 250, 0.4);
+      --backup-bg: #2b1f13;
+      --backup-accent: #fdba74;
+      --backup-confirm: rgba(239, 68, 68, 0.6);
+      --known-item-bg: #0f172a;
+      --fact-bg: #3b2f14;
+      --fact-border: #fbbf24;
+      --fact-text: #fde68a;
+      --interval-bg: #0b2548;
+      --interval-border: #60a5fa;
+      --interval-title: #93c5fd;
+      --mnemonic-bg: #3b2b0a;
+      --mnemonic-border: #fbbf24;
+      --mnemonic-text: #fde68a;
+      --setup-note-bg: #0b1220;
+      --setup-note-border: #334155;
+      --button-bg: #0f172a;
+      --button-border: rgba(96, 165, 250, 0.4);
+      --button-contrast: #ffffff;
+      --button-primary-hover: #3b82f6;
+      --button-danger-hover: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    :root[data-silent-reload="1"] body {
+      visibility: hidden;
+    }
+
+    header {
+      background: linear-gradient(120deg, var(--header-grad-start), var(--header-grad-end));
+      color: var(--header-text);
+      padding: 1.6rem 1.2rem 1.2rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .home-link {
+      color: var(--header-text);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .home-link:hover {
+      text-decoration: underline;
+    }
+
+    header h1 {
+      margin: 0.8rem 0 0;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px rgba(15, 23, 42, 0.35);
+    }
+
+    header p {
+      margin: 0.4rem 0 0;
+      color: var(--header-subtext);
+      opacity: 1;
+      text-shadow: 0 1px 6px rgba(15, 23, 42, 0.3);
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    header .hint {
+      color: var(--header-hint);
+      opacity: 1;
+    }
+
+    #pageDescription {
+      white-space: nowrap;
+    }
+
+    .theme-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--header-text);
+    }
+
+    .theme-switch input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .switch-track {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.25);
+      transition: background 0.2s ease, border 0.2s ease;
+    }
+
+    .switch-track::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--header-text);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233a66d6'%3e%3cpath d='M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 010 1.06l-1.591 1.59a.75.75 0 11-1.06-1.06l1.59-1.59a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.894 17.894a.75.75 0 01-1.06 0l-1.59-1.591a.75.75 0 111.06-1.06l1.59 1.59a.75.75 0 010 1.061zM12 17.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM5.106 17.894a.75.75 0 010-1.06l1.59-1.59a.75.75 0 111.06 1.06l-1.59 1.59a.75.75 0 01-1.06 0zM4.5 12a.75.75 0 01-.75.75H1.5a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM6.106 5.106a.75.75 0 011.06 0l1.59 1.591a.75.75 0 11-1.06 1.06L5.106 6.166a.75.75 0 010-1.06z'%3e%3c/path%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px;
+      transition: transform 0.2s ease, background-image 0.2s ease;
+    }
+
+    .theme-switch input:checked+.switch-track {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .theme-switch input:checked+.switch-track::after {
+      transform: translateX(20px);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233a66d6'%3e%3cpath fill-rule='evenodd' d='M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 004.472-.69a.75.75 0 01.82.162a10.5 10.5 0 01-2.242 2.242A10.5 10.5 0 016.69 5.528a10.5 10.5 0 012.242-2.242a.75.75 0 01.596-.568z' clip-rule='evenodd'%3e%3c/path%3e%3c/svg%3e");
+    }
+
+    .theme-switch input:focus-visible+.switch-track {
+      outline: 2px solid var(--header-text);
+      outline-offset: 2px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto 2.5rem;
+      padding: 0 1rem;
+    }
+
+    main>section {
+      background-color: var(--bg) !important;
+    }
+
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem 1rem;
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-align: left !important;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--accent);
+      font-size: 1.25rem;
+    }
+
+    .card h2,
+    .card h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      margin: 0.3rem 0 0.7rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+
+    .mini-controls {
+      align-items: center;
+    }
+
+    .mini-controls .hint {
+      margin: 0;
+    }
+
+    button {
+      border-radius: 12px;
+      border: 1px solid var(--button-border);
+      padding: 0.55rem 1rem;
+      background: var(--button-bg);
+      color: var(--accent);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+      transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: var(--button-contrast);
+      border-color: var(--accent);
+    }
+
+    button:hover {
+      background: var(--accent-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.14);
+    }
+
+    button.primary:hover {
+      background: var(--button-primary-hover);
+      color: var(--button-contrast);
+    }
+
+    button.danger {
+      border-color: rgba(220, 38, 38, 0.5);
+      color: var(--button-contrast);
+      background: var(--danger);
+    }
+
+    button.danger:hover {
+      background: var(--button-danger-hover);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
+    .setup-card label {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .settings-block {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.8rem 0.9rem;
+      background: var(--panel-bg);
+    }
+
+    .settings-block-wide {
+      grid-column: 1 / -1;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 0.6rem;
+    }
+
+    .option-row label {
+      margin-bottom: 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: var(--input-bg);
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .dataset-picker {
+      border: 0;
+      margin: 0;
+      padding: 0;
+      min-width: 0;
+      --dataset-pill-row-height: 2.2rem;
+    }
+
+    .dataset-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dataset-actions button {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 8px;
+    }
+
+    .dataset-options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      align-content: flex-start;
+      gap: 0.45rem;
+      max-height: calc((var(--dataset-pill-row-height) * 6) + (0.45rem * 5));
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.2rem;
+    }
+
+    .dataset-option {
+      margin-bottom: 0 !important;
+      display: inline-flex;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.4rem 0.65rem;
+      background: var(--card-bg);
+      align-items: center !important;
+      gap: 0.45rem !important;
+      width: fit-content;
+      max-width: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .dataset-option:focus-within {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .dataset-option input[type="checkbox"] {
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .dataset-options.none-selected input[type="checkbox"] {
+      outline: 1px solid var(--danger);
+      outline-offset: 1px;
+      border-radius: 3px;
+    }
+
+    .dataset-option-text {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .dataset-option-title {
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .hint.hint-error {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .setup-card ul {
+      text-align: left;
+      display: block;
+      margin: 0 0 1.5rem;
+      max-width: fit-content;
+      padding-left: 1.5rem;
+    }
+
+    .setup-card p {
+      max-width: fit-content;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    #intervalInput {
+      width: 70px !important;
+      display: inline-block !important;
+      margin: 0 10px !important;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .auto-notice {
+      font-size: 0.9rem;
+      color: var(--auto-notice);
+      font-weight: 600;
+      margin: 0.4rem 0 0;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+
+    .test-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .nav-card {
+      position: sticky;
+      top: 90px;
+      max-height: calc(100vh - 120px);
+      overflow: auto;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-list button {
+      width: 100%;
+      justify-content: flex-start;
+      border-radius: 10px;
+    }
+
+    .nav-list button.current {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--fg);
+    }
+
+    .nav-list button.answered {
+      border-color: var(--success);
+      color: var(--auto-notice);
+    }
+
+    .question-card h3 {
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .greek-term {
+      font-family: "Palatino Linotype", "Noto Serif", "Times New Roman", serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      margin: 0.5rem 0 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .translit {
+      font-size: 0.9rem;
+      color: var(--translit);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .answer-block {
+      margin-top: 0.7rem;
+      padding: 0.65rem 0.75rem;
+      background: var(--accent-soft);
+      border-radius: 10px;
+      border: 1px solid var(--answer-border);
+    }
+
+    .answer-block strong {
+      color: var(--accent);
+    }
+
+    .answer-block.correct {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .answer-block.wrong {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .toggle-row {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .known-toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .known-toggle-btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--accent);
+      box-shadow: none;
+      transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .known-toggle-btn.single {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .known-toggle-btn.both {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .known-toggle-btn[aria-pressed="true"] {
+      color: var(--button-contrast);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+    }
+
+    .known-toggle-btn.single[aria-pressed="true"] {
+      background: var(--accent);
+    }
+
+    .known-toggle-btn.both[aria-pressed="true"] {
+      background: var(--success);
+    }
+
+    .known-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 240px;
+      overflow: auto;
+      padding-right: 0.2rem;
+    }
+
+    .backup-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .backup-item {
+      flex: 1 1 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.6rem 0.7rem;
+      background: var(--backup-bg);
+    }
+
+    .backup-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .backup-meta strong {
+      color: var(--backup-accent);
+    }
+
+    .backup-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .backup-confirm {
+      border-top: 1px dashed var(--backup-confirm);
+      padding-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .backup-confirm label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .import-area {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .known-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      background: var(--known-item-bg);
+    }
+
+    .known-item small {
+      color: var(--muted);
+    }
+
+    .known-direction-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .known-direction-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 60;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      color: var(--fg);
+      border-radius: 16px;
+      padding: 1.2rem 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
+      text-align: left;
+    }
+
+    .modal-card h3 {
+      margin: 0 0 0.5rem;
+      color: var(--accent);
+    }
+
+    .modal-checkbox {
+      margin: 0.6rem 0 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .modal-actions {
+      justify-content: flex-end;
+    }
+
+    .fact-box {
+      background: var(--fact-bg);
+      border: 1px solid var(--fact-border);
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      margin: 0.6rem 0;
+      color: var(--fact-text);
+    }
+
+    .fact-note {
+      font-size: 0.85rem;
+      color: var(--fact-text);
+      margin-top: 0;
+    }
+
+    .interval-summary {
+      margin-top: 0.8rem;
+      border: 1px dashed var(--interval-border);
+      border-radius: 12px;
+      padding: 0.7rem 0.9rem;
+      background: var(--interval-bg);
+    }
+
+    .interval-summary h4 {
+      margin: 0 0 0.4rem;
+      color: var(--interval-title);
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6rem;
+    }
+
+    .result-table th,
+    .result-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .result-table th {
+      color: var(--accent);
+    }
+
+    .mnemonic-block {
+      margin-top: 0.9rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--mnemonic-border);
+      background: var(--mnemonic-bg);
+      color: var(--mnemonic-text);
+    }
+
+    .mnemonic-block h4 {
+      margin: 0 0 0.4rem;
+      color: var(--mnemonic-text);
+    }
+
+    .mnemonic-block ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .mnemonic-input {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .test-layout {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .nav-card {
+        position: relative;
+        top: auto;
+        max-height: 200px;
+        order: 2;
+      }
+
+      .question-card {
+        order: 1;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #pageDescription {
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .greek-term {
+        font-size: 1.6rem;
+      }
+    }
+
+    .setup-card h2 {
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .setup-card:first-of-type {
+      border: 1px dashed var(--setup-note-border);
+      box-shadow: none;
+      background: var(--setup-note-bg);
+    }
+
+    .setup-primary {
+      border: 2px solid var(--accent);
+      background: var(--card-bg);
+    }
+
+    .section-title {
+      margin-top: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+      font-size: 1.05rem;
+      text-align: left;
+    }
+
+    #startBtn {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 20px auto 0;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .controls.start-controls {
+      justify-content: center;
+    }
+
+    .controls.start-controls #startBtn,
+    .controls.start-controls #resetRestartBtn {
+      width: auto;
+      max-width: none;
+      display: inline-flex;
+      margin: 0;
+      flex: 1 1 240px;
+      justify-content: center;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-top">
+      <a href="../../index.html" class="home-link" id="homeLink">← Storification</a>
+      <div class="header-actions">
+        <label class="theme-switch" for="themeToggle">
+          <input type="checkbox" id="themeToggle" aria-label="Donkere modus">
+          <span class="switch-track" aria-hidden="true"></span>
+        </label>
+        <button type="button" class="danger" id="resetSessionBtn">Vocabtrainer Full Reset</button>
+      </div>
+    </div>
+    <h1 id="pageTitle">Vocabtrainer</h1>
+    <p id="pageDescription">Oefen met woordenschat. Je ziet altijd de term in taal 1 (met eventuele transliteratie) en
+      vertaalt naar taal 2.</p>
+    <p class="hint">Je voortgang en je lijst met bekende woorden worden automatisch opgeslagen.</p>
+  </header>
+
+  <main>
+    <section class="grid">
+      <article class="card full setup-card setup-primary">
+        <h2>Hoe werkt deze toets?</h2>
+        <p>Je krijgt een woord te zien in een taal en je vertaalt het naar de andere taal!</p>
+        <ul>
+          <li>Je bepaalt wanneer je antwoorden ziet: direct, pas aan het einde, of om de X woorden.</li>
+          <li>Als je een vertaling kent kan je aangeven of je de vertaling al weet in beide richtingen of alleen de
+            huidige richting (2 knoppen). Je kunt bekende woorden altijd weer terugzetten.</li>
+          <li>Je kunt de onbekende woorden exporteren.</li>
+        </ul>
+      </article>
+
+      <article class="card full setup-card">
+        <h2>INSTELLINGEN</h2>
+        <div class="settings-block settings-block-wide">
+          <p><strong>Woordlijsten</strong></p>
+          <fieldset class="dataset-picker">
+            <legend class="sr-only">Kies één of meer woordlijsten</legend>
+            <div class="dataset-actions">
+              <button type="button" id="datasetSelectAllBtn">Alles kiezen</button>
+              <button type="button" id="datasetResetBtn">Reset selectie</button>
+            </div>
+            <div class="dataset-options" id="datasetOptions"></div>
+          </fieldset>
+          <p class="hint" id="datasetHint"></p>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-block">
+            <p><strong>Antwoorden tonen</strong></p>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="immediate" checked> Na elke vraag</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="interval"> Om de</label>
+              <input type="number" id="intervalInput" min="1" value="5">
+              <span>vragen (max. totaal)</span>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="revealMode" value="end"> Alles aan het einde</label>
+            </div>
+            <p class="hint" id="intervalHint"></p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Vertaalrichting toetsvragen</strong></p>
+            <div class="option-row">
+              <label id="direction-l1-l2"><input type="radio" name="directionMode" value="l1-to-l2" checked> <span
+                  class="direction-label-text">Altijd taal 1 naar taal 2</span></label>
+            </div>
+            <div class="option-row">
+              <label id="direction-l2-l1"><input type="radio" name="directionMode" value="l2-to-l1"> <span
+                  class="direction-label-text">Altijd taal 2 naar taal 1</span></label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="alternate"> Om en om</label>
+            </div>
+            <div class="option-row">
+              <label><input type="radio" name="directionMode" value="random"> Willekeurig</label>
+            </div>
+          </div>
+          <div class="settings-block">
+            <p><strong>Automatische bekend-markering</strong></p>
+            <label><input type="checkbox" id="autoRemoveToggle"> Markeer automatisch als bekend bij een goed
+              antwoord</label>
+            <p class="hint">Als je antwoord precies klopt (hoofdletters/spaties/punctuatie tellen niet), verdwijnt het
+              woord uit de toets.</p>
+          </div>
+          <div class="settings-block">
+            <p><strong>Volgorde</strong></p>
+            <label><input type="checkbox" id="shuffleToggle"> Schud de woorden bij start</label>
+            <p class="hint">Je kunt later tijdens de toets ook opnieuw schudden.</p>
+          </div>
+        </div>
+        <div class="controls start-controls">
+          <button class="primary" id="startBtn" type="button">Start de toets</button>
+          <button id="resetRestartBtn" type="button" class="danger hidden">RESET &amp; HERSTART TOETS</button>
+        </div>
+      </article>
+
+      <article class="card full setup-card" id="knownCard">
+        <h2>WOORDEN BEHEER</h2>
+        <p class="hint hidden" id="knownNotice">Je toets is opgeslagen. Je kunt hier woorden beheren en daarna weer
+          verdergaan.</p>
+        <h3 class="section-title">LIJST VAN BEKENDE WOORDEN</h3>
+          <p id="knownCount"></p>
+          <div class="known-list" id="knownList"></div>
+          <div class="controls">
+            <button type="button" id="clearKnownBtn">Wis bekende woorden</button>
+            <button type="button" id="backToTestBtn">Terug naar toets</button>
+          </div>
+          <h3 class="section-title">BACKUPS VAN BEKENDE WOORDEN</h3>
+          <p class="hint">Bij elke <em>Full Reset</em> of <em>Toets Reset</em> wordt je lijst bekende woorden automatisch hier gebackupt zodat je deze niet kwijt raakt. Alleen de laatste 3 worden bewaard.
+          </p>
+          <div class="backup-list" id="knownBackupList"></div>
+          <p class="hint hidden" id="knownBackupEmpty">Er zijn nog geen back-ups opgeslagen, zodra je een Full Reset of Toets Reset doet verschijnt hier een back-up!</p>
+          <p class="hint" id="knownBackupStatus"></p>
+          <div class="grid" style="margin-top: 1.5rem; gap: 2rem;">
+            <div style="min-width: 0;">
+              <h3 class="section-title" style="margin-top: 0;">IMPORT/EXPORT (ON)BEKENDE WOORDEN</h3>
+              <p class="hint">Formaat: één regel per woord, met TAB tussen taal 1 en taal 2. Optioneel 3e kolom voor
+                ezelsbruggetjes (scheid met |).</p>
+              <textarea class="import-area" id="importArea" placeholder="Je kunt hier woorden importeren of exporteren.
+1) Of je plakt een woordenlijst en klikt 'Importeer' om deze te importeren. 
+2) Of je klikt 'Exporteer onbekende woorden' en worden ze hier getoond."></textarea>
+              <div class="controls">
+                <button type="button" id="exportUnknownBtn">Exporteer onbekende woorden</button>
+                <label><input type="checkbox" id="includeMnemonicsToggle"> Neem mijn ezelsbruggetjes mee</label>
+                <button type="button" id="importUnknownBtn"
+                  title="Alleen woorden in de geimporteerde lijst uit de lijst 'Bekende woorden' halen (als ze daar in staan).">Importeer
+                  onbekend</button>
+                <button type="button" id="importUnknownKnownRestBtn"
+                  title="Woorden in de geimporteerde lijst uit de lijst 'Bekende woorden' halen (als ze daar in staan) en alle andere woorden in 'Bekende woorden' lijst zetten.">Importeer
+                  onbekend + rest bekend</button>
+                <button type="button" id="importKnownBtn" title="Zet de woorden in de lijst op 'bekend'.">Importeer
+                  bekend</button>
+              </div>
+              <p class="hint" id="importStatus"></p>
+            </div>
+            <div style="min-width: 0;">
+              <h3 class="section-title" style="margin-top: 0;"><em>TIJDELIJK HOOFDLIJST OVERSCHRIJVEN</em></h3>
+              <p class="hint">Met deze feature kan je tijdelijk het gehele vocab-lijst vervangen! Maak je geen zorgen, je raakt nooit de originele lijst kwijt, dit kan je altijd terugzetten!</p>
+              <p class="hint">Het formaat is één regel per woord, met TAB tussen taal 1 en taal 2 (zie voorbeeld in het tekstvak hieronder).</p>
+              <textarea class="import-area" id="masterArea" placeholder="en ville	in de stad
+la place	het plein
+l'arbre (m.)	de boom"></textarea>
+              <div class="controls">
+                <button type="button" id="importMasterBtn">Tijdelijk standaardlijst importeren</button>
+                <button type="button" id="resetMasterBtn">Herstel standaardlijst</button>
+              </div>
+              <p class="hint" id="masterStatus"></p>
+            </div>
+          </div>
+      </article>
+
+      <article class="card full hidden" id="testArea">
+        <div class="test-layout">
+          <aside class="card nav-card" aria-label="Navigatie woorden">
+            <h3>Woorden</h3>
+            <p class="hint" id="navHint"></p>
+            <ul class="nav-list" id="navList"></ul>
+          </aside>
+
+          <section class="card question-card">
+            <div class="meta" id="progressDisplay"></div>
+            <div class="status-chip" id="revealStatus"></div>
+            <div class="controls mini-controls">
+              <button type="button" id="manageKnownBtn">Bekende woorden beheren</button>
+              <button type="button" id="backToSettingsBtn">Terug naar instellingen</button>
+              <button type="button" id="shuffleBtn">Schud volgorde</button>
+              <span class="hint">Je voortgang wordt automatisch opgeslagen.</span>
+            </div>
+
+            <div class="fact-box" id="factBox">
+              <strong>Weetje:</strong>
+              <span id="factInline"></span>
+            </div>
+
+            <div class="greek-term" id="greekText"></div>
+            <div class="translit" id="translitText"></div>
+            <p><strong>Vertaal naar <span id="targetLanguageLabel">taal 2</span>.</strong></p>
+
+            <input type="text" id="userAnswer" placeholder="Typ vertaling..." autocomplete="off" autofocus
+              aria-label="Jouw antwoord">
+
+            <div class="controls">
+              <button id="revealNow" type="button">Toon antwoord nu</button>
+              <button id="prevBtn" type="button">← Vorige</button>
+              <button id="nextBtn" type="button">Volgende →</button>
+              <button id="mnemonicBtn" type="button">Ezelsbruggetjes</button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="known-toggle-group">
+                <button type="button" class="known-toggle-btn both" id="knownToggleBothBtn" aria-pressed="false">Ik weet
+                  dit woord in beide richtingen (nooit meer tonen)</button>
+                <button type="button" class="known-toggle-btn single" id="knownToggleSingleBtn" aria-pressed="false">Ik
+                  weet dit woord alleen in deze vertaalrichting (niet meer tonen)</button>
+              </div>
+              <p class="hint">Je kunt dit altijd terugzetten in het blok 'Bekende woorden'.</p>
+            </div>
+            <p class="auto-notice hidden" id="autoNotice"></p>
+
+            <div id="answerBlock" class="answer-block hidden"></div>
+            <div id="mnemonicBlock" class="mnemonic-block hidden">
+              <h4>Ezelsbruggetjes</h4>
+              <ul id="mnemonicList"></ul>
+              <div class="mnemonic-input">
+                <label for="mnemonicInput"><strong>Jouw ezelsbruggetje</strong></label>
+                <input type="text" id="mnemonicInput" placeholder="Typ jouw ezelsbruggetje...">
+                <button type="button" id="saveMnemonicBtn">Opslaan</button>
+              </div>
+            </div>
+            <div id="intervalBlock" class="interval-summary hidden"></div>
+          </section>
+        </div>
+      </article>
+
+      <article class="card full hidden" id="summaryCard">
+        <h2>Resultaten & vervolg</h2>
+        <p id="summaryText"></p>
+        <table class="result-table" id="resultTable"></table>
+        <div class="controls">
+          <button id="retryUnknown" type="button" class="primary">Opnieuw met onbekende woorden</button>
+          <button id="retryAll" type="button">Alles opnieuw (ook bekende woorden)</button>
+          <button id="backToSettings" type="button">Terug naar instellingen</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="modal-overlay hidden" id="resetOverlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="resetOverlayTitle">
+      <h3 id="resetOverlayTitle"></h3>
+      <p id="resetOverlayBody"></p>
+      <label class="modal-checkbox hidden" id="resetOverlayKnownRow">
+        <input type="checkbox" id="resetOverlayKnownToggle">
+        Wis ook mijn lijst met bekende woorden
+      </label>
+      <div class="controls modal-actions">
+        <button type="button" id="resetOverlayCancel">Annuleren</button>
+        <button type="button" class="danger" id="resetOverlayConfirm">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="vocab-greek-facts.js"></script>
+  <script src="vocab-greek-nl-lessen-2-tot-16.js"></script>
+  <script src="vocab-greek-nl-les-2-kosmos.js"></script>
+  <script src="vocab-greek-nl-les-3-kronos.js"></script>
+  <script src="vocab-greek-nl-les-4-zeus.js"></script>
+  <script src="vocab-greek-nl-les-6-goden.js"></script>
+  <script src="vocab-greek-nl-les-7-held.js"></script>
+  <script src="vocab-greek-nl-les-8-argonauten.js"></script>
+  <script src="vocab-greek-nl-les-9-argonautentocht.js"></script>
+  <script src="vocab-greek-nl-les-11-agamemnon-achilles.js"></script>
+  <script src="vocab-greek-nl-les-12-hektor-andromache.js"></script>
+  <script src="vocab-greek-nl-les-13-hektor-achilles.js"></script>
+  <script src="vocab-greek-nl-les-14-een-houten-paard.js"></script>
+  <script src="vocab-greek-nl-les-16-pythia.js"></script>
+  <script src="vocab-latin-nl.js"></script>
+  <script src="vocab-latin-nl-les-27-thermae.js"></script>
+  <script src="vocab-latin-nl-les-29-hannibal.js"></script>
+  <script src="vocab-fr-nl-unite-2.js"></script>
+  <script src="vocab-nl-fr-unite-2.js"></script>
+  <script src="vocab-fr-nl-unite-3.js"></script>
+  <script>
+    const DATASET_KEY = "vocab-selected-dataset-v3";
+    const LEGACY_DATASET_KEY = "vocab-selected-dataset-v2";
+    const SILENT_RELOAD_KEY = "vocabtrainer-silent-reload-v1";
+    const DATASETS = Array.isArray(window.VOCAB_DATASETS) && window.VOCAB_DATASETS.length
+      ? window.VOCAB_DATASETS
+      : [
+        {
+          id: "default",
+          label: "Woordlijst",
+          language1: "Taal 1",
+          language2: "Taal 2",
+          showTransliteration: true,
+          data: window.RAW_VOCAB || ""
+        }
+      ];
+    const DATASET_BY_ID = Object.fromEntries(DATASETS.map((dataset) => [dataset.id, dataset]));
+    const LEGACY_DATASET_ID = "grc-nl";
+    const STORAGE_SCHEMA_VERSION = 12;
+
+    function parseStoredDatasetIds(rawValue) {
+      if (typeof rawValue !== "string") return [];
+      const trimmed = rawValue.trim();
+      if (!trimmed) return [];
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          return parsed.filter((id) => typeof id === "string");
+        }
+      } catch (error) {
+        // Backward compatibility for pre-v3 storage that used one plain string.
+      }
+      return [trimmed];
+    }
+
+    function arraysEqual(left, right) {
+      if (left.length !== right.length) return false;
+      for (let index = 0; index < left.length; index += 1) {
+        if (left[index] !== right[index]) return false;
+      }
+      return true;
+    }
+
+    function setSilentReloadFlag() {
+      try {
+        sessionStorage.setItem(SILENT_RELOAD_KEY, "1");
+      } catch (error) {
+        // ignore storage failures (private mode / blocked storage)
+      }
+    }
+
+    function enterSilentReloadMode() {
+      setSilentReloadFlag();
+      document.documentElement.setAttribute("data-silent-reload", "1");
+      const theme = document.documentElement.getAttribute("data-theme");
+      document.documentElement.style.backgroundColor = theme === "dark" ? "#0f172a" : "#f3f4f6";
+    }
+
+    function clearSilentReloadMode() {
+      try {
+        sessionStorage.removeItem(SILENT_RELOAD_KEY);
+      } catch (error) {
+        // ignore storage failures (private mode / blocked storage)
+      }
+      document.documentElement.removeAttribute("data-silent-reload");
+      document.documentElement.style.removeProperty("background-color");
+    }
+
+    function normalizeDatasetIds(datasetIds, fallbackId = DATASETS[0].id, allowEmpty = false) {
+      const sourceIds = Array.isArray(datasetIds) ? datasetIds : [];
+      const uniqueIds = [];
+      sourceIds.forEach((id) => {
+        if (!DATASET_BY_ID[id]) return;
+        if (!uniqueIds.includes(id)) uniqueIds.push(id);
+      });
+
+      if (!uniqueIds.length) {
+        if (allowEmpty) return [];
+        return fallbackId && DATASET_BY_ID[fallbackId] ? [fallbackId] : [DATASETS[0].id];
+      }
+      return uniqueIds;
+    }
+
+    function saveSelectedDatasetIds(datasetIds) {
+      localStorage.setItem(DATASET_KEY, JSON.stringify(datasetIds));
+      if (datasetIds.length === 1) {
+        localStorage.setItem(LEGACY_DATASET_KEY, datasetIds[0]);
+      } else {
+        localStorage.removeItem(LEGACY_DATASET_KEY);
+      }
+    }
+
+    function loadSelectedDatasetIds() {
+      const v3Raw = localStorage.getItem(DATASET_KEY);
+      if (v3Raw !== null) return parseStoredDatasetIds(v3Raw);
+      const legacySingle = localStorage.getItem(LEGACY_DATASET_KEY);
+      return legacySingle ? [legacySingle] : null;
+    }
+
+    const loadedDatasetIds = loadSelectedDatasetIds();
+    const selectedDatasetIds = loadedDatasetIds === null
+      ? normalizeDatasetIds([], DATASETS[0].id, false)
+      : normalizeDatasetIds(loadedDatasetIds, DATASETS[0].id, true);
+    const activeDatasets = DATASETS.filter((dataset) => selectedDatasetIds.includes(dataset.id));
+    const hasSelectedDatasets = activeDatasets.length > 0;
+    const activeDataset = hasSelectedDatasets ? activeDatasets[0] : DATASETS[0];
+    const DATASET_SCOPE_ID = hasSelectedDatasets
+      ? activeDatasets.map((dataset) => dataset.id).join("__")
+      : "none";
+    const usesLegacyGreekKeys = hasSelectedDatasets
+      && activeDatasets.length === 1
+      && DATASET_SCOPE_ID === LEGACY_DATASET_ID;
+    const LANGUAGE1_LABEL = activeDataset.language1 || "Taal 1";
+    const LANGUAGE2_LABEL = activeDataset.language2 || "Taal 2";
+    const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
+    const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
+    const STORAGE_SCHEMA_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-storage-schema-v12"
+      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v12`;
+
+    saveSelectedDatasetIds(selectedDatasetIds);
+
+    const storedSchemaVersion = localStorage.getItem(STORAGE_SCHEMA_KEY);
+    if (storedSchemaVersion !== String(STORAGE_SCHEMA_VERSION)) {
+      localStorage.setItem(STORAGE_SCHEMA_KEY, String(STORAGE_SCHEMA_VERSION));
+      setSilentReloadFlag();
+      window.location.reload();
+    }
+
+    const MASTER_VOCAB_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-master-v1"
+      : `vocab-master-${DATASET_SCOPE_ID}-v1`;
+    const FACTS = hasSelectedDatasets ? getFactsForDataset(activeDataset) : [];
+
+    const STORAGE_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-session-v5"
+      : `vocab-session-${DATASET_SCOPE_ID}-v5`;
+    const KNOWN_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-known-v1"
+      : `vocab-known-${DATASET_SCOPE_ID}-v1`;
+    const AUTO_REMOVE_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-auto-remove-v1"
+      : `vocab-auto-remove-${DATASET_SCOPE_ID}-v1`;
+    const MNEMONIC_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-mnemonics-v1"
+      : `vocab-mnemonics-${DATASET_SCOPE_ID}-v1`;
+    const KNOWN_BACKUP_KEY = usesLegacyGreekKeys
+      ? "oudgrieks-vocab-known-backups-v1"
+      : `vocab-known-backups-${DATASET_SCOPE_ID}-v1`;
+    const KNOWN_BACKUP_LIMIT = 3;
+
+    function loadMasterVocab() {
+      return localStorage.getItem(MASTER_VOCAB_KEY);
+    }
+
+    function saveMasterVocab(text) {
+      localStorage.setItem(MASTER_VOCAB_KEY, text);
+    }
+
+    function clearMasterVocab() {
+      localStorage.removeItem(MASTER_VOCAB_KEY);
+    }
+
+    const mergedDatasetData = activeDatasets
+      .map((dataset) => dataset.data || "")
+      .filter(Boolean)
+      .join("\n");
+    const RAW_VOCAB = hasSelectedDatasets
+      ? (loadMasterVocab() || mergedDatasetData || activeDataset.data || "")
+      : "";
+
+    const vocab = parseVocab(RAW_VOCAB);
+    const vocabById = Object.fromEntries(vocab.map((item) => [item.id, item]));
+
+    const knownState = loadKnown();
+    const knownL1Ids = knownState.l1;
+    const knownL2Ids = knownState.l2;
+    const userMnemonics = loadUserMnemonics();
+
+    let session = null;
+
+    const startBtn = document.getElementById("startBtn");
+    const datasetOptions = document.getElementById("datasetOptions");
+    const datasetSelectAllBtn = document.getElementById("datasetSelectAllBtn");
+    const datasetResetBtn = document.getElementById("datasetResetBtn");
+    const datasetHint = document.getElementById("datasetHint");
+    const resetRestartBtn = document.getElementById("resetRestartBtn");
+    const intervalInput = document.getElementById("intervalInput");
+    const intervalHint = document.getElementById("intervalHint");
+    const directionRadios = document.querySelectorAll("input[name=\"directionMode\"]");
+    const knownCount = document.getElementById("knownCount");
+    const knownList = document.getElementById("knownList");
+    const clearKnownBtn = document.getElementById("clearKnownBtn");
+    const knownBackupList = document.getElementById("knownBackupList");
+    const knownBackupEmpty = document.getElementById("knownBackupEmpty");
+    const knownBackupStatus = document.getElementById("knownBackupStatus");
+    const exportUnknownBtn = document.getElementById("exportUnknownBtn");
+    const importUnknownBtn = document.getElementById("importUnknownBtn");
+    const importUnknownKnownRestBtn = document.getElementById("importUnknownKnownRestBtn");
+    const importKnownBtn = document.getElementById("importKnownBtn");
+    const importArea = document.getElementById("importArea");
+    const importStatus = document.getElementById("importStatus");
+    const includeMnemonicsToggle = document.getElementById("includeMnemonicsToggle");
+    const importMasterBtn = document.getElementById("importMasterBtn");
+    const resetMasterBtn = document.getElementById("resetMasterBtn");
+    const masterArea = document.getElementById("masterArea");
+    const masterStatus = document.getElementById("masterStatus");
+    const backToTestBtn = document.getElementById("backToTestBtn");
+    const testArea = document.getElementById("testArea");
+    const summaryCard = document.getElementById("summaryCard");
+    const navList = document.getElementById("navList");
+    const navHint = document.getElementById("navHint");
+    const progressDisplay = document.getElementById("progressDisplay");
+    const revealStatus = document.getElementById("revealStatus");
+    const greekText = document.getElementById("greekText");
+    const translitText = document.getElementById("translitText");
+    const targetLanguageLabel = document.getElementById("targetLanguageLabel");
+    const userAnswer = document.getElementById("userAnswer");
+    const revealNow = document.getElementById("revealNow");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const knownToggleBothBtn = document.getElementById("knownToggleBothBtn");
+    const knownToggleSingleBtn = document.getElementById("knownToggleSingleBtn");
+    const answerBlock = document.getElementById("answerBlock");
+    const mnemonicBlock = document.getElementById("mnemonicBlock");
+    const mnemonicList = document.getElementById("mnemonicList");
+    const mnemonicInput = document.getElementById("mnemonicInput");
+    const saveMnemonicBtn = document.getElementById("saveMnemonicBtn");
+    const intervalBlock = document.getElementById("intervalBlock");
+    const summaryText = document.getElementById("summaryText");
+    const resultTable = document.getElementById("resultTable");
+    const retryUnknown = document.getElementById("retryUnknown");
+    const retryAll = document.getElementById("retryAll");
+    const backToSettings = document.getElementById("backToSettings");
+    const resetSessionBtn = document.getElementById("resetSessionBtn");
+    const resetOverlay = document.getElementById("resetOverlay");
+    const resetOverlayTitle = document.getElementById("resetOverlayTitle");
+    const resetOverlayBody = document.getElementById("resetOverlayBody");
+    const resetOverlayKnownRow = document.getElementById("resetOverlayKnownRow");
+    const resetOverlayKnownToggle = document.getElementById("resetOverlayKnownToggle");
+    const resetOverlayCancel = document.getElementById("resetOverlayCancel");
+    const resetOverlayConfirm = document.getElementById("resetOverlayConfirm");
+    const homeLink = document.getElementById("homeLink");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDescription = document.getElementById("pageDescription");
+    const factInline = document.getElementById("factInline");
+    const factBox = document.getElementById("factBox");
+    const autoRemoveToggle = document.getElementById("autoRemoveToggle");
+    const shuffleToggle = document.getElementById("shuffleToggle");
+    const autoNotice = document.getElementById("autoNotice");
+    const setupCards = Array.from(document.querySelectorAll(".setup-card"));
+    const manageKnownBtn = document.getElementById("manageKnownBtn");
+    const backToSettingsBtn = document.getElementById("backToSettingsBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const mnemonicBtn = document.getElementById("mnemonicBtn");
+    const knownCard = document.getElementById("knownCard");
+    const knownNotice = document.getElementById("knownNotice");
+
+    let mnemonicOpenFor = null;
+
+    function getDatasetIdsFromUI() {
+      if (!datasetOptions) return [];
+      return Array.from(datasetOptions.querySelectorAll("input[type=\"checkbox\"]:checked"))
+        .map((input) => input.value);
+    }
+
+    function persistDatasetSelection(nextIds) {
+      const normalized = normalizeDatasetIds(nextIds, activeDataset.id, true);
+      if (arraysEqual(normalized, selectedDatasetIds)) {
+        applyDatasetUI();
+        return;
+      }
+      saveSelectedDatasetIds(normalized);
+      enterSilentReloadMode();
+      window.location.reload();
+    }
+
+    function applyDatasetUI() {
+      if (datasetOptions) {
+        datasetOptions.classList.toggle("none-selected", activeDatasets.length === 0);
+        datasetOptions.innerHTML = "";
+        DATASETS.forEach((dataset, index) => {
+          const checkboxId = `dataset-option-${dataset.id || index}`;
+          const isChecked = selectedDatasetIds.includes(dataset.id);
+          const wrapper = document.createElement("label");
+          wrapper.className = "dataset-option";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = checkboxId;
+          checkbox.value = dataset.id;
+          checkbox.checked = isChecked;
+
+          const textWrap = document.createElement("span");
+          textWrap.className = "dataset-option-text";
+
+          const title = document.createElement("span");
+          title.className = "dataset-option-title";
+          title.textContent = dataset.label || `${dataset.language1 || "Taal 1"} -> ${dataset.language2 || "Taal 2"}`;
+          textWrap.appendChild(title);
+          wrapper.appendChild(checkbox);
+          wrapper.appendChild(textWrap);
+          datasetOptions.appendChild(wrapper);
+        });
+      }
+
+      if (datasetHint) {
+        if (activeDatasets.length === 0) {
+          datasetHint.textContent = "Geen woordenlijst geselecteerd";
+          datasetHint.classList.add("hint-error");
+        } else {
+          datasetHint.classList.remove("hint-error");
+          const selectedCountLabel = activeDatasets.length === 1
+            ? "1 woordlijst geselecteerd"
+            : `${activeDatasets.length} woordlijsten geselecteerd`;
+          const selectedNames = activeDatasets.map((dataset) => dataset.label || dataset.id);
+          const preview = selectedNames.slice(0, 2).join(", ");
+          const extra = selectedNames.length > 2 ? ` +${selectedNames.length - 2} meer` : "";
+          const pairCount = new Set(activeDatasets.map((dataset) => `${dataset.language1 || "Taal 1"}->${dataset.language2 || "Taal 2"}`)).size;
+          const pairHint = pairCount > 1
+            ? "meerdere taalrichtingen geselecteerd"
+            : `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`;
+          datasetHint.textContent = `${selectedCountLabel} • ${pairHint} • ${preview}${extra}`;
+        }
+      }
+
+      if (datasetSelectAllBtn) {
+        datasetSelectAllBtn.disabled = activeDatasets.length >= DATASETS.length;
+      }
+      if (datasetResetBtn) {
+        datasetResetBtn.disabled = activeDatasets.length <= 1;
+      }
+
+      const label = activeDatasets.length === 0
+        ? "Vocabtrainer"
+        : (activeDatasets.length > 1
+          ? `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL} (${activeDatasets.length} lijsten)`
+          : (activeDataset.label || `${LANGUAGE1_LABEL} -> ${LANGUAGE2_LABEL}`));
+      const titleText = activeDatasets.length === 0 ? label : `${label} vocabtrainer`;
+      if (pageTitle) {
+        pageTitle.textContent = titleText;
+      }
+      document.title = titleText;
+
+      updateDirectionCopy(getDirectionMode());
+
+      const l1Tol2Label = document.querySelector("#direction-l1-l2 .direction-label-text");
+      const l2Tol1Label = document.querySelector("#direction-l2-l1 .direction-label-text");
+
+      if (l1Tol2Label && l2Tol1Label) {
+        const cleanL1 = (LANGUAGE1_LABEL || 'Taal 1').replace(/\s*\(.*\)/, '').trim();
+        const cleanL2 = (LANGUAGE2_LABEL || 'Taal 2').replace(/\s*\(.*\)/, '').trim();
+
+        l1Tol2Label.textContent = `${cleanL1} → ${cleanL2}`;
+        l2Tol1Label.textContent = `${cleanL2} → ${cleanL1}`;
+      }
+    }
+
+    function getDirectionMode() {
+      const selected = document.querySelector("input[name=\"directionMode\"]:checked");
+      return selected ? selected.value : "l1-to-l2";
+    }
+
+    function getDirectionCopy(mode) {
+      const translitSuffix = SHOW_TRANSLIT ? " (met eventuele transliteratie)" : "";
+      if (mode === "l2-to-l1") {
+        return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE2_LABEL} en vertaalt naar ${LANGUAGE1_LABEL}.`;
+      }
+      if (mode === "alternate") {
+        return `Oefen met woordenschat. Je wisselt om en om tussen ${LANGUAGE1_LABEL}${translitSuffix} en ${LANGUAGE2_LABEL} als brontaal, en vertaalt steeds naar de andere taal.`;
+      }
+      if (mode === "random") {
+        return `Oefen met woordenschat. De brontaal is willekeurig ${LANGUAGE1_LABEL}${translitSuffix} of ${LANGUAGE2_LABEL}. Jij vertaalt telkens naar de andere taal.`;
+      }
+      return `Oefen met woordenschat. Je ziet altijd de term in ${LANGUAGE1_LABEL}${translitSuffix} en vertaalt naar ${LANGUAGE2_LABEL}.`;
+    }
+
+    function updateDirectionCopy(mode) {
+      if (pageDescription) {
+        pageDescription.textContent = getDirectionCopy(mode);
+      }
+    }
+
+    function getDirectionTargetLabel(direction) {
+      return direction === "l2" ? LANGUAGE1_LABEL : LANGUAGE2_LABEL;
+    }
+
+    function formatPairHint() {
+      return `${LANGUAGE1_LABEL} en ${LANGUAGE2_LABEL}`;
+    }
+
+    function parseVocab(raw) {
+      const lines = raw.trim().split("\n");
+      return lines.map((line, index) => {
+        const parts = line.split("\t");
+        const greek = (parts[0] ?? "").trim();
+        const dutch = (parts[1] ?? "").trim();
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
+        if (!greek || !dutch) return null;
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
+        return {
+          id: String(index),
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          rawTranslation: dutch,
+          mnemonics
+        };
+      }).filter(Boolean);
+    }
+
+    function buildDirectionMap(activeIds, mode, existingMap = {}) {
+      const map = {};
+      let toggleIndex = 0;
+      activeIds.forEach((id) => {
+        const knownL1 = isKnownL1(id);
+        const knownL2 = isKnownL2(id);
+        if (!knownL1 && knownL2) {
+          map[id] = "l1";
+          return;
+        }
+        if (knownL1 && !knownL2) {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "l2-to-l1") {
+          map[id] = "l2";
+          return;
+        }
+        if (mode === "alternate") {
+          const existingDir = existingMap[id];
+          if (existingDir === "l1" || existingDir === "l2") {
+            map[id] = existingDir;
+            return;
+          }
+          map[id] = toggleIndex % 2 === 0 ? "l1" : "l2";
+          toggleIndex += 1;
+          return;
+        }
+        if (mode === "random") {
+          map[id] = existingMap[id] || (Math.random() < 0.5 ? "l1" : "l2");
+          return;
+        }
+        map[id] = "l1";
+      });
+      return map;
+    }
+
+    function getDirectionForId(id) {
+      if (!session || !session.directionMap) return "l1";
+      return session.directionMap[id] || "l1";
+    }
+
+    function getSourceTerm(item, direction) {
+      if (direction === "l2") {
+        return item.translations.join(", ");
+      }
+      return item.greek;
+    }
+
+    function getTargetAnswer(item, direction) {
+      if (direction === "l2") {
+        return item.greek;
+      }
+      return item.translations.join(", ");
+    }
+
+    function shouldShowTranslit(direction) {
+      return SHOW_TRANSLIT && direction === "l1";
+    }
+
+    function transliterateGreek(text) {
+      let t = text.normalize("NFD");
+      t = t.replace(/([αεηοωΑΕΗΟΩ])([ιυΙΥ])\u0314/g, "h$1$2");
+      t = t.replace(/([αεηιουωΑΕΗΙΟΥΩ])\u0314/g, "h$1");
+      t = t.replace(/([ρΡ])\u0314/g, "rh");
+      t = t.replace(/[\u0300-\u036f]/g, "");
+      t = t.replace(/[··;]/g, "");
+      t = t.toLowerCase();
+
+      const digraphs = [
+        ["αι", "ai"],
+        ["ει", "ei"],
+        ["οι", "oi"],
+        ["υι", "ui"],
+        ["ου", "ou"],
+        ["ευ", "eu"],
+        ["αυ", "au"],
+        ["ηυ", "eu"]
+      ];
+
+      digraphs.forEach(([from, to]) => {
+        t = t.split(from).join(to);
+      });
+
+      const map = {
+        "α": "a",
+        "β": "b",
+        "γ": "g",
+        "δ": "d",
+        "ε": "e",
+        "ζ": "z",
+        "η": "e",
+        "θ": "th",
+        "ι": "i",
+        "κ": "k",
+        "λ": "l",
+        "μ": "m",
+        "ν": "n",
+        "ξ": "x",
+        "ο": "o",
+        "π": "p",
+        "ρ": "r",
+        "σ": "s",
+        "ς": "s",
+        "τ": "t",
+        "υ": "u",
+        "φ": "ph",
+        "χ": "ch",
+        "ψ": "ps",
+        "ω": "o"
+      };
+
+      let out = "";
+      for (const ch of t) {
+        out += map[ch] ?? ch;
+      }
+      return out;
+    }
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[()\[\]]/g, "")
+        .replace(/-/g, "")
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function normalizeGreek(text) {
+      return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function cleanMeaning(text) {
+      return text
+        .replace(/\([^)]*\)/g, "")
+        .replace(/[,;]/g, "")
+        .trim();
+    }
+
+    function getEtymologyHint(item, translit, meaning) {
+      const greek = normalizeGreek(item.greek);
+      const hints = [
+        { match: (g) => g.includes("θεο"), hint: "Etymologie: theo- (theologie) = god." },
+        { match: (g) => g.includes("λογ"), hint: "Etymologie: logo-/log- (logica, logboek) = woord/verhaal." },
+        { match: (g) => g.includes("φω"), hint: "Etymologie: photo- (fotografie) = licht." },
+        { match: (g) => g.includes("βιο"), hint: "Etymologie: bio- (biologie) = leven." },
+        { match: (g) => g.includes("ανθρωπ"), hint: "Etymologie: anthropo- (antropologie) = mens." },
+        { match: (g) => g.includes("ελλην") || g.includes("ελλ"), hint: "Etymologie: Hellen- (Hellenisme) = Grieks/Griekenland." },
+        { match: (g) => g.includes("ηλιο"), hint: "Etymologie: heli- (heliocentrisch, helium) = zon." },
+        { match: (g) => g.includes("θαλατ"), hint: "Etymologie: thalasso- (thalassotherapie) = zee." },
+        { match: (g) => g.includes("υδωρ") || g.includes("υδατ"), hint: "Etymologie: hydro- (hydrauliek) = water." },
+        { match: (g) => g.includes("πυρ"), hint: "Etymologie: pyro- (pyrotechniek) = vuur." },
+        { match: (g) => g.includes("τεχν"), hint: "Etymologie: techno- (techniek) = kunst/vaardigheid." },
+        { match: (g) => g.includes("σοφι"), hint: "Etymologie: -sofia in filosofie = wijsheid." },
+        { match: (g) => g.includes("φιλο"), hint: "Etymologie: philo- (filantropie, filosofie) = vriend." },
+        { match: (g) => g.includes("πολεμ"), hint: "Etymologie: polem- (polemiek) = oorlog/strijd." },
+        { match: (g) => g.includes("νικ"), hint: "Etymologie: Nike (merk) = overwinning." },
+        { match: (g) => g.includes("οικ"), hint: "Etymologie: eco-/oiko- (ecologie) = huis/omgeving." },
+        { match: (g) => g.includes("ονομ"), hint: "Etymologie: -onym (pseudoniem) = naam." },
+        { match: (g) => g.includes("γυν"), hint: "Etymologie: gyn- (gynaecologie) = vrouw." },
+        { match: (g) => g.includes("ανδρ"), hint: "Etymologie: andro- (android, androloog) = man." },
+        { match: (g) => g.includes("αδελφ"), hint: "Etymologie: adelph- (Philadelphia) = broer/zus." },
+        { match: (g) => g.includes("ιππ"), hint: "Etymologie: hippo- (hippodroom) = paard." },
+        { match: (g) => g.includes("θανατ"), hint: "Etymologie: thanato- (thanatologie) = dood." },
+        { match: (g) => g.includes("πατρ"), hint: "Etymologie: patri- (patriarch) = vader." },
+        { match: (g) => g.includes("μητρ"), hint: "Etymologie: metr- (metropool) = moeder." },
+        { match: (g) => g.includes("οπλ"), hint: "Etymologie: hopliet (gewapende soldaat) komt van ὅπλον." },
+        { match: (g) => g.includes("θρον"), hint: "Etymologie: throne/tron = troon." },
+        { match: (g) => g.includes("ποταμ"), hint: "Etymologie: potam- (potamologie) = rivier." },
+        { match: (g) => g.includes("αντι"), hint: "Etymologie: anti- (antibiotica) = tegen/in plaats van." },
+        { match: (g) => g.includes("συν"), hint: "Etymologie: syn- (synthese) = samen/met." },
+        { match: (g) => g.includes("δια"), hint: "Etymologie: dia- (diagnose, diagram) = door/uit elkaar." },
+        { match: (g) => g.includes("μετα"), hint: "Etymologie: meta- (metafoor, metadata) = na/over." },
+        { match: (g) => g.includes("περι"), hint: "Etymologie: peri- (perimeter) = rondom." },
+        { match: (g) => g.includes("υπερ"), hint: "Etymologie: hyper- (hyperactief) = boven/overmatig." },
+        { match: (g) => g.includes("επι"), hint: "Etymologie: epi- (epicentrum) = op/bij." },
+        { match: (g) => g.includes("κατα"), hint: "Etymologie: kata- (katastrofe) = neer/naar beneden." }
+      ];
+
+      const match = hints.find((entry) => entry.match(greek));
+      if (match) return match.hint;
+      if (meaning) {
+        return `Etymologie-hint: denk aan NL/EN woorden rond "${meaning}" die vaak Griekse stammen gebruiken.`;
+      }
+      return "Etymologie-hint: gebruik de klank- en beeldhint om dit woord te onthouden.";
+    }
+
+    function hashIndex(text, modulo) {
+      let hash = 0;
+      for (let i = 0; i < text.length; i += 1) {
+        hash = (hash + text.charCodeAt(i) * (i + 1)) % modulo;
+      }
+      return hash;
+    }
+
+    function getMnemonics(item) {
+      const translit = transliterateGreek(item.greek);
+      const meaning = cleanMeaning(item.translations[0] || "de betekenis");
+      const etymology = getEtymologyHint(item, translit, meaning);
+      const userHints = getUserMnemonics(item).map((hint) => `Jouw ezelsbruggetje: ${hint}`);
+      const baseHints = (item.mnemonics || []).map((hint) => `Ezelsbruggetje: ${hint}`);
+
+      const soundTemplates = [
+        (t, m) => `Klank: "${t}" klinkt als een mini-uitroep. Stel je ${m} voor die "${t}!" roept.`,
+        (t, m) => `Klank: zeg "${t}" hardop en plak het op ${m} in je hoofd.`,
+        (t, m) => `Klank: "${t}" → maak een korte zin met ${m} en herhaal het ritme.`
+      ];
+      const imageTemplates = [
+        (t, m) => `Beeld: schrijf "${t}" groot boven een ${m}.`,
+        (t, m) => `Beeld: maak van ${m} een vorm die lijkt op "${t}".`,
+        (t, m) => `Beeld: geef ${m} een label "${t}" alsof het een sticker is.`
+      ];
+
+      const sound = soundTemplates[hashIndex(translit + meaning, soundTemplates.length)](translit, meaning);
+      const image = imageTemplates[hashIndex(meaning + translit, imageTemplates.length)](translit, meaning);
+
+      return [...userHints, ...baseHints, etymology, sound, image];
+    }
+
+    function renderMnemonics(item) {
+      const hints = getMnemonics(item);
+      mnemonicList.innerHTML = "";
+      hints.forEach((hint) => {
+        const li = document.createElement("li");
+        li.textContent = hint;
+        mnemonicList.appendChild(li);
+      });
+      mnemonicBlock.classList.remove("hidden");
+      mnemonicOpenFor = item.id;
+    }
+
+    function isCorrectAnswer(answer, translations, rawTranslation) {
+      if (!answer) return false;
+      const normalized = normalizeText(answer);
+      if (rawTranslation) {
+        const rawNormalized = normalizeText(rawTranslation);
+        if (rawNormalized && normalized === rawNormalized) {
+          return true;
+        }
+      }
+      return translations.some((translation) => {
+        const cleaned = normalizeText(translation);
+        if (!cleaned) return false;
+        return normalized === cleaned;
+      });
+    }
+
+    function isCorrectAnswerForDirection(answer, item, direction) {
+      if (direction === "l2") {
+        const normalizedAnswer = normalizeGreek(answer);
+        const normalizedTarget = normalizeGreek(item.greek);
+        if (!normalizedAnswer || !normalizedTarget) return false;
+        return normalizedAnswer === normalizedTarget;
+      }
+      return isCorrectAnswer(answer, item.translations, item.rawTranslation);
+    }
+
+    function loadKnown() {
+      const raw = localStorage.getItem(KNOWN_KEY);
+      if (!raw) return { l1: new Set(), l2: new Set() };
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const set = new Set(parsed);
+          return { l1: new Set(set), l2: new Set(set) };
+        }
+        const l1 = parsed && Array.isArray(parsed.l1) ? parsed.l1 : [];
+        const l2 = parsed && Array.isArray(parsed.l2) ? parsed.l2 : [];
+        return { l1: new Set(l1), l2: new Set(l2) };
+      } catch (error) {
+        return { l1: new Set(), l2: new Set() };
+      }
+    }
+
+    function loadAutoRemove() {
+      const raw = localStorage.getItem(AUTO_REMOVE_KEY);
+      if (raw === null) return true;
+      return raw === "true";
+    }
+
+    function saveAutoRemove(value) {
+      localStorage.setItem(AUTO_REMOVE_KEY, value ? "true" : "false");
+    }
+
+    function saveKnown() {
+      localStorage.setItem(KNOWN_KEY, JSON.stringify({
+        l1: Array.from(knownL1Ids),
+        l2: Array.from(knownL2Ids)
+      }));
+    }
+
+    function isKnownL1(id) {
+      return knownL1Ids.has(id);
+    }
+
+    function isKnownL2(id) {
+      return knownL2Ids.has(id);
+    }
+
+    function isKnownAny(id) {
+      return isKnownL1(id) || isKnownL2(id);
+    }
+
+    function isKnownBoth(id) {
+      return isKnownL1(id) && isKnownL2(id);
+    }
+
+    function setKnownInDirection(id, direction, value) {
+      const target = direction === "l2" ? knownL2Ids : knownL1Ids;
+      if (value) {
+        target.add(id);
+      } else {
+        target.delete(id);
+      }
+    }
+
+    function setKnownBothDirections(id, value) {
+      setKnownInDirection(id, "l1", value);
+      setKnownInDirection(id, "l2", value);
+    }
+
+    function getKnownAnyCount() {
+      return new Set([...knownL1Ids, ...knownL2Ids]).size;
+    }
+
+    function formatTimestamp(date) {
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function loadKnownBackups() {
+      const raw = localStorage.getItem(KNOWN_BACKUP_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((entry) => entry && typeof entry.timestamp === "string" && Array.isArray(entry.words))
+          .slice(0, KNOWN_BACKUP_LIMIT);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveKnownBackups(backups) {
+      localStorage.setItem(KNOWN_BACKUP_KEY, JSON.stringify(backups.slice(0, KNOWN_BACKUP_LIMIT)));
+    }
+
+    function setBackupStatus(message) {
+      if (!knownBackupStatus) return;
+      knownBackupStatus.textContent = message || "";
+    }
+
+    function createKnownBackup() {
+      const knownWords = vocab
+        .filter((item) => isKnownAny(item.id))
+        .map((item) => ({
+          greek: item.greek,
+          l1: isKnownL1(item.id),
+          l2: isKnownL2(item.id)
+        }));
+      if (knownWords.length === 0) {
+        setBackupStatus("Geen bekende woorden om te back-uppen.");
+        return null;
+      }
+      const entry = { timestamp: formatTimestamp(new Date()), words: knownWords };
+      const backups = loadKnownBackups();
+      backups.unshift(entry);
+      saveKnownBackups(backups);
+      setBackupStatus(`Back-up opgeslagen: ${entry.timestamp} (${knownWords.length} woorden).`);
+      renderKnownBackups();
+      return entry;
+    }
+
+    function loadUserMnemonics() {
+      const raw = localStorage.getItem(MNEMONIC_KEY);
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return {};
+        const cleaned = {};
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            cleaned[key] = value.map((entry) => String(entry).trim()).filter(Boolean);
+          }
+        });
+        return cleaned;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveUserMnemonics() {
+      localStorage.setItem(MNEMONIC_KEY, JSON.stringify(userMnemonics));
+    }
+
+    function getUserMnemonics(item) {
+      if (!item || !item.greek) return [];
+      return userMnemonics[item.greek] || [];
+    }
+
+    function addUserMnemonic(item, text) {
+      if (!item || !item.greek) return false;
+      const cleaned = String(text || "").trim();
+      if (!cleaned) return false;
+      const list = userMnemonics[item.greek] || [];
+      const exists = list.some((entry) => entry.toLowerCase() === cleaned.toLowerCase());
+      if (!exists) {
+        list.push(cleaned);
+        userMnemonics[item.greek] = list;
+        saveUserMnemonics();
+      }
+      return true;
+    }
+
+    function buildActiveIds(includeKnown, directionMode) {
+      if (includeKnown) return vocab.map((item) => item.id);
+      const mode = directionMode || getDirectionMode();
+      if (mode === "l1-to-l2") {
+        return vocab.filter((item) => !isKnownL1(item.id)).map((item) => item.id);
+      }
+      if (mode === "l2-to-l1") {
+        return vocab.filter((item) => !isKnownL2(item.id)).map((item) => item.id);
+      }
+      return vocab.filter((item) => !isKnownBoth(item.id)).map((item) => item.id);
+    }
+
+    function buildUnknownList() {
+      return vocab.filter((item) => !isKnownBoth(item.id));
+    }
+
+    function shuffleArray(values) {
+      const arr = values.slice();
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleActiveIds(keepCurrent = true) {
+      if (!session || session.activeIds.length === 0) return;
+      const currentId = session.activeIds[session.currentIndex];
+      if (!keepCurrent || !currentId) {
+        session.activeIds = shuffleArray(session.activeIds);
+        session.currentIndex = 0;
+      } else {
+        const rest = session.activeIds.filter((id) => id !== currentId);
+        const shuffled = shuffleArray(rest);
+        const insertIndex = Math.min(session.currentIndex, shuffled.length);
+        shuffled.splice(insertIndex, 0, currentId);
+        session.activeIds = shuffled;
+        session.currentIndex = insertIndex;
+      }
+      session.shuffle = true;
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
+      saveSession();
+      updateDisplay();
+    }
+
+    function exportUnknowns() {
+      const unknowns = buildUnknownList();
+      const includeMnemonics = includeMnemonicsToggle ? includeMnemonicsToggle.checked : false;
+      const lines = unknowns.map((item) => {
+        const base = `${item.greek}\t${item.translations.join(", ")}`;
+        if (!includeMnemonics) return base;
+        const mnemonics = getUserMnemonics(item);
+        if (!mnemonics.length) return base;
+        return `${base}\t${mnemonics.join(" | ")}`;
+      });
+      importArea.value = lines.join("\n");
+      importStatus.textContent = `Geëxporteerd: ${unknowns.length} onbekende woorden.`;
+    }
+
+    function parseImportLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      return lines.map((line) => {
+        const parts = line.split("\t").map((part) => part.trim());
+        if (parts.length < 2) return null;
+        const greek = parts[0];
+        const dutch = parts[1];
+        if (!greek || !dutch) return null;
+        const mnemonicRaw = parts.slice(2).join("\t").trim();
+        const mnemonics = mnemonicRaw
+          ? mnemonicRaw.split("|").map((part) => part.trim()).filter(Boolean)
+          : [];
+        return {
+          greek,
+          translations: dutch.split(",").map((part) => part.trim()).filter(Boolean),
+          mnemonics
+        };
+      }).filter(Boolean);
+    }
+
+    function parseMasterLines(text) {
+      const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+      const validLines = lines.filter((line) => {
+        const splitIndex = line.indexOf("\t");
+        if (splitIndex === -1) return false;
+        const left = line.slice(0, splitIndex).trim();
+        const right = line.slice(splitIndex + 1).trim();
+        return Boolean(left && right);
+      });
+      return validLines;
+    }
+
+    function getImportItems(text) {
+      if (!text) return [];
+      let items = [];
+      if (text.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            items = parsed.map((entry) => ({
+              greek: String(entry.greek || "").trim(),
+              translations: Array.isArray(entry.translations) ? entry.translations : [String(entry.translation || "").trim()]
+            })).filter((entry) => entry.greek);
+          }
+        } catch (error) {
+          items = [];
+        }
+      }
+
+      if (items.length === 0) {
+        items = parseImportLines(text);
+      }
+
+      return items;
+    }
+
+    function applyImportedMnemonics(items) {
+      let added = 0;
+      items.forEach((entry) => {
+        if (!entry.greek || !Array.isArray(entry.mnemonics) || entry.mnemonics.length === 0) return;
+        const existing = userMnemonics[entry.greek] || [];
+        entry.mnemonics.forEach((hint) => {
+          const cleaned = String(hint || "").trim();
+          if (!cleaned) return;
+          const exists = existing.some((value) => value.toLowerCase() === cleaned.toLowerCase());
+          if (!exists) {
+            existing.push(cleaned);
+            added += 1;
+          }
+        });
+        if (existing.length > 0) {
+          userMnemonics[entry.greek] = existing;
+        }
+      });
+      if (added > 0) {
+        saveUserMnemonics();
+      }
+      return added;
+    }
+
+    function importUnknowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (isKnownAny(id)) {
+          knownL1Ids.delete(id);
+          knownL2Ids.delete(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          session.retiredIds = [];
+          saveSession();
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar onbekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importUnknownsKnownRest() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const confirmMessage = "Deze import zet alle niet-genoemde woorden op bekend. Doorgaan?";
+      if (!confirm(confirmMessage)) return;
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      const unknownIds = new Set();
+      let matched = 0;
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!unknownIds.has(id)) {
+          unknownIds.add(id);
+          matched += 1;
+        }
+      });
+
+      knownL1Ids.clear();
+      knownL2Ids.clear();
+      vocab.forEach((item) => {
+        if (!unknownIds.has(item.id)) {
+          knownL1Ids.add(item.id);
+          knownL2Ids.add(item.id);
+        }
+      });
+
+      saveKnown();
+      renderKnownList();
+      if (session) {
+        session.retiredIds = [];
+        saveSession();
+        rebuildActiveIds();
+        updateDisplay();
+      }
+
+      importStatus.textContent = `Import klaar. Onbekend: ${matched}. Bekend gemaakt: ${vocab.length - unknownIds.size}. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importKnowns() {
+      const text = importArea.value.trim();
+      if (!text) {
+        importStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const items = getImportItems(text);
+
+      if (items.length === 0) {
+        importStatus.textContent = `Kon geen geldige regels vinden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const addedMnemonics = applyImportedMnemonics(items);
+      let moved = 0;
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      items.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) return;
+        if (!isKnownBoth(id)) {
+          knownL1Ids.add(id);
+          knownL2Ids.add(id);
+          moved += 1;
+        }
+      });
+
+      if (moved > 0) {
+        saveKnown();
+        renderKnownList();
+        if (session) {
+          session.retiredIds = [];
+          saveSession();
+          rebuildActiveIds();
+          updateDisplay();
+        }
+      }
+
+      importStatus.textContent = `Import klaar. ${moved} woorden verplaatst naar bekend. ${addedMnemonics ? `Ezelsbruggetjes toegevoegd: ${addedMnemonics}.` : ""}`;
+    }
+
+    function importMasterList() {
+      const text = masterArea.value.trim();
+      if (!text) {
+        masterStatus.textContent = "Geen import gevonden.";
+        return;
+      }
+
+      const validLines = parseMasterLines(text);
+      if (validLines.length === 0) {
+        masterStatus.textContent = `Geen geldige regels gevonden. Gebruik TAB tussen ${formatPairHint()}.`;
+        return;
+      }
+
+      const confirmMessage = `Je gaat ${validLines.length} regels importeren. Dit vervangt de volledige vocab-lijst en wist je voortgang en bekende woorden. Doorgaan?`;
+      if (!confirm(confirmMessage)) return;
+
+      saveMasterVocab(validLines.join("\n"));
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Masterlijst opgeslagen. Pagina wordt herladen...";
+      setTimeout(() => {
+        enterSilentReloadMode();
+        window.location.reload();
+      }, 300);
+    }
+
+    function resetMasterList() {
+      if (!confirm("Standaardlijst herstellen? Dit wist je aangepaste masterlijst en reset je voortgang.")) {
+        return;
+      }
+      clearMasterVocab();
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
+      saveKnown();
+      clearSession();
+      masterStatus.textContent = "Standaardlijst hersteld. Pagina wordt herladen...";
+      setTimeout(() => {
+        enterSilentReloadMode();
+        window.location.reload();
+      }, 300);
+    }
+
+    function getRevealMode() {
+      const selected = document.querySelector("input[name=\"revealMode\"]:checked");
+      return selected ? selected.value : "immediate";
+    }
+
+    function getIntervalValue() {
+      const value = Number(intervalInput.value);
+      if (!Number.isInteger(value) || value < 1) return 1;
+      return Math.min(value, vocab.length);
+    }
+
+    function updateIntervalHint() {
+      intervalInput.max = String(vocab.length || 1);
+      intervalHint.textContent = `Maximaal ${vocab.length} woorden.`;
+    }
+
+    function getFactsForDataset(dataset) {
+      if (!dataset) return [];
+      if (Array.isArray(dataset.facts)) return dataset.facts;
+      if (!dataset.factsKey) return [];
+      const factStore = window.VOCAB_DATA && window.VOCAB_DATA.FACTS;
+      const facts = factStore ? factStore[dataset.factsKey] : null;
+      return Array.isArray(facts) ? facts : [];
+    }
+
+    function setFact(target) {
+      if (!target || !FACTS.length) return;
+      const fact = FACTS[Math.floor(Math.random() * FACTS.length)];
+      target.textContent = fact;
+    }
+
+    function renderKnownList() {
+      if (!knownList) return;
+      knownList.innerHTML = "";
+      const knownItems = vocab.filter((item) => isKnownAny(item.id));
+      knownCount.textContent = `Aantal bekende woorden: ${getKnownAnyCount()} (van ${vocab.length})`;
+      knownNotice.classList.toggle("hidden", !session);
+
+      if (knownItems.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "hint";
+        empty.textContent = "Je lijst van bekende woorden staat nog leeg, zodra je woorden als bekend markeert zullen ze hier verschijnen!";
+        knownList.appendChild(empty);
+        return;
+      }
+
+      knownItems.forEach((item) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "known-item";
+
+        const greek = document.createElement("strong");
+        greek.textContent = item.greek;
+
+        const details = document.createElement("small");
+        details.textContent = `${LANGUAGE2_LABEL}: ${item.translations.join(", ")}`;
+
+        const directionRow = document.createElement("div");
+        directionRow.className = "known-direction-row";
+        const directionLabel = document.createElement("span");
+        directionLabel.textContent = "Ik weet:";
+
+        const l1Label = document.createElement("label");
+        const l1Checkbox = document.createElement("input");
+        l1Checkbox.type = "checkbox";
+        l1Label.appendChild(l1Checkbox);
+        l1Label.appendChild(document.createTextNode(` alleen ${LANGUAGE1_LABEL} → ${LANGUAGE2_LABEL}`));
+
+        const l2Label = document.createElement("label");
+        const l2Checkbox = document.createElement("input");
+        l2Checkbox.type = "checkbox";
+        l2Label.appendChild(l2Checkbox);
+        l2Label.appendChild(document.createTextNode(` alleen ${LANGUAGE2_LABEL} → ${LANGUAGE1_LABEL}`));
+
+        const bothLabel = document.createElement("label");
+        const bothCheckbox = document.createElement("input");
+        bothCheckbox.type = "checkbox";
+        bothLabel.appendChild(bothCheckbox);
+        bothLabel.appendChild(document.createTextNode(` ${LANGUAGE1_LABEL} ↔ ${LANGUAGE2_LABEL} (beide richtingen)`));
+
+        const sync = () => {
+          const knownL1 = isKnownL1(item.id);
+          const knownL2 = isKnownL2(item.id);
+          l1Checkbox.checked = knownL1;
+          l2Checkbox.checked = knownL2;
+          bothCheckbox.checked = knownL1 && knownL2;
+        };
+
+        l1Checkbox.addEventListener("change", () => {
+          setKnownInDirection(item.id, "l1", l1Checkbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        l2Checkbox.addEventListener("change", () => {
+          setKnownInDirection(item.id, "l2", l2Checkbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        bothCheckbox.addEventListener("change", () => {
+          setKnownBothDirections(item.id, bothCheckbox.checked);
+          saveKnown();
+          updateSessionRetired(item.id);
+          if (session) {
+            rebuildActiveIds();
+            updateDisplay();
+          }
+          renderKnownList();
+        });
+
+        sync();
+
+        directionRow.appendChild(directionLabel);
+        directionRow.appendChild(l1Label);
+        directionRow.appendChild(l2Label);
+        directionRow.appendChild(bothLabel);
+
+        wrapper.appendChild(greek);
+        if (SHOW_TRANSLIT) {
+          const translit = document.createElement("small");
+          translit.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+          wrapper.appendChild(translit);
+        }
+        wrapper.appendChild(details);
+        wrapper.appendChild(directionRow);
+        knownList.appendChild(wrapper);
+      });
+    }
+
+    function deleteKnownBackup(index) {
+      const backups = loadKnownBackups();
+      backups.splice(index, 1);
+      saveKnownBackups(backups);
+      setBackupStatus("Back-up verwijderd.");
+      renderKnownBackups();
+    }
+
+    function restoreKnownBackup(backup) {
+      if (!backup || !Array.isArray(backup.words)) return;
+      const confirmMessage = "Back-up herstellen? Klik OK om je huidige bekende woorden te vervangen, Annuleren om samen te voegen.";
+      const replaceExisting = confirm(confirmMessage);
+      const greekToId = new Map(vocab.map((item) => [item.greek, item.id]));
+      const entries = backup.words.map((entry) => {
+        if (typeof entry === "string") {
+          return { greek: entry, l1: true, l2: true };
+        }
+        if (entry && typeof entry === "object") {
+          return { greek: entry.greek, l1: Boolean(entry.l1), l2: Boolean(entry.l2) };
+        }
+        return null;
+      }).filter(Boolean);
+      if (replaceExisting) {
+        knownL1Ids.clear();
+        knownL2Ids.clear();
+      }
+      const addedWords = new Set();
+      let missing = 0;
+      entries.forEach((entry) => {
+        const id = greekToId.get(entry.greek);
+        if (!id) {
+          missing += 1;
+          return;
+        }
+        if (entry.l1) {
+          if (!knownL1Ids.has(id)) {
+            knownL1Ids.add(id);
+            addedWords.add(id);
+          }
+        }
+        if (entry.l2) {
+          if (!knownL2Ids.has(id)) {
+            knownL2Ids.add(id);
+            addedWords.add(id);
+          }
+        }
+      });
+      saveKnown();
+      renderKnownList();
+      renderKnownBackups();
+      if (session) {
+        rebuildActiveIds();
+        updateDisplay();
+      }
+      const added = addedWords.size;
+      const missingNote = missing > 0 ? `, ${missing} niet gevonden` : "";
+      const modeLabel = replaceExisting ? "vervangen" : "samengevoegd";
+      setBackupStatus(`Back-up hersteld (${added} woorden ${modeLabel}${missingNote}).`);
+    }
+
+    function renderKnownBackups() {
+      if (!knownBackupList || !knownBackupEmpty) return;
+      knownBackupList.innerHTML = "";
+      const backups = loadKnownBackups();
+      knownBackupEmpty.classList.toggle("hidden", backups.length > 0);
+      if (backups.length === 0) return;
+
+      backups.forEach((backup, index) => {
+        const item = document.createElement("div");
+        item.className = "backup-item";
+
+        const meta = document.createElement("div");
+        meta.className = "backup-meta";
+        const title = document.createElement("strong");
+        title.textContent = backup.timestamp;
+        const count = document.createElement("span");
+        const total = Array.isArray(backup.words) ? backup.words.length : 0;
+        count.textContent = `${total} woorden`;
+        meta.appendChild(title);
+        meta.appendChild(count);
+
+        const actions = document.createElement("div");
+        actions.className = "backup-actions";
+        const restoreBtn = document.createElement("button");
+        restoreBtn.type = "button";
+        restoreBtn.textContent = "Herstel";
+        restoreBtn.addEventListener("click", () => {
+          restoreKnownBackup(backup);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "danger";
+        deleteBtn.textContent = "Verwijder";
+
+        actions.appendChild(restoreBtn);
+        actions.appendChild(deleteBtn);
+
+        const confirmWrap = document.createElement("div");
+        confirmWrap.className = "backup-confirm hidden";
+        const confirmText = document.createElement("div");
+        confirmText.textContent = "Weet je zeker dat je deze back-up wilt verwijderen?";
+        const confirmLabel = document.createElement("label");
+        const confirmCheck = document.createElement("input");
+        confirmCheck.type = "checkbox";
+        confirmLabel.appendChild(confirmCheck);
+        confirmLabel.appendChild(document.createTextNode("Ik begrijp dat dit onomkeerbaar is."));
+
+        const confirmActions = document.createElement("div");
+        confirmActions.className = "backup-actions";
+        const confirmDeleteBtn = document.createElement("button");
+        confirmDeleteBtn.type = "button";
+        confirmDeleteBtn.className = "danger";
+        confirmDeleteBtn.textContent = "Verwijder definitief";
+        confirmDeleteBtn.disabled = true;
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.textContent = "Annuleren";
+
+        confirmCheck.addEventListener("change", () => {
+          confirmDeleteBtn.disabled = !confirmCheck.checked;
+        });
+        confirmDeleteBtn.addEventListener("click", () => {
+          deleteKnownBackup(index);
+        });
+        cancelBtn.addEventListener("click", () => {
+          confirmWrap.classList.add("hidden");
+          confirmCheck.checked = false;
+          confirmDeleteBtn.disabled = true;
+        });
+        deleteBtn.addEventListener("click", () => {
+          document.querySelectorAll(".backup-confirm").forEach((el) => {
+            if (el !== confirmWrap) el.classList.add("hidden");
+          });
+          confirmWrap.classList.toggle("hidden");
+          confirmCheck.checked = false;
+          confirmDeleteBtn.disabled = true;
+        });
+
+        confirmActions.appendChild(confirmDeleteBtn);
+        confirmActions.appendChild(cancelBtn);
+
+        confirmWrap.appendChild(confirmText);
+        confirmWrap.appendChild(confirmLabel);
+        confirmWrap.appendChild(confirmActions);
+
+        item.appendChild(meta);
+        item.appendChild(actions);
+        item.appendChild(confirmWrap);
+        knownBackupList.appendChild(item);
+      });
+    }
+
+    function createSession(options) {
+      const includeKnown = options.includeKnown;
+      const activeIds = options.shuffle
+        ? shuffleArray(buildActiveIds(includeKnown, options.directionMode))
+        : buildActiveIds(includeKnown, options.directionMode);
+      const directionMode = options.directionMode || "l1-to-l2";
+      session = {
+        activeIds,
+        currentIndex: 0,
+        answers: {},
+        attempts: [],
+        hasInteracted: false,
+        retiredIds: [],
+        revealMode: options.revealMode,
+        interval: options.interval,
+        includeKnown,
+        shuffle: Boolean(options.shuffle),
+        directionMode,
+        directionMap: buildDirectionMap(activeIds, directionMode)
+      };
+      saveSession();
+    }
+
+    function saveSession() {
+      if (!session) return;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    }
+
+    function hasSessionProgress(saved) {
+      if (!saved) return false;
+      if (saved.hasInteracted) return true;
+      if (Array.isArray(saved.attempts) && saved.attempts.length > 0) return true;
+      if (saved.answers && typeof saved.answers === "object" && Object.keys(saved.answers).length > 0) return true;
+      return false;
+    }
+
+    function markSessionInteracted() {
+      if (!session || session.hasInteracted) return;
+      session.hasInteracted = true;
+      saveSession();
+    }
+
+    function updateSessionRetired(id) {
+      if (!session) return;
+      if (!Array.isArray(session.retiredIds)) {
+        session.retiredIds = [];
+      }
+      const retired = new Set(session.retiredIds);
+      if (isKnownAny(id)) {
+        retired.add(id);
+      } else {
+        retired.delete(id);
+      }
+      session.retiredIds = Array.from(retired);
+      saveSession();
+    }
+
+    function clearSession() {
+      localStorage.removeItem(STORAGE_KEY);
+      session = null;
+    }
+
+    function loadSession() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.activeIds)) return null;
+        if (!parsed.activeIds.every((id) => vocabById[id])) return null;
+        if (!Array.isArray(parsed.retiredIds)) {
+          parsed.retiredIds = [];
+        }
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function rebuildActiveIds() {
+      if (!session) return;
+      const currentId = session.activeIds[session.currentIndex];
+      const retiredSet = new Set(Array.isArray(session.retiredIds) ? session.retiredIds : []);
+      const allowedIds = buildActiveIds(session.includeKnown, session.directionMode)
+        .filter((id) => !retiredSet.has(id));
+      if (session.shuffle) {
+        const allowedSet = new Set(allowedIds);
+        const preserved = session.activeIds.filter((id) => allowedSet.has(id));
+        const preservedSet = new Set(preserved);
+        const additions = allowedIds.filter((id) => !preservedSet.has(id));
+        session.activeIds = preserved.concat(additions);
+      } else {
+        session.activeIds = allowedIds;
+      }
+      session.attempts = session.attempts.filter((id) => session.activeIds.includes(id));
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode || "l1-to-l2",
+        session.directionMap || {}
+      );
+      if (session.activeIds.length === 0) {
+        showSummary();
+        return;
+      }
+      const newIndex = currentId ? session.activeIds.indexOf(currentId) : -1;
+      session.currentIndex = newIndex >= 0 ? newIndex : Math.min(session.currentIndex, session.activeIds.length - 1);
+      saveSession();
+    }
+
+    function updateNav() {
+      navList.innerHTML = "";
+      navHint.textContent = `Totaal in deze ronde: ${session.activeIds.length}.`;
+
+      session.activeIds.forEach((id, index) => {
+        const item = vocabById[id];
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = `${index + 1}. ${sourceTerm}`;
+        if (index === session.currentIndex) btn.classList.add("current");
+        if (session.answers[id]) btn.classList.add("answered");
+        btn.addEventListener("click", () => {
+          markSessionInteracted();
+          commitCurrentAnswer();
+          session.currentIndex = index;
+          updateDisplay();
+        });
+        navList.appendChild(btn);
+      });
+    }
+
+    function updateDisplay() {
+      if (!session || session.activeIds.length === 0) {
+        return;
+      }
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      const direction = getDirectionForId(id);
+      const sourceTerm = getSourceTerm(item, direction);
+      const targetLabel = getDirectionTargetLabel(direction);
+
+      greekText.textContent = sourceTerm;
+      if (shouldShowTranslit(direction)) {
+        translitText.textContent = `${TRANSLIT_LABEL}: ${transliterateGreek(item.greek)}`;
+        translitText.classList.remove("hidden");
+      } else {
+        translitText.textContent = "";
+        translitText.classList.add("hidden");
+      }
+      if (targetLanguageLabel) {
+        targetLanguageLabel.textContent = targetLabel;
+      }
+
+      userAnswer.value = session.answers[id] || "";
+      const knownInL1 = isKnownL1(id);
+      const knownInL2 = isKnownL2(id);
+      if (knownToggleBothBtn) {
+        const bothActive = knownInL1 && knownInL2;
+        knownToggleBothBtn.setAttribute("aria-pressed", bothActive ? "true" : "false");
+      }
+      if (knownToggleSingleBtn) {
+        const singleActive = direction === "l2" ? knownInL2 : knownInL1;
+        knownToggleSingleBtn.setAttribute("aria-pressed", singleActive ? "true" : "false");
+      }
+
+      const answeredCount = session.attempts.length;
+      progressDisplay.textContent = `Woord ${session.currentIndex + 1} van ${session.activeIds.length} • Ingevuld: ${answeredCount}`;
+      revealStatus.textContent = describeRevealMode();
+
+      answerBlock.classList.add("hidden");
+      mnemonicBlock.classList.add("hidden");
+      mnemonicOpenFor = null;
+      mnemonicInput.value = "";
+      intervalBlock.classList.add("hidden");
+      autoNotice.classList.add("hidden");
+
+      updateNav();
+      saveSession();
+
+      if (session.revealMode === "immediate" && session.answers[id]) {
+        showAnswer(id);
+      }
+
+      userAnswer.focus();
+    }
+
+    function describeRevealMode() {
+      if (!session) return "";
+      if (session.revealMode === "immediate") return "Antwoorden: direct";
+      if (session.revealMode === "interval") return `Antwoorden: om de ${session.interval} woorden`;
+      return "Antwoorden: aan het einde";
+    }
+
+    function showAnswer(id) {
+      const item = vocabById[id];
+      const answer = session.answers[id] || "";
+      const direction = getDirectionForId(id);
+      const correct = isCorrectAnswerForDirection(answer, item, direction);
+      const correctLabel = correct ? "✅ (automatisch herkend)" : "✍️ controleer zelf";
+      const targetLabel = getDirectionTargetLabel(direction);
+      const targetAnswer = getTargetAnswer(item, direction);
+      answerBlock.className = "answer-block";
+      answerBlock.classList.add(correct ? "correct" : "wrong");
+      answerBlock.innerHTML = `
+        <div><strong>Jouw antwoord:</strong> ${answer || "[leeg]"}</div>
+        <div><strong>Correct (${targetLabel}):</strong> ${targetAnswer}</div>
+        <div class="hint">${correctLabel} - jij bepaalt of je het woord als bekend markeert.</div>
+      `;
+      answerBlock.classList.remove("hidden");
+    }
+
+    function showAutoNotice(text) {
+      autoNotice.textContent = text;
+      autoNotice.classList.remove("hidden");
+    }
+
+    function showIntervalSummary(ids) {
+      intervalBlock.innerHTML = "";
+      const title = document.createElement("h4");
+      title.textContent = `Korte check na ${session.interval} woorden`;
+      intervalBlock.appendChild(title);
+
+      ids.forEach((id) => {
+        const item = vocabById[id];
+        const answer = session.answers[id] || "";
+        const direction = getDirectionForId(id);
+        const sourceTerm = getSourceTerm(item, direction);
+        const targetLabel = getDirectionTargetLabel(direction);
+        const targetAnswer = getTargetAnswer(item, direction);
+        const row = document.createElement("div");
+        const translit = shouldShowTranslit(direction) ? ` (${transliterateGreek(item.greek)})` : "";
+        row.innerHTML = `
+          <strong>${sourceTerm}</strong>${translit}<br>
+          Jouw antwoord: ${answer || "[leeg]"} • Correct (${targetLabel}): ${targetAnswer}
+        `;
+        intervalBlock.appendChild(row);
+      });
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = "Verder met de toets";
+      btn.addEventListener("click", () => {
+        intervalBlock.classList.add("hidden");
+        if (!session || session.activeIds.length === 0) return;
+        if (session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      });
+      intervalBlock.appendChild(btn);
+
+      intervalBlock.classList.remove("hidden");
+    }
+
+    function handleSave() {
+      let intervalShown = false;
+      if (!session || session.activeIds.length === 0) {
+        return { autoRemoved: false, intervalShown: false };
+      }
+      markSessionInteracted();
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      session.answers[id] = userAnswer.value.trim();
+      if (!session.attempts.includes(id)) {
+        session.attempts.push(id);
+      }
+
+      const autoRemoveEnabled = autoRemoveToggle.checked;
+      const direction = getDirectionForId(id);
+      const correctNow = isCorrectAnswerForDirection(session.answers[id], item, direction);
+      if (autoRemoveEnabled && correctNow) {
+        const alreadyKnown = direction === "l2" ? isKnownL2(id) : isKnownL1(id);
+        if (!alreadyKnown) {
+          setKnownInDirection(id, direction, true);
+          saveKnown();
+          renderKnownList();
+        }
+        updateSessionRetired(id);
+        rebuildActiveIds();
+        if (session && session.activeIds.length > 0) {
+          updateDisplay();
+        }
+        showAutoNotice("✅ Juist! Dit woord verdwijnt uit deze ronde.");
+        return { autoRemoved: true, intervalShown };
+      }
+
+      if (session.revealMode === "immediate") {
+        showAnswer(id);
+      }
+
+      if (session.revealMode === "interval") {
+        const interval = Math.max(1, session.interval);
+        if (session.attempts.length % interval === 0) {
+          const lastIds = session.attempts.slice(-interval);
+          showIntervalSummary(lastIds);
+          intervalShown = true;
+        }
+      }
+
+      maybeRotateFact();
+      updateNav();
+      saveSession();
+      return { autoRemoved: false, intervalShown };
+    }
+
+    function commitCurrentAnswer() {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      session.answers[id] = userAnswer.value.trim();
+      if (!session.attempts.includes(id)) {
+        session.attempts.push(id);
+      }
+      saveSession();
+      updateNav();
+    }
+
+    function handleRevealNow() {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      commitCurrentAnswer();
+      const id = session.activeIds[session.currentIndex];
+      showAnswer(id);
+    }
+
+    function goToRelative(step) {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      commitCurrentAnswer();
+      const nextIndex = Math.min(Math.max(session.currentIndex + step, 0), session.activeIds.length - 1);
+      session.currentIndex = nextIndex;
+      updateDisplay();
+    }
+
+    function toggleKnownCurrentBoth(checked) {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      const id = session.activeIds[session.currentIndex];
+      setKnownBothDirections(id, checked);
+      saveKnown();
+      updateSessionRetired(id);
+      rebuildActiveIds();
+      renderKnownList();
+      if (session && session.activeIds.length > 0) {
+        updateDisplay();
+      }
+    }
+
+    function toggleKnownCurrentSingle(checked) {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      const id = session.activeIds[session.currentIndex];
+      const direction = getDirectionForId(id);
+      setKnownInDirection(id, direction, checked);
+      saveKnown();
+      updateSessionRetired(id);
+      rebuildActiveIds();
+      renderKnownList();
+      if (session && session.activeIds.length > 0) {
+        updateDisplay();
+      }
+    }
+
+    function showSummary() {
+      testArea.classList.add("hidden");
+      summaryCard.classList.remove("hidden");
+      setSetupVisibility(false);
+      knownNotice.classList.add("hidden");
+
+      const answeredCount = session ? session.attempts.length : 0;
+      const knownCountValue = getKnownAnyCount();
+      const remainingUnknown = buildActiveIds(false, session ? session.directionMode : getDirectionMode()).length;
+      summaryText.textContent = `Je hebt ${answeredCount} antwoorden ingevuld. Bekende woorden: ${knownCountValue}. Nog niet gemarkeerd als bekend: ${remainingUnknown}.`;
+
+      resultTable.innerHTML = "";
+      const header = document.createElement("tr");
+      const translitHeader = SHOW_TRANSLIT ? `<th>${TRANSLIT_LABEL}</th>` : "";
+      header.innerHTML = `<th>${LANGUAGE1_LABEL}</th>${translitHeader}<th>Jouw antwoord</th><th>${LANGUAGE2_LABEL}</th>`;
+      resultTable.appendChild(header);
+
+      if (session) {
+        session.activeIds.forEach((id) => {
+          const item = vocabById[id];
+          const row = document.createElement("tr");
+          const translitCell = SHOW_TRANSLIT ? `<td>${transliterateGreek(item.greek)}</td>` : "";
+          row.innerHTML = `
+            <td>${item.greek}</td>
+            ${translitCell}
+            <td>${session.answers[id] || ""}</td>
+            <td>${item.translations.join(", ")}</td>
+          `;
+          resultTable.appendChild(row);
+        });
+      }
+
+      retryUnknown.disabled = remainingUnknown === 0;
+
+      clearSession();
+    }
+
+    function startTest(options) {
+      createSession(options);
+      if (session.activeIds.length === 0) {
+        summaryText.textContent = vocab.length === 0
+          ? "Geen woordenlijst geselecteerd."
+          : "Alle woorden staan nu als bekend. Vink woorden uit in de lijst om opnieuw te oefenen.";
+        resultTable.innerHTML = "";
+        summaryCard.classList.remove("hidden");
+        testArea.classList.add("hidden");
+        knownNotice.classList.add("hidden");
+        return;
+      }
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      knownNotice.classList.add("hidden");
+    }
+
+    function resetSession(keepKnown) {
+      if (!keepKnown) {
+        createKnownBackup();
+        knownL1Ids.clear();
+        knownL2Ids.clear();
+        saveKnown();
+      }
+      clearSession();
+      summaryCard.classList.add("hidden");
+      testArea.classList.add("hidden");
+      renderKnownList();
+      knownNotice.classList.add("hidden");
+      updateStartButtons();
+    }
+
+    function applySessionSettings(saved) {
+      if (!saved) return;
+      document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+        input.checked = input.value === saved.revealMode;
+      });
+      intervalInput.value = saved.interval || 5;
+      shuffleToggle.checked = Boolean(saved.shuffle);
+      directionRadios.forEach((input) => {
+        input.checked = input.value === (saved.directionMode || "l1-to-l2");
+      });
+      updateDirectionCopy(getDirectionMode());
+    }
+
+    function updateStartButtons() {
+      let existing = loadSession();
+      if (existing && !hasSessionProgress(existing)) {
+        clearSession();
+        existing = null;
+      }
+      if (existing) {
+        resetRestartBtn.classList.remove("hidden");
+        startBtn.textContent = "Hervat de toets";
+        applySessionSettings(existing);
+      } else {
+        resetRestartBtn.classList.add("hidden");
+        startBtn.textContent = "Start de toets";
+        shuffleToggle.checked = false;
+      }
+    }
+
+    function maybeRotateFact() {
+      if (!session) return;
+      if (!FACTS.length) return;
+      if (session.attempts.length > 0 && session.attempts.length % 3 === 0) {
+        setFact(factInline);
+      }
+    }
+
+    function setSetupVisibility(show) {
+      setupCards.forEach((card) => {
+        card.classList.toggle("hidden", !show);
+      });
+      if (!show) {
+        knownNotice.classList.add("hidden");
+      }
+    }
+
+    function showSettingsView() {
+      if (session) {
+        saveSession();
+      }
+      setSetupVisibility(true);
+      testArea.classList.add("hidden");
+      summaryCard.classList.add("hidden");
+      updateStartButtons();
+    }
+
+    function openKnownManager() {
+      if (session) {
+        saveSession();
+      }
+      showSettingsView();
+      knownNotice.classList.remove("hidden");
+      knownCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function returnToTest() {
+      if (!session) return;
+      setSetupVisibility(false);
+      testArea.scrollIntoView({ behavior: "smooth", block: "start" });
+      updateDisplay();
+    }
+
+    let resetOverlayMode = null;
+
+    function openResetOverlay(mode) {
+      if (!resetOverlay) return;
+      resetOverlayMode = mode;
+      resetOverlay.classList.remove("hidden");
+      resetOverlay.setAttribute("aria-hidden", "false");
+      if (mode === "restart") {
+        resetOverlayTitle.textContent = "Reset & herstart toets";
+        resetOverlayBody.textContent = "Je toets en voortgang worden gereset. Bekende woorden worden gewist.";
+        resetOverlayKnownRow.classList.add("hidden");
+        resetOverlayKnownToggle.checked = false;
+        resetOverlayConfirm.textContent = "Reset & herstart";
+      } else {
+        resetOverlayTitle.textContent = "Vocabtrainer Full Reset";
+        resetOverlayBody.textContent = "Je voortgang wordt gereset. Je kunt kiezen om je bekende woorden te behouden.";
+        resetOverlayKnownRow.classList.remove("hidden");
+        resetOverlayKnownToggle.checked = false;
+        resetOverlayConfirm.textContent = "Reset";
+      }
+    }
+
+    function closeResetOverlay() {
+      if (!resetOverlay) return;
+      resetOverlay.classList.add("hidden");
+      resetOverlay.setAttribute("aria-hidden", "true");
+      resetOverlayMode = null;
+    }
+
+    function confirmClearKnownFlow() {
+      if (!confirm("Je staat op het punt je lijst met bekende woorden te wissen. Zeker weten?")) {
+        return false;
+      }
+      if (!confirm("Nog één keer: wil je echt alle bekende woorden wissen?")) {
+        return false;
+      }
+      createKnownBackup();
+      knownL1Ids.clear();
+      knownL2Ids.clear();
+      saveKnown();
+      renderKnownList();
+      if (session) {
+        session.retiredIds = [];
+        saveSession();
+        rebuildActiveIds();
+        updateDisplay();
+      }
+      return true;
+    }
+
+    let storage = null;
+    try {
+      storage = window.localStorage;
+    } catch (error) {
+      storage = null;
+    }
+
+    const themeToggle = document.getElementById("themeToggle");
+
+    function setTheme(theme) {
+      const next = theme === "light" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      if (themeToggle) {
+        themeToggle.checked = next === "dark";
+      }
+      if (storage) {
+        storage.setItem("storification-theme", next);
+      }
+    }
+
+    const storedTheme = storage ? storage.getItem("storification-theme") : null;
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+
+    if (themeToggle) {
+      themeToggle.addEventListener("change", () => {
+        setTheme(themeToggle.checked ? "dark" : "light");
+      });
+    }
+
+    setTheme(initialTheme);
+
+    applyDatasetUI();
+
+    if (datasetOptions) {
+      datasetOptions.addEventListener("change", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") return;
+        const nextSelection = getDatasetIdsFromUI();
+        persistDatasetSelection(nextSelection);
+      });
+    }
+    if (datasetSelectAllBtn) {
+      datasetSelectAllBtn.addEventListener("click", () => {
+        const nextSelection = DATASETS.map((dataset) => dataset.id);
+        persistDatasetSelection(nextSelection);
+      });
+    }
+    if (datasetResetBtn) {
+      datasetResetBtn.addEventListener("click", () => {
+        persistDatasetSelection([activeDataset.id]);
+      });
+    }
+
+    function resumeTest(savedSession) {
+      session = savedSession;
+      session.directionMode = session.directionMode || getDirectionMode();
+      session.directionMap = buildDirectionMap(
+        session.activeIds,
+        session.directionMode,
+        session.directionMap || {}
+      );
+      rebuildActiveIds();
+      applySessionSettings(savedSession);
+      summaryCard.classList.add("hidden");
+      testArea.classList.remove("hidden");
+      updateDisplay();
+      setSetupVisibility(false);
+    }
+
+    startBtn.addEventListener("click", () => {
+      const saved = loadSession();
+      if (saved) {
+        resumeTest(saved);
+        return;
+      }
+      const mode = getRevealMode();
+      const interval = getIntervalValue();
+      startTest({
+        revealMode: mode,
+        interval,
+        includeKnown: false,
+        shuffle: shuffleToggle.checked,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    resetRestartBtn.addEventListener("click", () => {
+      openResetOverlay("restart");
+    });
+
+    userAnswer.addEventListener("input", () => {
+      if (session) {
+        markSessionInteracted();
+      }
+    });
+    userAnswer.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (!session || session.activeIds.length === 0) return;
+        const result = handleSave();
+        if (result && result.autoRemoved) return;
+        if (result && result.intervalShown) return;
+        if (session.revealMode === "immediate") {
+          nextBtn.focus();
+          return;
+        }
+        if (session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      }
+    });
+    revealNow.addEventListener("click", handleRevealNow);
+    prevBtn.addEventListener("click", () => goToRelative(-1));
+    nextBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      if (session.currentIndex === session.activeIds.length - 1) {
+        showSummary();
+      } else {
+        goToRelative(1);
+      }
+    });
+
+    if (knownToggleBothBtn) {
+      knownToggleBothBtn.addEventListener("click", () => {
+        const active = knownToggleBothBtn.getAttribute("aria-pressed") === "true";
+        toggleKnownCurrentBoth(!active);
+      });
+    }
+
+    if (knownToggleSingleBtn) {
+      knownToggleSingleBtn.addEventListener("click", () => {
+        const active = knownToggleSingleBtn.getAttribute("aria-pressed") === "true";
+        toggleKnownCurrentSingle(!active);
+      });
+    }
+
+    clearKnownBtn.addEventListener("click", () => {
+      confirmClearKnownFlow();
+    });
+
+    exportUnknownBtn.addEventListener("click", () => {
+      exportUnknowns();
+    });
+
+    importUnknownBtn.addEventListener("click", () => {
+      importUnknowns();
+    });
+
+    importUnknownKnownRestBtn.addEventListener("click", () => {
+      importUnknownsKnownRest();
+    });
+
+    importKnownBtn.addEventListener("click", () => {
+      importKnowns();
+    });
+
+    importMasterBtn.addEventListener("click", () => {
+      importMasterList();
+    });
+
+    resetMasterBtn.addEventListener("click", () => {
+      resetMasterList();
+    });
+
+    manageKnownBtn.addEventListener("click", () => {
+      openKnownManager();
+    });
+
+    backToSettingsBtn.addEventListener("click", () => {
+      showSettingsView();
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      markSessionInteracted();
+      shuffleActiveIds(true);
+    });
+
+    mnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      markSessionInteracted();
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      if (!mnemonicBlock.classList.contains("hidden") && mnemonicOpenFor === id) {
+        mnemonicBlock.classList.add("hidden");
+        mnemonicOpenFor = null;
+        return;
+      }
+      renderMnemonics(item);
+    });
+
+    saveMnemonicBtn.addEventListener("click", () => {
+      if (!session || session.activeIds.length === 0) return;
+      const id = session.activeIds[session.currentIndex];
+      const item = vocabById[id];
+      if (!item) return;
+      const added = addUserMnemonic(item, mnemonicInput.value);
+      if (added) {
+        mnemonicInput.value = "";
+        renderMnemonics(item);
+      }
+    });
+
+    backToTestBtn.addEventListener("click", () => {
+      returnToTest();
+    });
+
+    retryUnknown.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: false,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    retryAll.addEventListener("click", () => {
+      startTest({
+        revealMode: getRevealMode(),
+        interval: getIntervalValue(),
+        includeKnown: true,
+        directionMode: getDirectionMode()
+      });
+      setSetupVisibility(false);
+    });
+
+    backToSettings.addEventListener("click", () => {
+      showSettingsView();
+    });
+
+    resetSessionBtn.addEventListener("click", () => {
+      openResetOverlay("full");
+    });
+
+    if (resetOverlayCancel) {
+      resetOverlayCancel.addEventListener("click", () => {
+        closeResetOverlay();
+      });
+    }
+
+    if (resetOverlayConfirm) {
+      resetOverlayConfirm.addEventListener("click", () => {
+        if (!resetOverlayMode) {
+          closeResetOverlay();
+          return;
+        }
+        if (resetOverlayMode === "restart") {
+          resetSession(false);
+          startTest({
+            revealMode: getRevealMode(),
+            interval: getIntervalValue(),
+            includeKnown: false,
+            shuffle: shuffleToggle.checked,
+            directionMode: getDirectionMode()
+          });
+          setSetupVisibility(false);
+          closeResetOverlay();
+          return;
+        }
+        if (resetOverlayMode === "full") {
+          const clearKnown = resetOverlayKnownToggle && resetOverlayKnownToggle.checked;
+          resetSession(!clearKnown);
+          showSettingsView();
+          closeResetOverlay();
+        }
+      });
+    }
+
+    if (resetOverlay) {
+      resetOverlay.addEventListener("click", (event) => {
+        if (event.target === resetOverlay) {
+          closeResetOverlay();
+        }
+      });
+    }
+
+    autoRemoveToggle.addEventListener("change", () => {
+      saveAutoRemove(autoRemoveToggle.checked);
+    });
+
+    homeLink.addEventListener("click", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    if (FACTS.length === 0 && factBox) {
+      factBox.classList.add("hidden");
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (session) {
+        saveSession();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (testArea.classList.contains("hidden")) return;
+      if (document.activeElement === userAnswer) return;
+      if (event.key === "ArrowLeft") {
+        goToRelative(-1);
+      }
+      if (event.key === "ArrowRight") {
+        if (session && session.currentIndex === session.activeIds.length - 1) {
+          showSummary();
+        } else {
+          goToRelative(1);
+        }
+      }
+    });
+
+    intervalInput.addEventListener("input", () => {
+      if (session) {
+        session.interval = getIntervalValue();
+        saveSession();
+        revealStatus.textContent = describeRevealMode();
+      }
+    });
+
+    document.querySelectorAll("input[name=\"revealMode\"]").forEach((input) => {
+      input.addEventListener("change", () => {
+        if (session) {
+          session.revealMode = getRevealMode();
+          saveSession();
+          revealStatus.textContent = describeRevealMode();
+        }
+      });
+    });
+
+    directionRadios.forEach((input) => {
+      input.addEventListener("change", () => {
+        updateDirectionCopy(getDirectionMode());
+        if (session) {
+          session.directionMode = getDirectionMode();
+          session.directionMap = buildDirectionMap(
+            session.activeIds,
+            session.directionMode,
+            session.directionMap || {}
+          );
+          saveSession();
+          updateDisplay();
+        }
+      });
+    });
+
+    updateIntervalHint();
+    renderKnownList();
+    renderKnownBackups();
+    updateStartButtons();
+    setFact(factInline);
+    autoRemoveToggle.checked = loadAutoRemove();
+    setSetupVisibility(true);
+    window.requestAnimationFrame(() => {
+      clearSilentReloadMode();
+    });
+  </script>
+</body>
+
+</html>

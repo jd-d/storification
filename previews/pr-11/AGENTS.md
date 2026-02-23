@@ -1,0 +1,1 @@
+1. When making changes that a user may not see unless they explicitly refresh the browser cache, force cache refresh by bumping local storage schema version. E.g. This would mean for example in "Vocabtoets" that new vocab lists are picked up automatically without user action
