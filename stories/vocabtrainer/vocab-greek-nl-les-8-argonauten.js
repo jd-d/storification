@@ -7,16 +7,17 @@ window.VOCAB_DATASETS.push({
   showTransliteration: true,
   factsKey: "grc-nl",
   data: `
+αὐτός, αὐτή, αὐτόν	hij, zij, het
 αὐτοῦ/αὐτῆς/αὐτοῦ	hem, haar, het
 ἐγώ/ἐμοῦ/ἐμοί/ἐμέ	ik, mij
 ἡ Ἑλλάς, Ἑλλάδος	Griekenland
-ἐπί + dat	aan, bij
+ἐπί, ἐπ’, ἐφ’ + dat	aan, bij
 ἡμεῖς/ἡμῶν/ἡμῖν/ἡμᾶς	wij, ons
 ἡ θάλαττα	zee
 ὁ κίνδυνος	gevaar
-θαυμάζω	bewonderen
+θαυμάζω	bewonderen, zich verwonderen over
 ὁ λιμήν, λιμένος	haven
-ὅτι	omdat
+ὅτι	omdat, dat
 τὸ πλοῖον	vaartuig, schip
 ποιέω	maken, doen
 ἡ σοφία	(vak)kennis, wijsheid

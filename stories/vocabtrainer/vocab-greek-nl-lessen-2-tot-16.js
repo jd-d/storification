@@ -12,17 +12,17 @@ window.VOCAB_DATASETS.push({
 ἡ γῆ\tland, aarde
 δέ, δ’\ten, maar
 τὸ δένδρον\tboom
-εἰσί(ν)\t(zij, er) zijn, bestaan
+εἰσί(ν)\t(zij/er) zijn, bestaan
 ἐνταῦθα\tdaar
 ἔπειτα\tdaarna
 τὸ ἔργον\twerk, taak, daad
-ἐστί(ν)\t(hij, zij, het, er) is, bestaat
+ἐστί(ν)\t(hij/zij/het/er) is, bestaat
 ἡ θεά\tgodin
 ὁ θεός\tgod
 καί\ten, ook, zelfs
 ἡ μάχη\tstrijd, gevecht
 ὁ, ἡ, τό\tde, het
-οὐ, οὐκ, οὐχ\tniet
+οὐ / οὐκ / οὐχ\tniet
 ἡ πέτρα\trots, rotsblok
 ὁ ποταμός\trivier
 πρῶτον\teerst
@@ -35,9 +35,9 @@ window.VOCAB_DATASETS.push({
 ὁ ἥλιος\tzon
 τὸ θηρίον\t(wild) dier
 ὁ ἵππος\tpaard
-κατά, κατ’, καθ’ + acc\t(verspreid) over
+κατά, κατ’, καθ’ + acc\t(verspreid) over, overeenkomstig
 λέγω\tzeggen, spreken
-μέν … δέ\t(weliswaar) … maar, en
+μέν ... δέ\t(weliswaar) ... maar, ... en
 νοέω\twaarnemen, opmerken
 νῦν\tnu, op dit moment
 ὀνομάζω\tnoemen
@@ -60,10 +60,10 @@ window.VOCAB_DATASETS.push({
 ἡ ἀσπίς, ἀσπίδος\tschild
 βλέπω\tkijken
 ἡ γυνή, γυναικός\tvrouw
-διά, δι’ + gen\tdoor, gedurende
+διά, δι’ + gen\tdoor ... heen, gedurende
 τὸ δόρυ, δόρατος\tlans
 ἐγγύς + gen\tdichtbij
-ἐκ, ἐξ + gen\tuit
+ἐκ / ἐξ + gen\tuit
 ὁ Ἕλλην, Ἕλληνος\tGriek
 ἡ ἐσθής, ἐσθῆτος\tkleding(stuk)
 ὁ ἡγεμών, ἡγεμόνος\tleider, aanvoerder
@@ -91,34 +91,36 @@ window.VOCAB_DATASETS.push({
 ἐν + dat\tin, op, bij
 ὁ ἥρως, ἥρωος\theld
 κτείνω\tdoden
-ὁ, ἡ παῖς, παιδός\tkind
+ὁ/ἡ παῖς, παιδός\tkind
 παρέχω\tgeven, verschaffen
 φαίνω\tlaten zien, tonen
 φεύγω\tvluchten, ontvluchten
 ὁ φόβος\tangst
 χαίρω\tblij zijn
 ἡ χώρα\tgebied, plaats
-ὡς\t(zo)als
+ὡς\t(zoals)
 ὡς τάχιστα\tzo snel mogelijk, zodra
 αὐτός, αὐτή, αὐτόν\thij, zij, het
-ἐγώ, ἐμοῦ, ἐμοί, ἐμέ\tik, mij
+αὐτοῦ/αὐτῆς/αὐτοῦ\them, haar, het
+ἐγώ/ἐμοῦ/ἐμοί/ἐμέ\tik, mij
 ἡ Ἑλλάς, Ἑλλάδος\tGriekenland
 ἐπί, ἐπ’, ἐφ’ + dat\taan, bij
-ἡμεῖς, ἡμῶν, ἡμῖν, ἡμᾶς\twij, ons
+ἡμεῖς/ἡμῶν/ἡμῖν/ἡμᾶς\twij, ons
 ἡ θάλαττα\tzee
 ὁ κίνδυνος\tgevaar
-θαυμάζω\tbewonderen
+θαυμάζω\tbewonderen, zich verwonderen over
 ὁ λιμήν, λιμένος\thaven
 ὅτι\tomdat, dat
 τὸ πλοῖον\tvaartuig, schip
 ποιέω\tmaken, doen
-ἡ σοφία\t( vak )kennis, wijsheid
+ἡ σοφία\t(vak)kennis, wijsheid
 ὁ στόλος\treis, expeditie
-σύ, σοῦ, σοί, σέ\tjij, jou, u
+σύ/σοῦ/σοί/σέ\tjij, jou, u
 σύν + dat\tmet
 ἡ τιμή\teer, aanzien
-ὑμεῖς, ὑμῶν, ὑμῖν, ὑμᾶς\tjullie
+ὑμεῖς/ὑμῶν/ὑμῖν/ὑμᾶς\tjullie
 ὁ φίλος\tvriend
+ὦ\t(aanhef, meestal niet vertalen)
 ἁρπάζω\troven
 αὖθις\topnieuw
 ὁ γέρων, γέροντος\toude man
@@ -142,7 +144,7 @@ window.VOCAB_DATASETS.push({
 κωλύω\ttegenhouden, verhinderen
 λαμβάνω\tnemen, krijgen
 λύω\tlosmaken, bevrijden
-μέλλω\tzullen, van plan zijn
+μέλλω\tzullen, van plan zijn, op het punt staan
 μετέχω + gen\tdeelnemen aan
 μή + imp\tniet
 ὁ οἶκος\thuis, woning, erf
@@ -153,38 +155,40 @@ window.VOCAB_DATASETS.push({
 πῶς\thoe
 σῴζω\tredden
 τάχα\tsnel, spoedig
-ἀπό, ἀπ’, ἀφ’ + gen\tvan, vanaf, sinds
+ἀπό, ἀπ’, ἀφ’ + gen\tvan (... vandaan), vanaf; sinds
 διά, δι’ + acc\twegens, door toedoen van
-ἔδον\tzien
-εἶπον\tzeggen
-εἶχον\thebben
-ἔλαβον\tnemen
-ἐπεί, ἐπειδή\ttoen, nadat, omdat
+ἔθανον\taor of θνῄσκω
+εἶδον\taor of ὁράω
+εἶπον\taor of λέγω
+εἶχον\tipf of ἔχω
+ἔλαβον\taor of λαμβάνω
+ἐπεί / ἐπειδή\ttoen, nadat; omdat, aangezien
 ἐπί, ἐπ’, ἐφ’ + gen\top, tijdens
-ἔσχον\thebben
-ἔτραπον\twenden, keren
-ἔτυχον\ttreffen, krijgen
+ἔσχον\taor of ἔχω
+ἔτραπον\taor of τρέπω
+ἔτυχον\taor of τυγχάνω
 εὑρίσκω\tvinden
-ἔφυγον\tvluchten
+ἔφυγον\taor of φεύγω
+ηὗρον\taor of εὑρίσκω
 ἦρον\theffen
 θνῄσκω\tsterven, omkomen
 λείπω\tverlaten, achterlaten
 μένω\tblijven, wachten (op)
 ὁράω\tzien
 τρέπω\twenden, keren
-τυγχάνω + gen\ttreffen, krijgen
-ἀπέθανον\tsterven
+τυγχάνω + gen\ttreffen, raken; krijgen
+ἀπέθανον\taor of ἀποθνῄσκω
 ἀποθνῄσκω\tsterven, omkomen
 ἀποκτείνω\tdoden
 βάλλω\tgooien
-ἔβαλον\tgooien
-ἔδραμον\trennen
-ἔλιπον\tverlaten
+ἔβαλον\taor of βάλλω
+ἔδραμον\taor of τρέχω
+ἔλιπον\taor of λείπω
 ἐλπίζω\thopen (op), verwachten
-ἔμαθον\tleren
-ἔπαθον\tlijden
-ἔπεσον\tvallen
-μανθάνω\tleren, vernemen
+ἔμαθον\taor of μανθάνω
+ἔπαθον\taor of πάσχω
+ἔπεσον\taor of πίπτω
+μανθάνω\tleren (kennen), vernemen
 ἡ νίκη\toverwinning
 νομίζω\tmenen, beschouwen als
 ὀφείλω + inf\tverplicht zijn te
@@ -192,25 +196,25 @@ window.VOCAB_DATASETS.push({
 περί + acc\trondom, om
 πίπτω\tvallen
 ὁ πόλεμος\toorlog
-τὸ σῶμα, σώματος\tlichaam
+τό σῶμα, σώματος\tlichaam
 τρέχω\trennen
 αἱρέω\tgrijpen, pakken
-ἄρα\tleidt vraagzin in
+ἄρα\tleidt vraagzin in (niet vertalen)
 βαίνω\tgaan, stappen
 δύο\ttwee
-εἶλον\tgrijpen
+εἷλον\taor of αἱρέω
 ἐξαίφνης\tplotseling
-ἔπιον\tdrinken
-ἤγαγον\tleiden
-ἤνεγκον\tdragen
+ἔπιον\taor of πίνω
+ἤγαγον\taor of ἄγω
+ἤνεγκον\taor of φέρω
 ὁ θάνατος\tde dood
 θαυμάζω\tbewonderen, zich verwonderen over
 μετά, μετ’, μεθ’ + gen\t(samen) met
-οἱ μέν … οἱ δέ …\tsommigen … anderen …
-πάρεμι\taanwezig zijn
+οἱ μέν ... οἱ δέ ...\tsommigen ... anderen ...
+πάρειμι\taanwezig zijn
 πιστεύω + dat\tgeloven, vertrouwen op
 ποτε\teens, ooit
-τὸ ὕδωρ, ὕδατος\twater
+τό ὕδωρ, ὕδατος\twater
 φυλάττω\tbewaken, beschermen
 γελάω\tlachen
 δή\tdus, dan, natuurlijk
@@ -220,7 +224,7 @@ window.VOCAB_DATASETS.push({
 καὶ δή καί\ten ook, en vooral
 καλέω\troepen, noemen
 κατά\tnaar beneden, neer-
-κατά, κατ’, καθ’ + gen\tvan … af (naar beneden)
+κατά, κατ’, καθ’ + gen\tvan ... af (naar beneden)
 οἰκέω\twonen, bewonen
 τὸ πνεῦμα, πνεύματος\tlucht, adem
 πολλάκις\tvaak

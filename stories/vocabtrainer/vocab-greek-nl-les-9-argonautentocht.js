@@ -8,14 +8,14 @@ window.VOCAB_DATASETS.push({
   factsKey: "grc-nl",
   data: `
 ἁρπάζω	roven
-αὖτις	opnieuw
+αὖθις	opnieuw
 ὁ γέρων, γέροντος	oude man
 τὸ δεῖπνον	maaltijd
 διαφθείρω	vernietigen, bederven
 ἡ δίκη	straf
 διώκω	achtervolgen
 ἥκω	komen, gekomen zijn
-κατά + acc	(verspreid) over, overeenkomstig
+κατά, κατ’, καθ’ + acc	(verspreid) over, overeenkomstig
 ὁ λόγος	woord, verhaal
 ἡ ὁδός	weg, tocht
 οὗ	waar

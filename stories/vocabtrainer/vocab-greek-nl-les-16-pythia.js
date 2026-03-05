@@ -13,12 +13,17 @@ window.VOCAB_DATASETS.push({
 ἐρωτάω	vragen
 ζητέω	zoeken
 καὶ δή καί	en ook, en vooral
-κατά (voorvoegsel)	naar beneden, neer-
-κατά + gen	van ... af (naar beneden)
+καλέω	roepen, noemen
+κατά	naar beneden, neer-
+κατά, κατ’, καθ’ + gen	van ... af (naar beneden)
 οἰκέω	wonen, bewonen
 τὸ πνεῦμα, πνεύματος	lucht, adem
 πολλάκις	vaak
 ῥέω	stromen
 σκοπέω	bekijken, beschouwen
+σφόδρα	hevig, zeer, erg
+τί	wat, waarom
+τιμάω	eren, vereren
+ὑπέρ + gen	boven
 `
 });

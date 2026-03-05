@@ -1,6 +1,7 @@
 # TODO
 
 ## HIGH PRIORITY
+- [x] Verify image generation API access via new imagegen skill
 - [x] Left hand side slide navigation for each story for easy navigation between story chapters/ slides
 - [x] Fix annoying bug where pressing Next or Previous nav buttons hides the buttons behind blue title panel
 - [x] Add Latin grammar story block + EN/NL + theme toggle for 24-1_to_25-3_SPQR-2
@@ -32,12 +33,19 @@
 - [x] Vocabtrainer: fix woordlijsten-checkboxes + woordlijsten-paneel full-width boven instellingen
 - [x] Vocabtrainer: woordlijsten als auto-breedte pills, wrap-rijen, scroll pas na >6 rijen
 - [x] Vocabtrainer: voeg Latijn -> Nederlands lijsten toe (Les 27 Thermae, Les 29 Hannibal)
-- [x] Vocabtrainer: voeg Nederlands -> Duits lijsten toe (Hobbies & Free Time, Food & Drinks / Restaurant, Basic Communication + Opinions)
+- [x] Vocabtrainer: add Dutch -> German lists (Hobbies & Free Time, Food & Drinks / Restaurant, Basic Communication + Opinions)
 - [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 2 Kosmos, Les 3 Kronos, Les 4 Zeus, Les 6 Goden)
 - [x] Vocabtrainer: hernoem Oudgrieks leslijst-bestanden met lesnaam in bestandsnaam
 - [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 7 Held, Les 8 Argonauten, Les 9 Argonautentocht, Les 11 Agamemnon & Achilles)
 - [x] Vocabtrainer: voeg Oudgrieks -> Nederlands leslijsten toe (Les 12 Hektor & Andromache, Les 13 Hektor & Achilles, Les 14 Een houten paard, Les 16 Pythia)
-- [x] Vocabtrainer: transliteratie spiritus asper op begin-diftongen corrigeren (bijv. εἷλον -> heilon)
+- [x] Vocabtrainer: fix rough-breathing transliteration on initial diphthongs (e.g. εἷλον -> heilon)
+- [x] Vocabtrainer: extend lesson 16 Pythia with extra words (σφόδρα, τί, τιμάω, ὑπέρ + gen)
+- [x] Vocabtrainer: compare master list (lessons 2-16) against split lesson files for missing translations
+- [x] Vocabtrainer: rerun master-vs-split comparison after lesson 12/13/14 updates
+- [x] Vocabtrainer: update lessons 12/13/14 with aorist labels and missing present-tense forms
+- [x] Vocabtrainer: reconcile master-only Greek words into split lesson files
+- [x] Vocabtrainer: sync remaining split-only Greek entries into the master list and normalize notation
+- [x] Vocabtrainer: normalize remaining Greek master/split gloss differences and verify all aorist/imperfect base verbs exist in the lesson lists
 - [x] Vocabtrainer: sta lege lijstselectie toe + rode checkbox-borders + melding "Geen woordenlijst geselecteerd"
 - [x] Vocabtrainer: voorkom witte flash bij lijstselectie in dark mode (pre-paint theme)
 - [x] Vocabtrainer: verberg UI tijdens lijst-reload om element-flash te voorkomen
@@ -50,6 +58,13 @@
 - [x] README: uitleg over structuur/configuratie en uitbreidingspunten
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
+
+## Notes
+
+### Greek Masterlist Reconciliation
+- The combined Greek master list is still ordered in lesson blocks, so most master-only words can be assigned by position relative to the already split lesson files.
+- Likely lesson mapping for master-only words: lesson 6 `διά, δι’ + gen`; lesson 8 `αὐτός, αὐτή, αὐτόν`, `ἐπί, ἐπ’, ἐφ’ + dat`; lesson 9 `αὖθις`; lesson 11 `ἀκούω + gen, acc`; lesson 12 `ἔδον` (likely intended `εἶδον`), `ἦρον`; lesson 13 `περί + acc`, `πίπτω`, `ὁ πόλεμος`, `τὸ σῶμα, σώματος`, `τρέχω`; lesson 14 `μετά, μετ’, μεθ’ + gen`, `πάρεμι`; lesson 16 `καλέω`, `κατά`, `κατά, κατ’, καθ’ + gen`.
+- The remaining ambiguity is mostly about preferred form rather than lesson assignment, for example `αὖθις` vs `αὖτις`, `πάρεμι` vs `πάρειμι`, `ἔδον` vs `εἶδον`, `αὐτός, αὐτή, αὐτόν` vs `αὐτοῦ/αὐτῆς/αὐτοῦ`.
 
 ## Wiki Implementation Plan
 

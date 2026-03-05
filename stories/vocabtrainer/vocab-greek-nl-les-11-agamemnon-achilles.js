@@ -8,7 +8,7 @@ window.VOCAB_DATASETS.push({
   factsKey: "grc-nl",
   data: `
 ἀγανακτέω	boos worden, boos zijn
-ἀκούω + gen of acc	luisteren (naar), horen
+ἀκούω + gen, acc	luisteren (naar), horen
 γιγνώσκω	begrijpen, (leren) kennen
 εἰμί	zijn, bestaan
 ἔτι	nog
@@ -20,7 +20,7 @@ window.VOCAB_DATASETS.push({
 μή + imp	niet
 ὁ οἶκος	huis, woning, erf
 ὁ οἶνος	wijn
-ὅτι	dat, omdat
+ὅτι	omdat, dat
 οὔποτε	nooit
 πίνω	drinken
 πράττω	doen, handelen

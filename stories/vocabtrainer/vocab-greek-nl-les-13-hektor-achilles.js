@@ -7,21 +7,27 @@ window.VOCAB_DATASETS.push({
   showTransliteration: true,
   factsKey: "grc-nl",
   data: `
-ἀπέθανον	sterven
+ἀπέθανον	aor of ἀποθνῄσκω
 ἀποθνῄσκω	sterven, omkomen
 ἀποκτείνω	doden
 βάλλω	gooien
-ἔβαλον	gooien
-ἔδραμον	rennen
-ἔλιπον	verlaten
+ἔβαλον	aor of βάλλω
+ἔδραμον	aor of τρέχω
+ἔλιπον	aor of λείπω
 ἐλπίζω	hopen (op), verwachten
-ἔμαθον	leren
-ἔπαθον	lijden, ondervinden
-ἔπεσον	vallen
+ἔμαθον	aor of μανθάνω
+ἔπαθον	aor of πάσχω
+ἔπεσον	aor of πίπτω
 μανθάνω	leren (kennen), vernemen
 ἡ νίκη	overwinning
 νομίζω	menen, beschouwen als
 ὀφείλω + inf	verplicht zijn te
 πάσχω	lijden, ondervinden
+περί + acc	rondom, om
+πίπτω	vallen
+ὁ πόλεμος	oorlog
+τό σῶμα, σώματος	lichaam
+τρέχω	rennen
+λείπω	verlaten, achterlaten
 `
 });
