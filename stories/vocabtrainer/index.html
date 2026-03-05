@@ -1279,6 +1279,9 @@ l'arbre (m.)	de boom"></textarea>
   <script src="vocab-fr-nl-unite-2.js"></script>
   <script src="vocab-nl-fr-unite-2.js"></script>
   <script src="vocab-fr-nl-unite-3.js"></script>
+  <script src="vocab-nl-de-hobbies-free-time.js"></script>
+  <script src="vocab-nl-de-food-drinks-restaurant.js"></script>
+  <script src="vocab-nl-de-basic-communication-opinions.js"></script>
   <script>
     const DATASET_KEY = "vocab-selected-dataset-v3";
     const LEGACY_DATASET_KEY = "vocab-selected-dataset-v2";
@@ -1297,7 +1300,7 @@ l'arbre (m.)	de boom"></textarea>
       ];
     const DATASET_BY_ID = Object.fromEntries(DATASETS.map((dataset) => [dataset.id, dataset]));
     const LEGACY_DATASET_ID = "grc-nl";
-    const STORAGE_SCHEMA_VERSION = 12;
+    const STORAGE_SCHEMA_VERSION = 13;
 
     function parseStoredDatasetIds(rawValue) {
       if (typeof rawValue !== "string") return [];
@@ -1396,8 +1399,8 @@ l'arbre (m.)	de boom"></textarea>
     const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
     const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
     const STORAGE_SCHEMA_KEY = usesLegacyGreekKeys
-      ? "oudgrieks-vocab-storage-schema-v12"
-      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v12`;
+      ? "oudgrieks-vocab-storage-schema-v13"
+      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v13`;
 
     saveSelectedDatasetIds(selectedDatasetIds);
 
