@@ -1300,7 +1300,7 @@ l'arbre (m.)	de boom"></textarea>
       ];
     const DATASET_BY_ID = Object.fromEntries(DATASETS.map((dataset) => [dataset.id, dataset]));
     const LEGACY_DATASET_ID = "grc-nl";
-    const STORAGE_SCHEMA_VERSION = 13;
+    const STORAGE_SCHEMA_VERSION = 17;
 
     function parseStoredDatasetIds(rawValue) {
       if (typeof rawValue !== "string") return [];
@@ -1399,8 +1399,8 @@ l'arbre (m.)	de boom"></textarea>
     const TRANSLIT_LABEL = activeDataset.translitLabel || "Transliteratie";
     const SHOW_TRANSLIT = activeDataset.showTransliteration !== false;
     const STORAGE_SCHEMA_KEY = usesLegacyGreekKeys
-      ? "oudgrieks-vocab-storage-schema-v13"
-      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v13`;
+      ? "oudgrieks-vocab-storage-schema-v17"
+      : `vocab-storage-schema-${DATASET_SCOPE_ID}-v17`;
 
     saveSelectedDatasetIds(selectedDatasetIds);
 

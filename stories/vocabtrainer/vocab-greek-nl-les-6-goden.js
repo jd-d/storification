@@ -10,7 +10,7 @@ window.VOCAB_DATASETS.push({
 ἡ ἀσπίς, ἀσπίδος	schild
 βλέπω	kijken
 ἡ γυνή, γυναικός	vrouw
-διά + gen	door ... heen, gedurende
+διά, δι’ + gen	door ... heen, gedurende
 τὸ δόρυ, δόρατος	lans
 ἐγγύς + gen	dichtbij
 ἐκ / ἐξ + gen	uit

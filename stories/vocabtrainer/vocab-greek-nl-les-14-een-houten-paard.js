@@ -8,22 +8,25 @@ window.VOCAB_DATASETS.push({
   factsKey: "grc-nl",
   data: `
 αἱρέω	grijpen, pakken
-ἄρα	leidt vraagzin in
+ἄρα	leidt vraagzin in (niet vertalen)
 βαίνω	gaan, stappen
 δύο	twee
-εἷλον	grijpen
+εἷλον	aor of αἱρέω
 ἐξαίφνης	plotseling
-ἔπιον	drinken
-ἤγαγον	leiden, brengen
-ἤνεγκον	dragen, brengen
+ἔπιον	aor of πίνω
+ἤγαγον	aor of ἄγω
+ἤνεγκον	aor of φέρω
 ὁ θάνατος	de dood
 θαυμάζω	bewonderen, zich verwonderen over
-μετά + gen	(samen) met
+μετά, μετ’, μεθ’ + gen	(samen) met
 οἱ μέν ... οἱ δέ ...	sommigen ... anderen ...
 πάρειμι	aanwezig zijn
 πιστεύω + dat	geloven, vertrouwen op
 ποτε	eens, ooit
-τὸ ὕδωρ, ὕδατος	water
+τό ὕδωρ, ὕδατος	water
 φυλάττω	bewaken, beschermen
+πίνω	drinken
+ἄγω	leiden, brengen
+φέρω	dragen, brengen
 `
 });

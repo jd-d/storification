@@ -7,26 +7,31 @@ window.VOCAB_DATASETS.push({
   showTransliteration: true,
   factsKey: "grc-nl",
   data: `
-ἀπό, ἀπ’, ἀφ’ + gen	van (... vandaan), vanaf, sinds
-διά + acc	wegens, door toedoen van
-ἔθανον	sterven
-εἶδον	zien
-εἶπον	zeggen
-εἶχον	hebben
-ἔλαβον	nemen
-ἐπεί / ἐπειδή	toen, nadat, omdat, aangezien
-ἐπί + gen	op, tijdens
-ἔσχον	hebben
-ἔτραπον	wenden, keren
-ἔτυχον	treffen, raken, krijgen
+ἀπό, ἀπ’, ἀφ’ + gen	van (... vandaan), vanaf; sinds
+διά, δι’ + acc	wegens, door toedoen van
+ἔθανον	aor of θνῄσκω
+εἶδον	aor of ὁράω
+εἶπον	aor of λέγω
+εἶχον	ipf of ἔχω
+ἔλαβον	aor of λαμβάνω
+ἐπεί / ἐπειδή	toen, nadat; omdat, aangezien
+ἐπί, ἐπ’, ἐφ’ + gen	op, tijdens
+ἔσχον	aor of ἔχω
+ἔτραπον	aor of τρέπω
+ἔτυχον	aor of τυγχάνω
 εὑρίσκω	vinden
-ἔφυγον	vluchten
-ηὗρον	vinden
+ἔφυγον	aor of φεύγω
+ἦρον	heffen
+ηὗρον	aor of εὑρίσκω
 θνῄσκω	sterven, omkomen
 λείπω	verlaten, achterlaten
 μένω	blijven, wachten (op)
 ὁράω	zien
 τρέπω	wenden, keren
-τυγχάνω + gen	treffen, raken, krijgen
+τυγχάνω + gen	treffen, raken; krijgen
+λέγω	zeggen, spreken
+λαμβάνω	nemen, krijgen
+ἔχω	hebben, houden
+φεύγω	vluchten, ontvluchten
 `
 });
