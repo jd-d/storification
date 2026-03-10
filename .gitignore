@@ -1,5 +1,9 @@
 # Ignore Windows Zone.Identifier alternate data streams
 *:Zone.Identifier
+
+# Local-only files
 .fiveserverrc
 TODO.md
 TODO_STORIFICATION_WINDOWS.txt
+/.playwright-mcp/
+/print-preview-*.png

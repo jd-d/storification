@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tekst 29: Hannibal - De eed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root { --paper:#fffdf8; --bg:#f6efe4; --ink:#2d241e; --muted:#6e5c50; --carthage:#9f3f2f; --sea:#2c6a72; --gold:#f4e5bf; --line:rgba(92,62,44,.16); --shadow:0 16px 36px rgba(52,35,26,.12); --serif:"Palatino Linotype","Book Antiqua",Georgia,serif; --ui:"Trebuchet MS","Gill Sans","Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); font-family:var(--ui); line-height:1.65; background:radial-gradient(circle at top left, rgba(212,170,98,.22), transparent 30%), radial-gradient(circle at right 15% top 12%, rgba(44,106,114,.18), transparent 24%), linear-gradient(180deg, #fbf5ea, var(--bg)); }
+    body::before { content:""; position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(rgba(159,63,47,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(159,63,47,.035) 1px, transparent 1px); background-size:28px 28px; opacity:.4; }
+    .site-header { position:sticky; top:0; z-index:10; padding:1.25rem 1rem 1rem; color:#fff6eb; background:linear-gradient(135deg, rgba(111,41,29,.97), rgba(159,63,47,.96) 55%, rgba(44,106,114,.94)); box-shadow:0 10px 24px rgba(63,28,20,.22); }
+    .header-inner, main { max-width:1100px; margin:0 auto; }
+    .eyebrow { display:inline-flex; padding:.3rem .72rem; border-radius:999px; background:rgba(255,246,235,.13); border:1px solid rgba(255,246,235,.2); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; }
+    h1 { margin:.8rem 0 .2rem; font:clamp(2rem,4vw,3.2rem)/1.02 var(--serif); }
+    .subtitle { max-width:840px; margin:0; font-size:1.03rem; color:rgba(255,246,235,.92); }
+    .hero-pills { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+    .hero-pills span { padding:.42rem .8rem; border-radius:999px; background:rgba(255,246,235,.14); border:1px solid rgba(255,246,235,.22); font-size:.88rem; }
+    main { padding:1rem 1rem 2.5rem; position:relative; z-index:1; }
+    .quick-nav { position:sticky; top:8.4rem; z-index:9; display:flex; flex-wrap:wrap; gap:.5rem; margin:0 0 1rem; padding:.9rem; border:1px solid rgba(92,62,44,.12); border-radius:22px; background:rgba(255,253,248,.9); box-shadow:0 12px 28px rgba(58,39,29,.1); backdrop-filter:blur(10px); }
+    .quick-nav a { text-decoration:none; color:var(--ink); padding:.48rem .78rem; border-radius:999px; background:rgba(212,170,98,.14); border:1px solid rgba(212,170,98,.26); font-size:.88rem; }
+    .quick-nav a:hover { background:rgba(159,63,47,.12); color:#73291e; }
+    .chapter { margin-bottom:1.1rem; padding:1.35rem; border-radius:28px; border:1px solid rgba(92,62,44,.11); background:var(--paper); box-shadow:var(--shadow); overflow:hidden; position:relative; }
+    .chapter::after { content:""; position:absolute; right:-70px; bottom:-70px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, rgba(212,170,98,.18), transparent 70%); pointer-events:none; }
+    .chapter-grid { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(260px,.88fr); gap:1.25rem; align-items:start; position:relative; z-index:1; }
+    .label { display:inline-flex; margin-bottom:.7rem; padding:.34rem .72rem; border-radius:999px; font-size:.8rem; letter-spacing:.04em; text-transform:uppercase; border:1px solid rgba(111,41,29,.16); background:rgba(159,63,47,.08); color:#6f291d; }
+    .label.remix { background:rgba(44,106,114,.1); border-color:rgba(44,106,114,.22); color:#1f5960; }
+    h2 { margin:0 0 .35rem; font:clamp(1.6rem,3vw,2.2rem)/1.08 var(--serif); color:#6f291d; }
+    .intro { margin:0 0 1rem; color:var(--muted); max-width:60ch; }
+    .lines { list-style:none; margin:0; padding:0; counter-reset:story var(--start,0); font-family:var(--serif); }
+    .lines li { counter-increment:story; display:grid; grid-template-columns:2.15rem minmax(0,1fr); gap:.75rem; margin:0 0 .72rem; padding:.76rem .82rem; border-radius:18px; background:linear-gradient(180deg, rgba(255,248,235,.84), rgba(255,255,255,.96)); border:1px solid rgba(212,170,98,.22); }
+    .lines li::before { content:counter(story); display:inline-flex; align-items:center; justify-content:center; width:2rem; height:2rem; border-radius:999px; background:var(--gold); color:#6f291d; font:700 .9rem/1 var(--ui); }
+    .note, .remix-box, .memory-strip { margin-top:1rem; padding:1rem 1.05rem; border-radius:20px; border:1px solid var(--line); background:rgba(255,250,241,.95); }
+    .note strong, .remix-box strong, .memory-strip strong { color:#6f291d; }
+    .remix-box { background:linear-gradient(135deg, rgba(44,106,114,.08), rgba(255,255,255,.98)), linear-gradient(180deg, rgba(255,245,230,.55), rgba(255,255,255,.8)); }
+    .remix-box p { margin:0 0 .8rem; }
+    .remix-box p:last-child { margin-bottom:0; }
+    .remix-box ul, .memory-list { margin:.85rem 0 0; padding-left:1.25rem; }
+    .remix-box li, .memory-list li { margin-bottom:.46rem; }
+    .tag-row { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.8rem; }
+    .tag { padding:.34rem .62rem; border-radius:999px; background:rgba(44,106,114,.11); color:#22545b; font-size:.8rem; border:1px solid rgba(44,106,114,.18); }
+    .figure { margin:0; border-radius:24px; overflow:hidden; border:1px solid rgba(92,62,44,.12); background:linear-gradient(180deg, rgba(255,250,240,.95), rgba(246,235,214,.9)); box-shadow:0 16px 28px rgba(54,35,25,.08); }
+    .art { position:relative; aspect-ratio:3/2; background:radial-gradient(circle at top left, rgba(44,106,114,.18), transparent 36%), linear-gradient(135deg, rgba(159,63,47,.14), rgba(212,170,98,.12) 45%, rgba(255,255,255,.98)); }
+    .art img { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
+    .placeholder { position:absolute; inset:0; display:none; align-content:center; justify-items:center; gap:.5rem; padding:1.2rem; text-align:center; color:#6f291d; background:linear-gradient(135deg, rgba(255,255,255,.66), rgba(246,230,191,.88)), repeating-linear-gradient(135deg, rgba(159,63,47,.08) 0, rgba(159,63,47,.08) 14px, transparent 14px, transparent 28px); }
+    .figure.missing .placeholder { display:grid; }
+    .figure.missing img { display:none; }
+    .placeholder-badge { padding:.34rem .68rem; border-radius:999px; background:rgba(255,253,248,.92); border:1px solid rgba(111,41,29,.16); font-size:.82rem; }
+    .placeholder-title { font:700 1.18rem/1.1 var(--serif); }
+    .placeholder-meta { color:var(--muted); font-size:.92rem; }
+    figcaption { padding:.85rem 1rem 1rem; color:var(--muted); font-size:.92rem; }
+    .memory-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.85rem; margin-top:1rem; }
+    .memory-card { padding:.95rem; border-radius:18px; border:1px solid rgba(44,106,114,.16); background:rgba(255,255,255,.86); }
+    .memory-card h3 { margin:0 0 .35rem; color:var(--sea); font-size:1rem; }
+    .memory-card p { margin:0; }
+    .page-footer-note { margin-top:1rem; color:var(--muted); font-size:.88rem; }
+    @media (max-width:900px) { .quick-nav { top:7.9rem; } .chapter-grid { grid-template-columns:1fr; } .figure { order:-1; } }
+    @media (max-width:640px) { .quick-nav { top:7.5rem; padding:.8rem; border-radius:18px; } .chapter { padding:1.05rem; border-radius:22px; } .lines li { grid-template-columns:2rem minmax(0,1fr); padding:.72rem; } .memory-grid { grid-template-columns:1fr; } }
+    @media print {
+      body { background:#fff; color:#000; }
+      body::before, .quick-nav { display:none !important; }
+      .site-header { position:static; color:#000; background:#fff; box-shadow:none; border-bottom:1px solid #999; padding:0 0 1rem; margin-bottom:1rem; }
+      .subtitle, .hero-pills span, .eyebrow { color:#222; background:transparent; border-color:#bbb; }
+      main { max-width:none; margin:0; padding:0; }
+      .chapter { box-shadow:none; margin:0 0 12mm; break-inside:avoid; }
+      .figure, .lines li, .memory-card { break-inside:avoid; box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="eyebrow">Storification | Tekst 29</div>
+      <h1>Hannibal: de eed</h1>
+      <p class="subtitle">Eerst de nette Nederlandse vertaling met bijna dezelfde regelsplitsing als je bron. Daarna dezelfde stof als een losse Gen Z remix, zodat het blijft hangen voor een 14-jarige die straks gewoon punten wil pakken.</p>
+      <div class="hero-pills">
+        <span>Deel I: rustige vertaallaag</span>
+        <span>Deel II: Gen Z recap</span>
+        <span>Printvriendelijk opgebouwd</span>
+        <span>Illustraties via <code>.png.txt</code> prompts</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="quick-nav" aria-label="Snelle navigatie">
+      <a href="#klassiek-1">Rome als dreiging</a>
+      <a href="#klassiek-2">Plan Spanje</a>
+      <a href="#klassiek-3">Offer en gebed</a>
+      <a href="#klassiek-4">Hannibal wil mee</a>
+      <a href="#klassiek-5">De eed</a>
+      <a href="#remix-1">Gen Z crisis</a>
+      <a href="#remix-2">Spanje grindset</a>
+      <a href="#remix-3">Little Hannibal arc</a>
+      <a href="#remix-4">Altaar moment</a>
+      <a href="#spiekbrief">Toetssprint</a>
+    </nav>
+
+    <section class="chapter" id="klassiek-1">
+      <div class="chapter-grid">
+        <div>
+          <div class="label">Deel I · Vertaling</div>
+          <h2>Rome voelt voor Hamilcar als een naderende ramp</h2>
+          <p class="intro">De opening zet meteen de motivatie neer: Hamilcar vertrouwt Rome totaal niet en denkt dat stilzitten hetzelfde is als wachten op ellende.</p>
+          <ol class="lines" style="--start:0;">
+            <li>Hamilcar, de Punische leider, kon moeilijk verdragen dat de Romeinen de eerste Punische Oorlog hadden overwonnen.</li>
+            <li>Hij zei tegen de senatoren van Carthago: &lsquo;Rome zal niet tevreden zijn, totdat ze alle grond en alle zee&euml;n zal hebben veroverd.&rsquo;</li>
+            <li>&lsquo;Als wij hen niet tegen zullen houden, dan zullen de Romeinen onze rijkdom, onze stad en ons volk vernietigen.&rsquo;</li>
+            <li>&lsquo;Sta mij toe om met de Punische troepen naar Spanje te gaan.&rsquo;</li>
+          </ol>
+          <div class="note"><strong>Toetsfocus:</strong> hier zie je meteen de kern van de tekst: Hamilcar ziet Rome niet als gewone buur, maar als een macht die pas stopt als iedereen weg is.</div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="A.png" alt="Hamilcar spreekt fel in de senaat van Carthago" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: A.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: A.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld A - Hamilcar in de senaat van Carthago, vol frustratie na de Romeinse overwinning.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="klassiek-2">
+      <div class="chapter-grid">
+        <div>
+          <div class="label">Deel I · Vertaling</div>
+          <h2>Zijn oplossing: eerst Spanje, daarna revanche</h2>
+          <p class="intro">Hamilcar wil afstand nemen, kracht verzamelen en dan pas toeslaan. De senaat twijfelt, maar hij verkoopt zijn plan slim.</p>
+          <ol class="lines" style="--start:4;">
+            <li>&lsquo;Als ik immers daar grotere rijkdom en meer soldaten zal hebben verzameld, zullen wij opnieuw oorlog voeren tegen de Romeinen.&rsquo;</li>
+            <li>De senatoren antwoordden: &lsquo;Als jij alle troepen naar Spanje geleid zal hebben, zullen wij hier geen bewakers hebben. Hoe zal jij de stad bewaken?&rsquo;</li>
+            <li>Hamilcar zei: &lsquo;Ik zal Carthago zeer goed beschermen, als ik de aandacht van de Romeinen naar Spanje zal hebben gewend.&rsquo;</li>
+            <li>De senatoren stemden in.</li>
+          </ol>
+          <div class="note"><strong>Wat onthouden?</strong> Spanje is geen vakantie-uitstapje. Het is een strategische power-up: meer geld, meer soldaten, meer kans op een tweede ronde tegen Rome.</div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="B.png" alt="Hamilcar wijst op een kaart naar Spanje terwijl senatoren luisteren" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: B.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: B.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld B - De senaat twijfelt, maar Hamilcar maakt van Spanje een strategisch plan.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="klassiek-3">
+      <div class="chapter-grid">
+        <div>
+          <div class="label">Deel I · Vertaling</div>
+          <h2>Voor vertrek zoekt Hamilcar steun bij de goden</h2>
+          <p class="intro">Voordat de expeditie begint, komt er eerst een ritueel moment. Dat maakt de tekst meteen plechtig en serieus.</p>
+          <ol class="lines" style="--start:8;">
+            <li>Hamilcar bracht een offer voordat hij wegging met al zijn troepen.</li>
+            <li>Hij bad tot de goden: &lsquo;Jullie, die altijd Carthago hebben beschermd, steun mij wanneer ik de oorlog zal voorbereiden tegen de Romeinen.&rsquo;</li>
+          </ol>
+          <div class="note"><strong>Functie van deze scene:</strong> dit is niet zomaar religieuze decoratie. De tekst bouwt hier de eed-scene van Hannibal al voor.</div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="C.png" alt="Hamilcar offert bij een altaar voor vertrek naar Spanje" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: C.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: C.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld C - Het offermoment maakt de overgang van politiek plan naar heilige belofte.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="klassiek-4">
+      <div class="chapter-grid">
+        <div>
+          <div class="label">Deel I · Vertaling</div>
+          <h2>De negenjarige Hannibal wil meteen instappen</h2>
+          <p class="intro">Hier begint de bekende oorsprong van Hannibal: hij hoort het gebed, ziet het plan, en wil direct mee de geschiedenis in.</p>
+          <ol class="lines" style="--start:10;">
+            <li>Zijn zoon Hannibal, een jongen van negen jaar, had gehoord dat zijn vader bad tot de goden.</li>
+            <li>Hij vroeg: &lsquo;O vader, breng mij met jou mee naar Spanje. Ik zal sterker vechten tegen de Romeinen, die ik haat zoals jij hen haat.&rsquo;</li>
+            <li>Vader lachte: &lsquo;Later, wanneer jij de krijgskunst zult hebben geleerd, zul jij een zeer goede leider zijn en zul jij tegen de Romeinen grote overwinningen behalen.&rsquo;</li>
+            <li>Hannibal zei: &lsquo;Als jij mij meegenomen zal hebben, zal ik van jou de krijgskunst leren. Wie zal mij beter onderwijzen dan jij?&rsquo;</li>
+          </ol>
+          <div class="note"><strong>Belangrijk contrast:</strong> Hannibal is nog een kind, maar praat al als iemand met een missie. Dat maakt de eed later veel sterker.</div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="D.png" alt="Jonge Hannibal kijkt vastberaden naar zijn vader bij het altaar" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: D.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: D.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld D - Hannibal hoort het gebed en wil niet thuisblijven, maar meteen meedoen.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="klassiek-5">
+      <div class="chapter-grid">
+        <div>
+          <div class="label">Deel I · Vertaling</div>
+          <h2>De kernscene: hand op het altaar, eed tegen Rome</h2>
+          <p class="intro">Alles komt nu samen: vader, goden, vaderland en een kind dat een levenslange belofte uitspreekt.</p>
+          <ol class="lines" style="--start:14;">
+            <li>Hamilcar zei: &lsquo;Goed, ik zal jou met mij meenemen, als je het woord van trouw gegeven zult hebben aan de goden van jouw vaderland.&rsquo;</li>
+            <li>Meteen plaatste de jongen zijn rechterhand op het altaar waarop de vader het offer had gebracht.</li>
+            <li>Hij zwoer: &lsquo;Zolang als ik zal leven, zal ik de goden van mijn vaderland vereren. Ik zal altijd een vijand van Rome zijn. Ik zal niet rusten, totdat Carthago zal regeren over land en op zee. Dit zweer ik, Hannibal, zoon van Hamilcar, bij de Punische goden, die mij met de bliksem zullen treffen als ik ooit mijn eed zal hebben gebroken.&rsquo;</li>
+          </ol>
+          <div class="note"><strong>Examenvraag in wording:</strong> waarom is deze tekst beroemd? Omdat hier Hannibals haat tegen Rome niet als gevoel, maar als eed wordt neergezet.</div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="E.png" alt="Jonge Hannibal legt zijn hand op het altaar en zweert een eed" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: E.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: E.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld E - De beroemdste scene: Hannibal zweert dat Rome voor hem altijd de vijand blijft.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="remix-1">
+      <div class="chapter-grid">
+        <div>
+          <div class="label remix">Deel II · Gen Z remix</div>
+          <h2>Carthago krijgt een giga vibe check</h2>
+          <p class="intro">Zelfde inhoud, maar dan in taal die sneller blijft hangen.</p>
+          <div class="remix-box">
+            <p>Rome heeft ronde 1 gewonnen en Hamilcar denkt basically: <strong>&ldquo;Deze mensen gaan nooit chill doen.&rdquo;</strong></p>
+            <p>In zijn hoofd is Rome die speler die na &eacute;&eacute;n win niet stopt, maar meteen de hele map wil ownen. Land? Zee? Geld? Alles graag.</p>
+            <p>Dus Hamilcar dropt een superdonkere voorspelling: als Carthago nu niks doet, dan is het straks <strong>stad weg, rijkdom weg, respect weg</strong>.</p>
+            <ul>
+              <li>&#128293; Hamilcar vertrouwt Rome letterlijk nul procent.</li>
+              <li>&#9876;&#65039; Hij denkt in termen van overleven, niet van gezellig diplomatiek gedoe.</li>
+            </ul>
+          </div>
+          <div class="tag-row"><span class="tag">Rome = final boss energy</span><span class="tag">Hamilcar = alarmfase rood</span><span class="tag">Carthago = nu handelen</span></div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="F.png" alt="Gestileerde kaart en crisisoverleg tussen Carthago en Rome" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: F.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: F.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld F - De Gen Z versie van het crisisgevoel: Rome als expansionist, Carthago als team onder druk.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="remix-2">
+      <div class="chapter-grid">
+        <div>
+          <div class="label remix">Deel II · Gen Z remix</div>
+          <h2>Het Spanje-plan is gewoon een resource grind</h2>
+          <p class="intro">Hamilcar wil niet random terugvechten. Hij wil eerst stats opbouwen.</p>
+          <div class="remix-box">
+            <p>Zijn pitch is basically: <strong>&ldquo;Laat me naar Spanje gaan, daar farm ik geld en soldiers, en daarna komen we sterker terug.&rdquo;</strong></p>
+            <p>De senaat zegt: &ldquo;Leuk plan, maar wie verdedigt dan nog de thuisbasis?&rdquo; En Hamilcar antwoordt: <strong>&ldquo;Als Rome naar Spanje moet kijken, hebben ze minder aandacht voor Carthago.&rdquo;</strong></p>
+            <ul>
+              <li>&#128506;&#65039; Spanje = trainingsgebied + geldbron + manpower boost.</li>
+              <li>&#129504; Hamilcar speelt niet op emotie alleen, maar ook op tactiek.</li>
+            </ul>
+          </div>
+          <div class="tag-row"><span class="tag">grind now, fight later</span><span class="tag">senaat sceptisch</span><span class="tag">afleiding als strategie</span></div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="G.png" alt="Hamilcar presenteert Spanje als strategische volgende stap" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: G.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: G.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld G - Hamilcar behandelt Spanje alsof het de perfecte upgrade-route is naar ronde twee.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="remix-3">
+      <div class="chapter-grid">
+        <div>
+          <div class="label remix">Deel II · Gen Z remix</div>
+          <h2>Little Hannibal zegt niet &ldquo;ok boomer&rdquo;, maar &ldquo;neem me mee&rdquo;</h2>
+          <p class="intro">Hier wordt Hannibal geen passieve zoon, maar meteen een mini-hoofdpersoon met main-character energy.</p>
+          <div class="remix-box">
+            <p>Negenjarige Hannibal hoort zijn vader bidden en denkt niet: <em>spannend religieus moment</em>. Hij denkt: <strong>&ldquo;Ik ga mee. Ik haat Rome ook. Teach me everything.&rdquo;</strong></p>
+            <p>Hamilcar lacht eerst nog een beetje, want hallo, het is letterlijk een kind. Maar Hannibal blijft aandringen: wie kan hem beter leren vechten dan zijn eigen vader?</p>
+            <ul>
+              <li>&#128081; Hannibal wil niet later misschien held worden, hij wil meteen beginnen.</li>
+              <li>&#127919; De tekst laat zien hoe vroeg zijn anti-Rome mindset al vastligt.</li>
+            </ul>
+          </div>
+          <div class="tag-row"><span class="tag">origin story unlocked</span><span class="tag">mini maar mega serieus</span><span class="tag">Rome op de hitlist</span></div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="H.png" alt="Jonge Hannibal met vastberaden blik tegenover zijn vader" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: H.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: H.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld H - De jonge Hannibal staat hier niet als bijfiguur, maar als toekomstige legend in wording.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="remix-4">
+      <div class="chapter-grid">
+        <div>
+          <div class="label remix">Deel II · Gen Z remix</div>
+          <h2>Dan komt het altaar moment: say less, hand erop</h2>
+          <p class="intro">De tekst wordt nu maximaal dramatisch, en terecht: dit is het moment dat iedereen onthoudt.</p>
+          <div class="remix-box">
+            <p>Hamilcar zegt basically: <strong>&ldquo;Prima, maar dan moet je wel loyalty zweren aan de goden van Carthago.&rdquo;</strong></p>
+            <p>Hannibal wacht geen seconde, legt zijn hand op het altaar en gaat full oath mode: <strong>ik ga Rome haten zolang ik leef</strong>.</p>
+            <p>Dat is dus niet zomaar kinderdrama. Het is een religieuze, politieke en persoonlijke promise in &eacute;&eacute;n klap.</p>
+            <ul>
+              <li>&#9889; Breek je de eed? Dan mogen de goden je straffen.</li>
+              <li>&#128293; Hou je de eed? Dan leeft je missie de rest van je leven door.</li>
+            </ul>
+          </div>
+          <div class="tag-row"><span class="tag">altar scene = iconic</span><span class="tag">eed &gt; emotie</span><span class="tag">lifelong anti-Rome arc</span></div>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="I.png" alt="Dramatische scène waarin Hannibal bij een altaar zweert Rome te bestrijden" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: I.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: I.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld I - Het altaar moment in posterstijl: een kind dat een eed aflegt die zijn hele leven gaat sturen.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="spiekbrief">
+      <div class="chapter-grid">
+        <div>
+          <div class="label remix">Deel II · Toetssprint</div>
+          <h2>Wat je vlak voor de toets nog wilt weten</h2>
+          <p class="intro">Laatste snelle herhaling: wie doet wat, waarom Spanje, en waarom de eed zo beroemd is.</p>
+          <div class="memory-strip"><strong>Mini-samenvatting in 1 zin:</strong> Hamilcar ziet Rome als een dreiging voor alles, kiest Spanje als slimme voorbereiding op een nieuwe oorlog, en Hannibal verandert als negenjarige al in een officieel anti-Rome project.</div>
+          <div class="memory-grid">
+            <article class="memory-card"><h3>Wie start het plan?</h3><p>Hamilcar. Hij wil niet afwachten tot Rome nog sterker wordt.</p></article>
+            <article class="memory-card"><h3>Waarom Spanje?</h3><p>Om rijkdom en soldaten te verzamelen en Rome af te leiden.</p></article>
+            <article class="memory-card"><h3>Wat wil Hannibal?</h3><p>Mee met zijn vader, krijgskunst leren, en Rome als vijand behandelen.</p></article>
+            <article class="memory-card"><h3>Waarom is de eed zo belangrijk?</h3><p>Omdat Hannibal zijn haat tegen Rome niet alleen voelt, maar heilig bezweert.</p></article>
+          </div>
+          <ul class="memory-list">
+            <li>&#10024; <strong>Naamparen:</strong> Hamilcar = vader, Hannibal = zoon.</li>
+            <li>&#10024; <strong>Kernplek:</strong> Spanje is de voorbereiding op later conflict.</li>
+            <li>&#10024; <strong>Kernhandeling:</strong> hand op altaar, eed aan de Punische goden.</li>
+            <li>&#10024; <strong>Kernidee:</strong> Hannibal is vanaf zijn jeugd al verbonden aan strijd tegen Rome.</li>
+          </ul>
+          <p class="page-footer-note">Volgende iteratie kan nog losser, grappiger of strakker voor jouw klasniveau. Dit is nu de eerste stevige basis.</p>
+        </div>
+        <figure class="figure">
+          <div class="art">
+            <img src="J.png" alt="Collage van Carthago, Spanje, Rome en het altaar als samenvattend beeld" loading="lazy">
+            <div class="placeholder" aria-hidden="true">
+              <span class="placeholder-badge">Illustratie ontbreekt nog</span>
+              <div class="placeholder-title">Verwacht bestand: J.png</div>
+              <div class="placeholder-meta">Gebruik promptbestand: J.png.txt</div>
+            </div>
+          </div>
+          <figcaption>Beeld J - Een samenvattend slotbeeld met de hoofdpunten die je voor de toets wilt onthouden.</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll(".figure").forEach(function (figure) {
+      var img = figure.querySelector("img");
+      if (!img) return;
+      function markMissing() { figure.classList.add("missing"); }
+      img.addEventListener("error", markMissing);
+      if (img.complete && img.naturalWidth === 0) markMissing();
+    });
+  </script>
+</body>
+
+</html>

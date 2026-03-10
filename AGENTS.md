@@ -1,1 +1,2 @@
 1. When making changes that a user may not see unless they explicitly refresh the browser cache, force cache refresh by bumping local storage schema version. E.g. This would mean for example in "Vocabtoets" that new vocab lists are picked up automatically without user action
+2. In assistant responses for this repo, do not use markdown file links for file references because they do not work in the user's IDE. Use plain inline paths with optional line numbers instead, for example `README.md:53` or `stories/hannibal-de-eed/F.png.txt:1`.
