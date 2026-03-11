@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/print-preview.css?v=4">
 
     <style>
         /* =========================================
@@ -416,13 +417,13 @@
 </head>
 <body>
   <div class="page-wrapper">
-    <div class="card">
+    <article id="document-root" class="card">
 
       <!-- ============================================== -->
       <!-- PAGE 1: LITERAL STORY - PART 1 -->
       <!-- ============================================== -->
       <div class="print-page">
-          <header class="masthead">
+          <header class="masthead story-chunk" data-chunk-id="masthead">
             <div class="masthead-logo">RN</div>
             <div class="masthead-text">
               <h1>ROMA NU</h1>
@@ -434,9 +435,9 @@
             </div>
           </header>
 
-          <h2 class="section-title">TEKST 29: HANNIBAL</h2>
+          <h2 class="section-title story-chunk" data-chunk-id="title">TEKST 29: HANNIBAL</h2>
 
-          <div class="hero-image" style="height: 260px;">
+          <div class="hero-image story-chunk" data-chunk-id="img-senate" style="height: 260px;">
             <div class="img-placeholder-text">
                 <span>A.png</span>
                 <small>PROMPT: Hamilcar in the senate hall of ancient Carthage after Rome's victory in the First Punic War...</small>
@@ -444,11 +445,11 @@
             <img src="A.png" alt="Hamilcar in the senate hall">
           </div>
 
-          <div class="lore-panel">
+          <div class="lore-panel story-chunk" data-chunk-id="lore-intro">
               <p class="drop-cap">Hamilcar, de Punische leider, kon moeilijk verdragen dat de Romeinen de eerste Punische Oorlog hadden overwonnen.</p>
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-warns">
               <span class="classic-speaker">Hamilcar</span>
               <p>Hij zei tegen de senatoren van Carthago: 'Rome zal niet tevreden zijn, totdat ze alle grond en alle zeeën zal hebben veroverd. Als wij hen niet tegen zullen houden, dan zullen de Romeinen onze rijkdom, onze stad en ons volk vernietigen.'</p>
           </div>
@@ -460,26 +461,26 @@
       <!-- PAGE 2: LITERAL STORY - PART 2 -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-spain">
               <span class="classic-speaker">Hamilcar</span>
               <p>Sta mij toe om met de Punische troepen naar Spanje te gaan. Als ik immers daar grotere rijkdom en meer soldaten zal hebben verzameld, zullen wij opnieuw oorlog voeren tegen de Romeinen.'</p>
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-senators-doubt">
               <span class="classic-speaker">De Senatoren</span>
               <p>De senatoren antwoordden: 'Als jij alle troepen naar Spanje geleid zal hebben, zullen wij hier geen bewakers hebben. Hoe zal jij de stad bewaken?'</p>
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-protect">
               <span class="classic-speaker">Hamilcar</span>
               <p>Ik zal Carthago zeer goed beschermen, als ik de aandacht van de Romeinen naar Spanje zal hebben gewend.'</p>
           </div>
 
-          <div class="lore-panel">
+          <div class="lore-panel story-chunk" data-chunk-id="lore-agreement">
               <p>De senatoren stemden in.</p>
           </div>
 
-          <div class="square-image" style="height: 210px; margin: 10px 0 0;">
+          <div class="square-image story-chunk" data-chunk-id="img-spain-plan" style="height: 210px; margin: 10px 0 0;">
             <div class="img-placeholder-text">
                 <span>B.png</span>
                 <small>PROMPT: Hamilcar presenting his Spain strategy to the Carthaginian senate...</small>
@@ -494,11 +495,11 @@
       <!-- PAGE 3: LITERAL STORY - PART 3 -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="lore-panel">
+          <div class="lore-panel story-chunk" data-chunk-id="lore-sacrifice">
               <p>Hamilcar bracht een offer voordat hij wegging met al zijn troepen.</p>
           </div>
 
-          <div class="square-image" style="height: 190px; margin: 10px 0;">
+          <div class="square-image story-chunk" data-chunk-id="img-altar" style="height: 190px; margin: 10px 0;">
             <div class="img-placeholder-text">
                 <span>C.png</span>
                 <small>PROMPT: Ancient Carthaginian altar at dawn, Hamilcar making a solemn sacrifice...</small>
@@ -506,16 +507,16 @@
             <img src="C.png" alt="Ancient Carthaginian altar">
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-prayer">
               <span class="classic-speaker">Hamilcar</span>
               <p>Hij bad tot de goden: 'Jullie, die altijd Carthago hebben beschermd, steun mij wanneer ik de oorlog zal voorbereiden tegen de Romeinen.'</p>
           </div>
 
-          <div class="lore-panel">
+          <div class="lore-panel story-chunk" data-chunk-id="lore-hannibal-appears">
               <p>Zijn zoon Hannibal, een jongen van negen jaar, had gehoord dat zijn vader bad tot de goden.</p>
           </div>
 
-          <div class="square-image" style="height: 170px; margin: 10px 0;">
+          <div class="square-image story-chunk" data-chunk-id="img-young-hannibal" style="height: 170px; margin: 10px 0;">
             <div class="img-placeholder-text">
                 <span>D.png</span>
                 <small>PROMPT: Young Hannibal, about nine years old, listening intensely beside his father after the prayer...</small>
@@ -523,7 +524,7 @@
             <img src="D.png" alt="Young Hannibal">
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hannibal-plea">
               <span class="classic-speaker">Hannibal</span>
               <p>Hij vroeg: 'O vader, breng mij met jou mee naar Spanje. Ik zal sterker vechten tegen de Romeinen, die ik haat zoals jij hen haat.'</p>
           </div>
@@ -535,26 +536,26 @@
       <!-- PAGE 4: LITERAL STORY - PART 4 -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-later">
               <span class="classic-speaker">Hamilcar</span>
               <p>Vader lachte: 'Later, wanneer jij de krijgskunst zult hebben geleerd, zul jij een zeer goede leider zijn en zul jij tegen de Romeinen grote overwinningen behalen.'</p>
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hannibal-learn">
               <span class="classic-speaker">Hannibal</span>
               <p>'Als jij mij meegenomen zal hebben, zal ik van jou de krijgskunst leren. Wie zal mij beter onderwijzen dan jij?'</p>
           </div>
 
-          <div class="classic-dialogue">
+          <div class="classic-dialogue story-chunk" data-chunk-id="dial-hamilcar-oath-cond">
               <span class="classic-speaker">Hamilcar</span>
               <p>'Goed, ik zal jou met mij meenemen, als je het woord van trouw gegeven zult hebben aan de goden van jouw vaderland.'</p>
           </div>
 
-          <div class="lore-panel">
+          <div class="lore-panel story-chunk" data-chunk-id="lore-hand-on-altar">
               <p>Meteen plaatste de jongen zijn rechterhand op het altaar waarop de vader het offer had gebracht.</p>
           </div>
 
-          <div class="square-image" style="height: 170px; margin: 10px 0;">
+          <div class="square-image story-chunk" data-chunk-id="img-oath" style="height: 170px; margin: 10px 0;">
             <div class="img-placeholder-text">
                 <span>E.png</span>
                 <small>PROMPT: The oath of Hannibal: a young boy places his right hand on a Carthaginian altar while Hamilcar watches...</small>
@@ -562,7 +563,7 @@
             <img src="E.png" alt="The oath of Hannibal">
           </div>
 
-          <div class="epic-oath">
+          <div class="epic-oath story-chunk" data-chunk-id="epic-oath">
               <span class="classic-speaker">De Eed van Hannibal</span>
               <p>Hij zwoer: 'Zolang als ik zal leven, zal ik de goden van mijn vaderland vereren. Ik zal altijd een vijand van Rome zijn. Ik zal niet rusten, totdat Carthago zal regeren over land en op zee. Dit zweer ik, Hannibal, zoon van Hamilcar, bij de Punische goden, die mij met de bliksem zullen treffen als ik ooit mijn eed zal hebben gebroken.'</p>
           </div>
@@ -574,11 +575,11 @@
       <!-- PAGE 5: GEN Z INTRO -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="gen-z-section">
+          <div class="gen-z-section story-chunk" data-chunk-id="genz-intro">
               <h2 class="gen-z-title">HANNIBAL:<br>THE ORIGIN STORY 🌩️</h2>
               <p class="gen-z-intro">Wanneer je vader toxic is in de chat na een verloren match, en jij besluit je hele leven te wijden aan wraak.</p>
 
-              <div class="square-image" style="height: 180px; margin-top: 0;">
+              <div class="square-image story-chunk" data-chunk-id="img-poster" style="height: 180px; margin-top: 0;">
                 <div class="img-placeholder-text">
                     <span>F.png</span>
                     <small>PROMPT: Stylized educational poster image showing Carthage under pressure...</small>
@@ -596,7 +597,7 @@
                   Yo Senatoren. Rome is greedy. Als we niks doen, raiden ze onze base en stelen ze onze loot. Laat mij naar de Spanje-server gaan. Ik ga daar grinden voor goud en nieuwe troepen unlocken, en dan starten we de rematch.
               </div>
 
-              <div class="square-image" style="height: 180px;">
+              <div class="square-image story-chunk" data-chunk-id="img-strategy" style="height: 180px;">
                 <div class="img-placeholder-text">
                     <span>G.png</span>
                     <small>PROMPT: Hamilcar explaining the Spain plan like a strategic campaign board...</small>
@@ -617,7 +618,7 @@
       <!-- PAGE 6: GEN Z CLIMAX -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="gen-z-section">
+          <div class="gen-z-section story-chunk" data-chunk-id="genz-climax">
               <div class="gen-z-dialogue">
                   <span class="gen-z-speaker">Hamilcar</span>
                   Trust the process. Ik trek in Spanje al hun aggro aan. Ze gaan niet eens naar Carthago kijken.
@@ -633,7 +634,7 @@
                   Voor vertrek doet Hamilcar even een pre-game ritual bij het altaar: 'Goden, geef me die buff voor de rematch.' Plotseling spawnt Hannibal, zijn 9-jarige zoon.
               </div>
 
-              <div class="square-image" style="height: 240px;">
+              <div class="square-image story-chunk" data-chunk-id="img-hannibal-portrait" style="height: 240px;">
                 <div class="img-placeholder-text">
                     <span>H.png</span>
                     <small>PROMPT: Determined young Hannibal in a dramatic origin-story portrait...</small>
@@ -664,8 +665,8 @@
       <!-- PAGE 7: THE EPIC CONCLUSION -->
       <!-- ============================================== -->
       <div class="print-page">
-          <div class="gen-z-section">
-              
+          <div class="gen-z-section story-chunk" data-chunk-id="genz-conclusion">
+
               <div class="gen-z-dialogue">
                   <span class="gen-z-speaker">Hamilcar</span>
                   Aight, fair point. Je mag mee. Maar alleen als je NU trouw zweert aan de OG goden van ons vaderland.
@@ -676,7 +677,7 @@
                   Hannibal klapt meteen zijn hand op het hete altaar zonder te knipperen. En dan dropt hij de hardste eed van de Oudheid:
               </div>
 
-              <div class="square-image" style="height: 180px;">
+              <div class="square-image story-chunk" data-chunk-id="img-swearing" style="height: 180px;">
                 <div class="img-placeholder-text">
                     <span>I.png</span>
                     <small>PROMPT: Poster-like dramatic scene of young Hannibal swearing at the altar...</small>
@@ -684,14 +685,14 @@
                 <img src="I.png" alt="Young Hannibal swearing">
               </div>
 
-              <div class="final-oath-box">
+              <div class="final-oath-box story-chunk" data-chunk-id="genz-oath">
                   <span class="gen-z-speaker">HANNIBAL</span>
                   <p>"Zolang ik leef blijf ik onze goden reppen. Ik ben voor altijd opps met Rome.</p>
                   <p>Geen rust tot Carthago de hele map bestuurt over land en zee.</p>
                   <p>Dit zweer ik. Als ik lieg, mogen de goden me insta-bannen met de bliksem." ⚡</p>
               </div>
 
-              <div class="square-image" style="height: 160px;">
+              <div class="square-image story-chunk" data-chunk-id="img-collage" style="height: 160px;">
                 <div class="img-placeholder-text">
                     <span>J.png</span>
                     <small>PROMPT: Summary collage for a school story about Hannibal...</small>
@@ -702,7 +703,8 @@
               <div class="spacer"></div>
 </div>
       </div>
-    </div>
+    </article>
   </div>
+    <script src="../../assets/js/print-preview.js?v=4" defer></script>
 </body>
 </html>

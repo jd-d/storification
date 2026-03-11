@@ -43,6 +43,67 @@ To add a new story/tool:
 2. Add an `index.html` inside.
 3. Link it from the root `index.html`.
 
+## Print Preview For Stories
+There is a shared print preview system for story pages that need printable, paginated output.
+
+Current shared files:
+- `assets/js/print-preview.js`: opens the preview UI, reads the page content, applies tuning controls, and asks Paged.js to repaginate.
+- `assets/css/print-preview.css`: styles the preview overlay, page guides, chunk controls, and print-preview UI.
+- `assets/js/paged.js`: vendored Paged.js runtime used for in-browser pagination.
+
+Current story using it:
+- `stories/hannibal-de-eed/index.html`
+
+### How It Is Supposed To Work
+When a story page includes the shared preview assets, a floating `Print Preview` button appears. Clicking it should:
+
+1. Hide the normal story view.
+2. Open the preview overlay.
+3. Rebuild the story content into a paginated preview using Paged.js.
+4. Let the user tune layout before printing.
+
+The controls are intended to behave like this:
+- `Font size`: scale story typography in the preview.
+- `Line height`: change line spacing for story text.
+- `Spacing`: change vertical spacing between story blocks.
+- `Image scale`: shrink or enlarge story image blocks.
+- `Page margins`: change real print margins through `@page`.
+- `Show footer: Pagina X van Y`: toggle printable page numbering.
+- `Start page here`: force a selected content block to begin on a new page.
+- `Keep this block together`: avoid splitting that block across pages where possible.
+
+### Required Markup Hooks
+For the shared preview to work correctly, the story page should provide:
+
+- An outer content root, currently `#document-root`.
+- Addressable content blocks marked with `.story-chunk` and a unique `data-chunk-id`.
+- The preview asset includes near the end of the page.
+
+In `stories/hannibal-de-eed/index.html`, this currently means:
+- The story content is wrapped in `<article id="document-root" class="card">`.
+- Printable/editable blocks such as headings, dialogue boxes, lore panels, and image blocks are marked as `.story-chunk`.
+- The page loads `../../assets/css/print-preview.css?v=4` and `../../assets/js/print-preview.js?v=4`.
+
+### Page-Break Model
+The preview uses Paged.js for the actual pagination rules. The custom JS/UI layer is only there to make those rules easier to control.
+
+The intended behavior is:
+- Paged.js decides page layout.
+- The preview UI stores per-block rules in JS state.
+- Those rules are applied back onto the cloned story content using CSS break properties such as `break-before` and `break-inside`.
+- Re-rendering the preview should visibly move content between pages when a break rule changes.
+
+### If You Reuse This On Another Story
+To add the same print-preview behavior to another story page:
+
+1. Include `assets/css/print-preview.css` and `assets/js/print-preview.js`.
+2. Wrap the printable content in a stable root like `#document-root`.
+3. Add `.story-chunk` plus unique `data-chunk-id` values to any block the preview should target for spacing, keep-together, or forced page starts.
+4. Verify the page’s own CSS does not hard-lock heights or overflow in a way that prevents repagination.
+
+### Current Note
+This print-preview flow is still being refined. The intended behavior is documented here, but if the live preview differs from that behavior, treat the code in `assets/js/print-preview.js` and `stories/hannibal-de-eed/index.html` as the source of truth for the current implementation state.
+
 ## Vocab Trainer (Generic)
 The vocab trainer lives here:
 - `stories/vocabtrainer/index.html`

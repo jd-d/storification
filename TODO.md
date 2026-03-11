@@ -59,6 +59,7 @@
 - [x] README: uitleg over structuur/configuratie en uitbreidingspunten
 - [x] Integrate Werkwoordspelling Oefenen story (move file, extract questions, add persistence + nav)
 - [x] Fix dutch verbs story issues (contrast, clarity, and answer handling)
+- [ ] Thoroughly test print preview controls and pagination behavior (font size, line height, spacing, image scale, margins, first-page consistency, and forced page breaks)
 
 ## Notes
 

@@ -1,6 +1,9 @@
 # Ignore Windows Zone.Identifier alternate data streams
 *:Zone.Identifier
 
+# Dependencies (vendored files live in assets/)
+node_modules/
+
 # Local-only files
 .fiveserverrc
 TODO.md
