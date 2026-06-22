@@ -8,14 +8,14 @@ window.VOCAB_DATASETS.push({
   factsKey: "grc-nl",
   data: `
 αἱρέω	grijpen, pakken
-ἄρα	leidt vraagzin in (niet vertalen)
+ἆρα	leidt vraagzin in (niet vertalen)
 βαίνω	gaan, stappen
 δύο	twee
-εἷλον	aor of αἱρέω
+εἷλον	aor van haireo
 ἐξαίφνης	plotseling
-ἔπιον	aor of πίνω
-ἤγαγον	aor of ἄγω
-ἤνεγκον	aor of φέρω
+ἔπιον	aor van pino
+ἤγαγον	aor van ago
+ἤνεγκον	aor van phero
 ὁ θάνατος	de dood
 θαυμάζω	bewonderen, zich verwonderen over
 μετά, μετ’, μεθ’ + gen	(samen) met

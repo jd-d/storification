@@ -25,7 +25,7 @@ window.VOCAB_DATASETS.push({
 ὁ φόβος	angst
 χαίρω	blij zijn
 ἡ χώρα	gebied, plaats
-ὡς	(zoals)
+ὡς	(zo)als
 ὡς τάχιστα	zo snel mogelijk, zodra
 `
 });

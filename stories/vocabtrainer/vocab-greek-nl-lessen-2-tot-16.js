@@ -157,19 +157,19 @@ window.VOCAB_DATASETS.push({
 τάχα\tsnel, spoedig
 ἀπό, ἀπ’, ἀφ’ + gen\tvan (... vandaan), vanaf; sinds
 διά, δι’ + acc\twegens, door toedoen van
-ἔθανον\taor of θνῄσκω
-εἶδον\taor of ὁράω
-εἶπον\taor of λέγω
-εἶχον\tipf of ἔχω
-ἔλαβον\taor of λαμβάνω
+ἔθανον\taor van thnesko
+εἶδον\taor van horao
+εἶπον\taor van lego
+εἶχον\tipf van echo
+ἔλαβον\taor van lambano
 ἐπεί / ἐπειδή\ttoen, nadat; omdat, aangezien
 ἐπί, ἐπ’, ἐφ’ + gen\top, tijdens
-ἔσχον\taor of ἔχω
-ἔτραπον\taor of τρέπω
-ἔτυχον\taor of τυγχάνω
+ἔσχον\taor van echo
+ἔτραπον\taor van trepo
+ἔτυχον\taor van tunchano
 εὑρίσκω\tvinden
-ἔφυγον\taor of φεύγω
-ηὗρον\taor of εὑρίσκω
+ἔφυγον\taor van pheugo
+ηὗρον\taor van heurisko
 ἦρον\theffen
 θνῄσκω\tsterven, omkomen
 λείπω\tverlaten, achterlaten
@@ -177,17 +177,17 @@ window.VOCAB_DATASETS.push({
 ὁράω\tzien
 τρέπω\twenden, keren
 τυγχάνω + gen\ttreffen, raken; krijgen
-ἀπέθανον\taor of ἀποθνῄσκω
+ἀπέθανον\taor van apothnesko
 ἀποθνῄσκω\tsterven, omkomen
 ἀποκτείνω\tdoden
 βάλλω\tgooien
-ἔβαλον\taor of βάλλω
-ἔδραμον\taor of τρέχω
-ἔλιπον\taor of λείπω
+ἔβαλον\taor van ballo
+ἔδραμον\taor van trecho
+ἔλιπον\taor van leipo
 ἐλπίζω\thopen (op), verwachten
-ἔμαθον\taor of μανθάνω
-ἔπαθον\taor of πάσχω
-ἔπεσον\taor of πίπτω
+ἔμαθον\taor van manthano
+ἔπαθον\taor van pascho
+ἔπεσον\taor van pipto
 μανθάνω\tleren (kennen), vernemen
 ἡ νίκη\toverwinning
 νομίζω\tmenen, beschouwen als
@@ -202,11 +202,11 @@ window.VOCAB_DATASETS.push({
 ἄρα\tleidt vraagzin in (niet vertalen)
 βαίνω\tgaan, stappen
 δύο\ttwee
-εἷλον\taor of αἱρέω
+εἷλον\taor van haireo
 ἐξαίφνης\tplotseling
-ἔπιον\taor of πίνω
-ἤγαγον\taor of ἄγω
-ἤνεγκον\taor of φέρω
+ἔπιον\taor van pino
+ἤγαγον\taor van ago
+ἤνεγκον\taor van phero
 ὁ θάνατος\tde dood
 θαυμάζω\tbewonderen, zich verwonderen over
 μετά, μετ’, μεθ’ + gen\t(samen) met

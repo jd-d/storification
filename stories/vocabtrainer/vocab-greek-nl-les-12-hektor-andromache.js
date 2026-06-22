@@ -9,20 +9,19 @@ window.VOCAB_DATASETS.push({
   data: `
 ἀπό, ἀπ’, ἀφ’ + gen	van (... vandaan), vanaf; sinds
 διά, δι’ + acc	wegens, door toedoen van
-ἔθανον	aor of θνῄσκω
-εἶδον	aor of ὁράω
-εἶπον	aor of λέγω
-εἶχον	ipf of ἔχω
-ἔλαβον	aor of λαμβάνω
+ἔθανον	aor van thnesko
+εἶδον	aor van horao
+εἶπον	aor van lego
+εἶχον	ipf van echo
+ἔλαβον	aor van lambano
 ἐπεί / ἐπειδή	toen, nadat; omdat, aangezien
 ἐπί, ἐπ’, ἐφ’ + gen	op, tijdens
-ἔσχον	aor of ἔχω
-ἔτραπον	aor of τρέπω
-ἔτυχον	aor of τυγχάνω
+ἔσχον	aor van echo
+ἔτραπον	aor van trepo
+ἔτυχον	aor van tunchano
 εὑρίσκω	vinden
-ἔφυγον	aor of φεύγω
-ἦρον	heffen
-ηὗρον	aor of εὑρίσκω
+ἔφυγον	aor van pheugo
+ηὗρον	aor van heurisko
 θνῄσκω	sterven, omkomen
 λείπω	verlaten, achterlaten
 μένω	blijven, wachten (op)

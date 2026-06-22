@@ -7,17 +7,17 @@ window.VOCAB_DATASETS.push({
   showTransliteration: true,
   factsKey: "grc-nl",
   data: `
-ἀπέθανον	aor of ἀποθνῄσκω
+ἀπέθανον	aor van apothnesko
 ἀποθνῄσκω	sterven, omkomen
 ἀποκτείνω	doden
 βάλλω	gooien
-ἔβαλον	aor of βάλλω
-ἔδραμον	aor of τρέχω
-ἔλιπον	aor of λείπω
+ἔβαλον	aor van ballo
+ἔδραμον	aor van trecho
+ἔλιπον	aor van leipo
 ἐλπίζω	hopen (op), verwachten
-ἔμαθον	aor of μανθάνω
-ἔπαθον	aor of πάσχω
-ἔπεσον	aor of πίπτω
+ἔμαθον	aor van manthano
+ἔπαθον	aor van pascho
+ἔπεσον	aor van pipto
 μανθάνω	leren (kennen), vernemen
 ἡ νίκη	overwinning
 νομίζω	menen, beschouwen als
