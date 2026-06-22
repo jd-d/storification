@@ -14,7 +14,7 @@ window.VOCAB_DATASETS.push({
 ζητέω	zoeken
 καὶ δή καί	en ook, en vooral
 καλέω	roepen, noemen
-κατά	naar beneden, neer-
+κατά-	naar beneden, neer-
 κατά, κατ’, καθ’ + gen	van ... af (naar beneden)
 οἰκέω	wonen, bewonen
 τὸ πνεῦμα, πνεύματος	lucht, adem

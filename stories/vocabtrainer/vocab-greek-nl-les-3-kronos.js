@@ -15,7 +15,7 @@ window.VOCAB_DATASETS.push({
 ὁ ἥλιος	zon
 τὸ θηρίον	(wild) dier
 ὁ ἵππος	paard
-κατά, κατ’, καθ’ + acc	(verspreid) over, overeenkomstig
+κατά, κατ’, καθ’ + acc	(verspreid) over
 λέγω	zeggen, spreken
 μέν ... δέ	(weliswaar) ... maar, ... en
 νοέω	waarnemen, opmerken

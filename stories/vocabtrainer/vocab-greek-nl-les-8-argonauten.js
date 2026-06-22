@@ -15,9 +15,9 @@ window.VOCAB_DATASETS.push({
 ἡμεῖς/ἡμῶν/ἡμῖν/ἡμᾶς	wij, ons
 ἡ θάλαττα	zee
 ὁ κίνδυνος	gevaar
-θαυμάζω	bewonderen, zich verwonderen over
+θαυμάζω	bewonderen
 ὁ λιμήν, λιμένος	haven
-ὅτι	omdat, dat
+ὅτι	omdat
 τὸ πλοῖον	vaartuig, schip
 ποιέω	maken, doen
 ἡ σοφία	(vak)kennis, wijsheid
