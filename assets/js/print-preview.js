@@ -44,6 +44,26 @@
     renderedPageCount: 0,
     pagedLoaded: false,
     rendering: false,
+    // Per-page tweaks: pageNumber (1-based, as string) → overrides for ONE
+    // rendered page. Applied as instant CSS (no re-pagination) by overriding
+    // the same --pp-* variables the global sliders use, scoped to that page.
+    // Cleared on every re-pagination because page boundaries shift (see
+    // renderPages). Shape: { fontScale, lineHeight, spacing, marginTop,
+    // marginRight, marginBottom, marginLeft } — all optional.
+    pageTweaks: {},
+    pageTweaksClearedNotice: false,
+  };
+
+  // Defaults a per-page tweak inherits from until the user changes a control.
+  // Matches the global defaults so opening a page's panel shows neutral values.
+  const PAGE_TWEAK_DEFAULTS = {
+    fontScale: 100,    // % (→ --pp-font-scale)
+    lineHeight: 150,   // % (→ --pp-line-height)
+    spacing: 100,      // % (→ --pp-spacing-scale)
+    marginTop: 15,     // mm
+    marginRight: 15,   // mm
+    marginBottom: 15,  // mm
+    marginLeft: 15,    // mm
   };
 
   /* ========== helpers ========== */
@@ -214,17 +234,14 @@
     // remove spacers
     qsa('.spacer', clone).forEach(s => s.remove());
 
-    // apply per-chunk break overrides
+    // Per-chunk overrides. The actual page break is driven by a STYLESHEET rule
+    // (buildChunkBreakCSS) because Paged.js ignores inline break-before; here we
+    // only tag the chunk for the preview's visual break marker and apply
+    // keep-together (break-inside IS read from computed style, so inline works).
     qsa('.story-chunk', clone).forEach(ch => {
       const id = ch.dataset.chunkId;
       const chunkRules = id ? state.chunkBreaks[id] : null;
       if (chunkRules?.breakBefore) {
-        ch.style.setProperty('break-before', chunkRules.breakBefore);
-        if (chunkRules.breakBefore === 'page') {
-          ch.style.setProperty('page-break-before', 'always');
-        } else if (chunkRules.breakBefore === 'left' || chunkRules.breakBefore === 'right') {
-          ch.style.setProperty('page-break-before', chunkRules.breakBefore);
-        }
         ch.classList.add('pp-break-before');
       }
       if (chunkRules?.keepTogether) {
@@ -421,7 +438,24 @@
         border-radius: 0;
         padding: 0;
       }
-    `;
+    ` + buildChunkBreakCSS();
+  }
+
+  // Chunk force-breaks MUST be emitted as a real stylesheet rule, not as an
+  // inline style: this Paged.js only honours break-before when its preprocessor
+  // finds it in a stylesheet (it rewrites such rules into the data-break-before
+  // attributes the layout reads — inline styles are ignored for breaks). This is
+  // what makes the sidebar "Break before" dropdown, the in-preview "Start page
+  // here" button, and the draggable break markers actually move content.
+  function buildChunkBreakCSS() {
+    const rules = [];
+    Object.keys(state.chunkBreaks).forEach(id => {
+      const r = state.chunkBreaks[id];
+      if (!r || !r.breakBefore) return;
+      const safeId = id.replace(/["\\]/g, '\\$&');
+      rules.push(`.story-chunk[data-chunk-id="${safeId}"]{break-before:${r.breakBefore};}`);
+    });
+    return rules.length ? '\n' + rules.join('\n') : '';
   }
 
   /* ========== collect existing stylesheets as CSS text ========== */
@@ -448,12 +482,143 @@
     activeBlobUrls = [];
   }
 
+  /* ========== per-page tweaks ========== */
+  // These let a single rendered page be nudged independently of the global
+  // sliders — e.g. to grow content into the slack a forced break left at the
+  // bottom of a page. They are applied as pure CSS overrides on the
+  // already-rendered DOM (no Paged.js re-run), so they're instant. They are
+  // wiped on every re-pagination (see renderPages) because page boundaries
+  // move and "page 3" is no longer the same content.
+
+  const PAGE_TWEAK_KEYS = [
+    'fontScale', 'lineHeight', 'spacing',
+    'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+  ];
+
+  function getPageTweak(pageNumber) {
+    const key = String(pageNumber);
+    if (!state.pageTweaks[key]) {
+      state.pageTweaks[key] = { ...PAGE_TWEAK_DEFAULTS };
+    }
+    return state.pageTweaks[key];
+  }
+
+  function pageTweakIsDefault(tweak) {
+    return PAGE_TWEAK_KEYS.every(k => tweak[k] === PAGE_TWEAK_DEFAULTS[k]);
+  }
+
+  function setPageTweak(pageNumber, key, value) {
+    const tweak = getPageTweak(pageNumber);
+    tweak[key] = value;
+    // Drop the entry entirely if it's back to neutral, so the page un-marks.
+    if (pageTweakIsDefault(tweak)) {
+      delete state.pageTweaks[String(pageNumber)];
+    }
+    applyPageTweaks();
+  }
+
+  function resetPageTweak(pageNumber) {
+    delete state.pageTweaks[String(pageNumber)];
+    applyPageTweaks();
+  }
+
+  // (Re)build the single injected stylesheet that carries every per-page
+  // override. Font/line-height/spacing reuse the engine's own --pp-* variables
+  // (so the existing calc()-based sizing rules pick them up); margins reuse
+  // Paged.js's own --pagedjs-margin-* variables on the pagebox grid.
+  function applyPageTweaks() {
+    let styleEl = document.getElementById('pp-perpage-style');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'pp-perpage-style';
+      document.head.appendChild(styleEl);
+    }
+
+    const rules = [];
+    Object.keys(state.pageTweaks).forEach(pageNum => {
+      const t = state.pageTweaks[pageNum];
+      if (!t) return;
+      const sel = `.pp-overlay .pagedjs_page[data-page-number="${pageNum}"]`;
+
+      // Font/line-height/spacing reuse the engine's --pp-* variables. buildPagedCSS
+      // sets those on `.pp-preview-root, .pagedjs_pages`, so a per-page override
+      // must sit at the right place in the cascade for EACH content structure:
+      //  - Delphi-style content nests inside .pp-preview-root (which re-declares
+      //    the vars), so we must override .pp-preview-root itself.
+      //  - Hannibal-style content is NOT a descendant of .pp-preview-root after
+      //    Paged.js fragments it, so there we override .pagedjs_page_content
+      //    (always an ancestor of the page's content, with no re-declaration
+      //    between it and the text).
+      // Setting both is harmless where one doesn't apply, and covers both layouts.
+      const fontDecls = [];
+      if (t.fontScale != null)  fontDecls.push(`--pp-font-scale:${t.fontScale / 100};`);
+      if (t.lineHeight != null) fontDecls.push(`--pp-line-height:${t.lineHeight / 100};`);
+      if (t.spacing != null)    fontDecls.push(`--pp-spacing-scale:${t.spacing / 100};`);
+      if (fontDecls.length) {
+        rules.push(`${sel} .pagedjs_page_content,${sel} .pp-preview-root{${fontDecls.join('')}}`);
+      }
+
+      // Margins reuse Paged.js's own --pagedjs-margin-* variables, consumed by
+      // the pagebox grid. !important beats Paged.js's per-page margin values.
+      const marginDecls = [];
+      if (t.marginTop != null)    marginDecls.push(`--pagedjs-margin-top:${t.marginTop}mm !important;`);
+      if (t.marginRight != null)  marginDecls.push(`--pagedjs-margin-right:${t.marginRight}mm !important;`);
+      if (t.marginBottom != null) marginDecls.push(`--pagedjs-margin-bottom:${t.marginBottom}mm !important;`);
+      if (t.marginLeft != null)   marginDecls.push(`--pagedjs-margin-left:${t.marginLeft}mm !important;`);
+      if (marginDecls.length) {
+        rules.push(`${sel} .pagedjs_pagebox{${marginDecls.join('')}}`);
+      }
+    });
+    styleEl.textContent = rules.join('\n');
+
+    // Reflect tweaked state on each page so the user can see which pages carry
+    // an override.
+    const previewArea = qs('#ppPreviewArea');
+    if (previewArea) {
+      qsa('.pagedjs_page', previewArea).forEach(page => {
+        const tweaked = Boolean(state.pageTweaks[page.dataset.pageNumber]);
+        page.classList.toggle('pp-page-tweaked', tweaked);
+      });
+    }
+  }
+
+  function clearPageTweaks() {
+    const hadTweaks = Object.keys(state.pageTweaks).length > 0;
+    state.pageTweaks = {};
+    const styleEl = document.getElementById('pp-perpage-style');
+    if (styleEl) styleEl.textContent = '';
+    return hadTweaks;
+  }
+
+  let statusNoticeTimer = null;
+  function showStatusNotice(message) {
+    const statusBar = qs('.pp-status');
+    if (!statusBar) return;
+    let notice = qs('#ppNotice', statusBar);
+    if (!notice) {
+      notice = document.createElement('span');
+      notice.id = 'ppNotice';
+      notice.className = 'pp-status-notice';
+      statusBar.appendChild(notice);
+    }
+    notice.textContent = message;
+    notice.classList.add('pp-status-notice-show');
+    if (statusNoticeTimer) clearTimeout(statusNoticeTimer);
+    statusNoticeTimer = setTimeout(() => {
+      notice.classList.remove('pp-status-notice-show');
+    }, 4000);
+  }
+
   /* ========== render pages ========== */
   let currentPreviewer = null;
 
   async function renderPages(previewArea) {
     if (state.rendering) return;
     state.rendering = true;
+
+    // Re-pagination invalidates every per-page tweak (page boundaries move), so
+    // clear them and remember whether we need to tell the user.
+    state.pageTweaksClearedNotice = clearPageTweaks();
 
     // show spinner
     previewArea.innerHTML = '<div class="pp-loading"><div class="pp-spinner"></div>Rendering pages&hellip;</div>';
@@ -499,6 +664,12 @@
       const dim = PAGE_DIMS[state.pageSize];
       const dimEl = qs('#ppDims');
       if (dimEl) dimEl.textContent = dim.width + ' \u00d7 ' + dim.height;
+
+      // If this re-pagination wiped per-page tweaks, let the user know.
+      if (state.pageTweaksClearedNotice) {
+        showStatusNotice('Per-page tweaks were reset because the pages were re-laid-out.');
+        state.pageTweaksClearedNotice = false;
+      }
 
     } catch (err) {
       console.error('Print preview render error', err);
@@ -639,6 +810,66 @@
         chunk.classList.add('pp-keep-together');
       }
     });
+
+    // Add a per-page "Tweak page" control to every rendered page.
+    qsa('.pagedjs_page', previewArea).forEach(addPageTweakControls);
+  }
+
+  function pageTweakRow(pageNumber, key, label, min, max, step, value, display) {
+    return `
+      <label class="pp-page-tweak-row">
+        <span class="pp-page-tweak-label">${label}</span>
+        <input type="range" min="${min}" max="${max}" step="${step}" value="${value}"
+               data-page-tweak="${key}" data-page-number="${pageNumber}">
+        <span class="pp-page-tweak-val" data-page-tweak-val="${key}">${display(value)}</span>
+      </label>`;
+  }
+
+  const PAGE_TWEAK_FMT = {
+    pct: v => v + '%',
+    lh: v => (v / 100).toFixed(2),
+    mm: v => v + 'mm',
+  };
+
+  function addPageTweakControls(page) {
+    const pageNumber = page.dataset.pageNumber;
+    if (!pageNumber) return;
+    if (qs('.pp-page-tweak-btn', page)) return; // already decorated this render
+
+    const t = state.pageTweaks[pageNumber] || PAGE_TWEAK_DEFAULTS;
+    const { pct, lh, mm } = PAGE_TWEAK_FMT;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pp-page-tweak-btn';
+    btn.dataset.pageNumber = pageNumber;
+    btn.innerHTML = '&#9881; Tweak page ' + pageNumber;
+    page.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'pp-page-tweak-panel';
+    panel.dataset.pageNumber = pageNumber;
+    panel.innerHTML = `
+      <div class="pp-page-tweak-head">Page ${pageNumber} only</div>
+      <p class="pp-page-tweak-hint">Grow this page's content to fill a bottom gap, or nudge its margins. These reset if the pages get re-laid-out.</p>
+      ${pageTweakRow(pageNumber, 'fontScale', 'Font', 70, 140, 1, t.fontScale, pct)}
+      ${pageTweakRow(pageNumber, 'lineHeight', 'Line height', 100, 220, 5, t.lineHeight, lh)}
+      ${pageTweakRow(pageNumber, 'spacing', 'Spacing', 40, 180, 5, t.spacing, pct)}
+      ${pageTweakRow(pageNumber, 'marginTop', 'Margin top', 0, 40, 1, t.marginTop, mm)}
+      ${pageTweakRow(pageNumber, 'marginRight', 'Margin right', 0, 40, 1, t.marginRight, mm)}
+      ${pageTweakRow(pageNumber, 'marginBottom', 'Margin bottom', 0, 40, 1, t.marginBottom, mm)}
+      ${pageTweakRow(pageNumber, 'marginLeft', 'Margin left', 0, 40, 1, t.marginLeft, mm)}
+      <div class="pp-page-tweak-actions">
+        <button type="button" class="pp-page-tweak-reset" data-page-number="${pageNumber}">Reset this page</button>
+        <button type="button" class="pp-page-tweak-close">Close</button>
+      </div>`;
+    page.appendChild(panel);
+  }
+
+  function pageTweakDisplay(key, value) {
+    if (key === 'lineHeight') return PAGE_TWEAK_FMT.lh(value);
+    if (key.startsWith('margin')) return PAGE_TWEAK_FMT.mm(value);
+    return PAGE_TWEAK_FMT.pct(value);
   }
 
   /* ========== enter / exit ========== */
@@ -684,6 +915,11 @@
     // clean up Paged.js artefacts
     revokeBlobs();
     qsa('style[data-pagedjs-inserted-styles]').forEach(s => s.remove());
+
+    // clean up per-page tweak overrides so a fresh enter starts neutral
+    clearPageTweaks();
+    const perPageStyle = document.getElementById('pp-perpage-style');
+    if (perPageStyle) perPageStyle.remove();
   }
 
   function doPrint() {
@@ -799,6 +1035,64 @@
         const nextValue = state.chunkBreaks[chunkId]?.breakBefore ? '' : 'page';
         setChunkBreak(chunkId, nextValue);
         renderPages(previewArea);
+      });
+
+      // per-page tweak controls (delegated; instant, no re-pagination)
+      previewArea.addEventListener('click', (e) => {
+        const openBtn = e.target.closest('.pp-page-tweak-btn');
+        if (openBtn) {
+          const page = openBtn.closest('.pagedjs_page');
+          const panel = page && qs('.pp-page-tweak-panel', page);
+          const willOpen = panel && !panel.classList.contains('pp-page-tweak-open');
+          // only one panel open at a time
+          qsa('.pp-page-tweak-panel.pp-page-tweak-open', previewArea)
+            .forEach(p => p.classList.remove('pp-page-tweak-open'));
+          qsa('.pp-page-tweak-btn.pp-active', previewArea)
+            .forEach(b => b.classList.remove('pp-active'));
+          if (panel && willOpen) {
+            panel.classList.add('pp-page-tweak-open');
+            openBtn.classList.add('pp-active');
+          }
+          return;
+        }
+
+        const closeBtn = e.target.closest('.pp-page-tweak-close');
+        if (closeBtn) {
+          const panel = closeBtn.closest('.pp-page-tweak-panel');
+          const page = closeBtn.closest('.pagedjs_page');
+          if (panel) panel.classList.remove('pp-page-tweak-open');
+          const btn = page && qs('.pp-page-tweak-btn', page);
+          if (btn) btn.classList.remove('pp-active');
+          return;
+        }
+
+        const resetBtn = e.target.closest('.pp-page-tweak-reset');
+        if (resetBtn) {
+          const pageNumber = resetBtn.dataset.pageNumber;
+          resetPageTweak(pageNumber);
+          const panel = resetBtn.closest('.pp-page-tweak-panel');
+          if (panel) {
+            qsa('input[data-page-tweak]', panel).forEach(input => {
+              const key = input.dataset.pageTweak;
+              input.value = String(PAGE_TWEAK_DEFAULTS[key]);
+              const val = qs(`[data-page-tweak-val="${key}"]`, panel);
+              if (val) val.textContent = pageTweakDisplay(key, PAGE_TWEAK_DEFAULTS[key]);
+            });
+          }
+          return;
+        }
+      });
+
+      previewArea.addEventListener('input', (e) => {
+        const input = e.target.closest('input[data-page-tweak]');
+        if (!input) return;
+        const pageNumber = input.dataset.pageNumber;
+        const key = input.dataset.pageTweak;
+        const value = Number(input.value);
+        setPageTweak(pageNumber, key, value);
+        const panel = input.closest('.pp-page-tweak-panel');
+        const val = panel && qs(`[data-page-tweak-val="${key}"]`, panel);
+        if (val) val.textContent = pageTweakDisplay(key, value);
       });
 
       previewArea.addEventListener('dragstart', (e) => {
