@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="nl" style="--tweak-font-size: 16px; --tweak-margin-x: 26px; --tweak-margin-top: 26px; --tweak-margin-bottom: 26px; --tweak-line-height: 1.6;">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Het orakel van Delphi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gentium+Plus:ital,wght@0,400;0,700;1,400&family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #f3e6d3;
+    color: #3b2a1e;
+    font-family: "Lexend", "Verdana", sans-serif;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .sheet {
+    padding: var(--tweak-margin-top) var(--tweak-margin-x) var(--tweak-margin-bottom) var(--tweak-margin-x);
+    max-width: 880px; margin: 0 auto;
+  }
+
+  header.top {
+    background: linear-gradient(120deg, #8a3b1f, #c1622c);
+    color: #fff8ee;
+    border-radius: 18px;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 1.6rem;
+    box-shadow: 0 10px 28px rgba(110, 56, 20, 0.28);
+  }
+  header.top h1 {
+    margin: 0 0 0.3rem;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  header.top p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.92;
+  }
+
+  nav.toc {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  nav.toc a {
+    background: #fffaf2;
+    border: 1px solid #e3c39e;
+    color: #8a3b1f;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  nav.toc a:hover { background: #f6e4c8; }
+
+  main {
+    background: #fffaf2;
+    border-radius: 18px;
+    padding: 1.8rem 2rem 2.4rem;
+    box-shadow: 0 8px 26px rgba(110, 56, 20, 0.14);
+    line-height: var(--tweak-line-height);
+    font-size: var(--tweak-font-size);
+  }
+
+  section.chapter { margin-bottom: 2.6rem; }
+  section.chapter:last-child { margin-bottom: 0; }
+
+  h2.chapter-title {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    color: #8a3b1f;
+    font-size: 1.5rem;
+    font-weight: 800;
+    border-bottom: 3px solid #e3c39e;
+    padding-bottom: 0.4rem;
+    margin: 0 0 1rem;
+  }
+  h2.chapter-title .ornament { color: #c1622c; font-size: 1.1rem; }
+  h2.chapter-title .num {
+    background: #c1622c; color: #fff;
+    border-radius: 8px; padding: 0.1rem 0.55rem;
+    font-size: 0.95rem;
+  }
+
+  h3.subhead {
+    color: #b5572f;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 1.4rem 0 0.5rem;
+  }
+  h3.subhead::after { content: " —"; color: #d7a978; }
+
+  p { margin: 0 0 0.85rem; }
+
+  .greek-word { font-family: "Gentium Plus", "Cambria", serif; font-style: normal; }
+
+  /* Translated reading passages (ch 17 & 18) */
+  .reading {
+    margin: 1.2rem 0 1.8rem;
+    background: #fbf0dd;
+    border-left: 5px solid #c1622c;
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem 1.3rem;
+  }
+  .reading-title {
+    font-family: "Gentium Plus", serif;
+    font-weight: 700;
+    color: #8a3b1f;
+    font-size: 1.15rem;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.7rem;
+  }
+  .vert-prose {
+    margin: 0 0 0.9rem;
+    font-size: 0.98rem;
+  }
+  .vert-prose:last-child { margin-bottom: 0; }
+
+  /* Final Greek passage (ch 19) — aligned table */
+  table.align-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.6rem;
+    font-size: 0.92rem;
+  }
+  table.align-table td {
+    vertical-align: top;
+    padding: 0.32rem 0.6rem;
+    border-bottom: 1px dotted #e3c39e;
+  }
+  table.align-table td.lnum {
+    color: #c1622c; font-size: 0.7rem; font-weight: 700;
+    width: 1.6em; text-align: right; padding-top: 0.45rem;
+  }
+  table.align-table td.grk {
+    font-family: "Gentium Plus", serif; font-size: 1rem; width: 50%;
+  }
+  table.align-table td.ned { color: #3b2a1e; width: 50%; border-left: 1px dashed #d7a978; }
+
+  footer.note {
+    margin-top: 2rem; font-size: 0.8rem; color: #8a6a4f; text-align: center;
+  }
+
+  /* --- Print Tweak Mode --- */
+  .print-tweak-launcher {
+    position: fixed; right: 16px; bottom: 16px; z-index: 99998;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(90deg, #c1622c, #8a3b1f);
+    color: #fff; border: 0; border-radius: 999px;
+    padding: 11px 16px; font-size: 13px; font-weight: 800;
+    box-shadow: 0 8px 24px rgba(110,56,20,.32); cursor: pointer;
+  }
+  .print-tweak-toolbar {
+    position: fixed; right: 16px; bottom: 16px; width: 300px; max-width: calc(100vw - 32px);
+    z-index: 99999; background: #fffaf2; border: 1px solid #e3c39e; border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(110,56,20,.32); padding: 12px; color: #3b2a1e;
+    display: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  }
+  .print-tweak-toolbar.open { display: block; }
+  .print-tweak-toolbar h4 { margin: 0 0 8px; font-size: 14px; color: #8a3b1f; }
+  .print-tweak-row {
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 6px; align-items: center;
+    margin: 7px 0; font-size: 12px;
+  }
+  .print-tweak-row label { font-weight: 700; color: #7a4a2e; }
+  .print-tweak-value { min-width: 46px; text-align: center; font-variant-numeric: tabular-nums; color: #8a6a4f; }
+  .print-tweak-toolbar button {
+    border: 1px solid #e3c39e; background: #f6e4c8; color: #5a3a22; border-radius: 9px;
+    padding: 6px 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .print-tweak-toolbar button:hover { background: #efd6ac; }
+  .print-tweak-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 9px; }
+  .print-tweak-actions button.primary { background: linear-gradient(90deg, #c1622c, #8a3b1f); color: #fff; border: 0; }
+  .print-tweak-note { font-size: 11px; color: #8a6a4f; line-height: 1.3; margin-top: 8px; border-top: 1px dashed #e3c39e; padding-top: 8px; }
+
+  @media print {
+    body { background: #fff; }
+    .print-tweak-launcher, .print-tweak-toolbar, nav.toc { display: none !important; }
+    main { box-shadow: none; }
+    header.top { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header class="top">
+  <h1>🏛️ Het orakel van Delphi</h1>
+  <p>Proloog &amp; lessen 16–19 — Pythia, Orakeluitspraak, Offer, Wijgeschenk</p>
+</header>
+
+<nav class="toc">
+  <a href="#proloog">Proloog</a>
+  <a href="#les16">16 Pythia</a>
+  <a href="#les17">17 Orakeluitspraak</a>
+  <a href="#les18">18 Offer</a>
+  <a href="#les19">19 Wijgeschenk</a>
+</nav>
+
+<main>
+
+<section class="chapter" id="proloog">
+  <h2 class="chapter-title"><span class="ornament">❈</span> Proloog — Het orakel van Delphi</h2>
+
+  <p>De Grieken geloofden dat alles wat er in hun leven gebeurde al van tevoren was vastgelegd. Alles en iedereen was onderworpen aan de <span class="greek-word">τύχη</span>, het lot. Ook de goden moesten zich schikken. Maar de goden wisten wel meer over de toekomst dan de mensen, en daarom probeerden de mensen met de goden in contact te komen. Als het meezat, wilden de goden misschien wel iets loslaten over wat er komen zou. Om te communiceren met de goden gingen de mensen naar een orakel. Een orakel was een heiligdom voor een bepaalde god, waar mensen vragen konden voorleggen aan deze god en antwoorden konden krijgen.</p>
+
+  <p>Er waren in Griekenland vele orakels van vele verschillende goden, maar het bekendste en meest gerespecteerde orakel was dat van Apollo in Delphi. Dat had te maken met de reputatie van Apollo als toekomstvoorspeller en met de bijzondere ligging van Delphi. Men geloofde dat deze plaats het middelpunt van de wereld was. Om deze positie te markeren werd in het heiligdom een speciale steen bewaard, de <span class="greek-word">ὀμφαλός</span>, navel. Het verhaal ging dat Zeus zelf, die het middelpunt van de wereld wilde vaststellen, twee adelaars had losgelaten, één aan de oostzijde van de wereld en één aan de westzijde. De vogels waren naar elkaar toe gevlogen en hadden elkaar in Delphi ontmoet.</p>
+
+  <p>Delphi was van oorsprong geen stad, maar alleen een tempelterrein met later een kleine nederzetting ernaast. Dat betekende ook dat het neutraal was. Het was niet gebonden aan de politieke belangen van één van de machtige Griekse stadstaten. Dat heeft waarschijnlijk bijgedragen aan de populariteit van het orakel. Omdat iedereen het kende en het gezag van de Pythia door iedereen erkend werd, was Delphi een begrip in de hele Griekse wereld.</p>
+
+  <h3 class="subhead">Pythia</h3>
+  <p>Delphi was ook de plaats waar volgens de verhalen Apollo ooit zijn eerste grote daad had verricht. Hij had er de Python verslagen, een gevaarlijke slang die de <span class="greek-word">ὀμφαλός</span> bewaakte. Dat was een wraakactie: toen Zeus de godin Leto zwanger had gemaakt en zij op het punt stond om de tweeling Apollo en Artemis te baren, had de jaloerse Hera de Python tegen Leto opgehitst. Leto was door de Python over de hele aarde gejaagd en ze had slechts met de grootste moeite een plek kunnen vinden voor haar bevalling. Apollo zocht daarom later de Python op in Delphi en doodde het beest met zijn pijlen.</p>
+
+  <p>Als herinnering aan deze gebeurtenis werden in Delphi elke vier jaar de Pythische Spelen gehouden ter ere van Apollo. Net als bij de Olympische Spelen streden sporters om de hoogste eer, maar daarnaast waren er ook zang- en danswedstrijden. De naam van de Python leefde ook voort in de priesteres van Apollo, die in het heiligdom de boodschappen van de god doorkreeg: zij werd de Pythia genoemd.</p>
+
+  <h3 class="subhead">Heiligdom</h3>
+  <p>De vragen die aan het orakel werden voorgelegd konden over zeer diverse onderwerpen gaan. Mensen vroegen bijvoorbeeld advies over mogelijke huwelijkspartners, informatie over hoe om te gaan met kinderloosheid of tips voor zakelijke beslissingen. Ook staten konden een beroep doen op het orakel, bijvoorbeeld door te vragen hoe een bepaalde oorlog zou aflopen of waar er een kolonie kon worden gesticht. Het orakel gaf daarnaast advies over hoe men het beste andere goden kon aanbidden of welke offers geschikt zouden zijn. Twee adviezen werden sowieso aan iedere bezoeker meegegeven, want die stonden in de vorm van opschriften op de tempel gegraveerd: <span class="greek-word">μηδὲν ἄγαν</span> ('niets te veel', oftewel 'alles met mate') en <span class="greek-word">γνῶθι σεαυτόν</span> ('ken jezelf').</p>
+
+  <p>Het orakel van Delphi duikt in vele geschiedkundige en mythologische verhalen op. Het heeft dan ook eeuwenlang bestaan; waarschijnlijk was er al rond 1400 v.Chr. een heiligdom op die plek. Vanaf ongeveer 800 v.Chr. kreeg het de grote roem die het eeuwenlang zou houden. Na de verovering door Philippos van Makedonië rond 350 v.Chr. nam de populariteit van Delphi snel af.</p>
+</section>
+
+<section class="chapter" id="les16">
+  <h2 class="chapter-title"><span class="ornament">❈</span> <span class="num">16</span> Pythia</h2>
+
+  <h3 class="subhead">Raadselachtig</h3>
+  <p>Bij een orakel konden bezoekers informatie komen vragen. Ze legden hun vraag voor volgens een vaste procedure en kregen dan antwoord via een priester of priesteres. Zo kan het dat het woord 'orakel' niet alleen gebruikt wordt voor de plek waar men naartoe ging, maar ook voor de priester of priesteres en voor de uitspraak die werd gedaan. Bij sommige orakels werd het antwoord door de priesters verkregen door tekenen van de godheid te interpreteren, bijvoorbeeld door de ingewanden van een offerdier te bekijken of te luisteren naar het ruisen van de bladeren in een heilige eik. Maar soms leverde het orakel echt een tekst als antwoord. Het antwoord was vaak erg raadselachtig en moeilijk te interpreteren. Zo ging het ook in Delphi.</p>
+
+  <p>Een vraag stellen aan het orakel van Delphi ging niet zomaar. Er werd alleen op vaste tijden uitspraak gedaan: ooit alleen op de geboortedag van Apollo, later op één dag per maand tijdens de zomer. In de winter, zo geloofde men, verbleef Apollo bij het mythische volk van de Hyperboreërs in het noorden en kon hij dus geen uitspraken doen.</p>
+
+  <h3 class="subhead">In trance</h3>
+  <p>De bezoeker moest eerst offeren aan Apollo en zich ritueel reinigen. Pas als alle voortekenen goed waren, werd hij toegelaten tot het tempelterrein. De vraag werd voorgelegd aan een priester, meestal op schrift, en de priester verdween in het binnenste van de tempel. Binnen gaf de priester de vraag door aan de Pythia. Het antwoord van de Pythia werd door de priester geïnterpreteerd en omgezet in versregels. De vragensteller kreeg deze versregels van de priester terug, en dan was het maar de vraag of het antwoord duidelijk was. De armste mensen, die zich geen offer aan Apollo konden veroorloven, konden alleen ja-neevragen stellen. In dat geval greep de priester in een pot met witte en zwarte bonen en nam er een uit. Een witte boon betekende ja, een zwarte nee.</p>
+
+  <p>Direct contact met de Pythia was er dus niet. Zij zat binnen in de tempel op een kruk met drie poten. Men geloofde dat zij <span class="greek-word">ἐνθουσιαστική</span> was, door de god geïnspireerd. Het staat in elk geval vast dat ze in trance raakte en daardoor meestal onbegrijpelijke klanken uitstootte. Waar die trance door veroorzaakt werd, is niet helemaal duidelijk. Het is mogelijk dat ze onder de invloed was van gassen die uit een spleet in de aarde kwamen. Dat zou mooi passen bij het verhaal van de Python, want dan waren dat restanten van de giftige adem van het beest. Wat de wetenschappelijke verklaring ook is, in de oudheid twijfelde niemand eraan dat Apollo zelf verantwoordelijk was voor haar bijzondere toestand en dat de god hoogstpersoonlijk een tipje van de sluier had opgelicht.</p>
+</section>
+
+<section class="chapter" id="les17">
+  <h2 class="chapter-title"><span class="ornament">❈</span> <span class="num">17</span> Orakeluitspraak</h2>
+
+  <h3 class="subhead">Het lot</h3>
+  <p>Een orakeluitspraak was de waarheid. Dat was de overtuiging van de Grieken: een orakeluitspraak zou altijd uitkomen. Het was mogelijk dat de mensen de uitspraak verkeerd begrepen, maar niet dat de loop van de gebeurtenissen nog zou veranderen. Het lot van ieder mens en iedere god lag immers al vast. De uitspraak van het orakel kon dus niet opzij geschoven worden. Sterker nog: wie probeerde om het orakel te slim af te zijn, kwam altijd bedrogen uit. Er zijn zowel in de geschiedschrijving als in de mythologie vele verhalen te vinden waarin een belangrijke rol voor het orakel is weggelegd. Vaak gaat het om mensen die iets vervelends te horen krijgen en vervolgens proberen om hun lot te ontlopen, maar daardoor juist precies doen wat het orakel had voorspeld.</p>
+
+  <h3 class="subhead">Oidipous</h3>
+  <p>Het beroemdste voorbeeld is de mythe van Oidipous. In dit verhaal is het de koning van Thebe die bij het orakel komt en hoort dat hij eindelijk een zoon zal krijgen, maar uiteindelijk door deze zoon zal worden gedood. Hij probeert dit lot te ontlopen door het jongetje, Oidipous, in de bergen te vondeling te laten leggen. Het kind wordt door een herder gevonden en naar de koning van Korinthe gebracht. Oidipous groeit op als prins van Korinthe. Als hij volwassen is, hoort hij op zijn beurt van het orakel dat het zijn lot is om zijn vader te doden. Omdat hij denkt dat de koning van Korinthe zijn echte vader is, probeert hij aan dat lot te ontkomen. Hij keert niet terug naar huis maar gaat op weg naar de stad Thebe. Onderweg krijgt hij ruzie met een onbekende oude man en doodt hem. Uiteraard blijkt later dat de onbekende oude man Oidipous' echte vader was. Zo is het lot toch vervuld.</p>
+
+  <p>Het lot blijkt dus echt onontkoombaar te zijn, wat de mens ook doet. Bovendien blijkt dat de mens voorzichtig moet zijn met orakeluitspraken. Het is gevaarlijk om de toekomst te willen kennen, en de mens die te veel wil weten wordt al snel gestraft. In de mythologie zijn dan ook verschillende voorbeelden te vinden van mensen die weliswaar de toekomst kennen, maar daarvoor ook een prijs betalen. Teiresias is zo iemand: deze beroemde ziener is blind. De Trojaanse prinses Kassandra kent de toekomst, maar op haar rust een vloek die ervoor zorgt dat niemand haar ooit gelooft. En Phineus, die de Argonauten op hun tocht tegenkwamen, is voor zijn voorspellingen gestraft met blindheid en met de komst van de Harpijen.</p>
+
+  <div class="reading">
+    <p class="reading-title">Croesus bij het orakel</p>
+    <p class="vert-prose">Croesus, de koning van de Lydiërs, kwam naar Delphi. Hij was zeer verontwaardigd op de Pythia en zei tot haar: 'Deze boeien bied ik de god aan als oorlogsbuit, want Cyrus, de koning van de Perzen, overwon mij en voerde mij in boeien. Maar ik wil je iets vragen: waarom zijn de goden van de Grieken onbetrouwbaar? Want ik vereerde altijd Apollo het meest, en ik zond vaak geschenken hierheen, en ik bracht vele offers. Maar jij hebt mij bedrogen. Want je voorspelde mij ooit: "Als je tegen de Perzen oorlog voert, zal je een groot rijk vernietigen." Omdat het rijk van de Perzen groter is dan het rijk van de Lydiërs, dacht ik dat jij mij aanraadde om oorlog te voeren. Maar toen wij oorlog voerden, overwonnen de Perzen. Waarom hebben dan jij en de god de waarheid voor mij verborgen?'</p>
+    <p class="vert-prose">De Pythia lachte en zei tot Croesus: 'O dwaas, wees niet verontwaardigd. Want het is geen mens toegestaan om het lot te ontvluchten, en voor jou hebben de Schikgodinnen ooit gesponnen dat de Perzen jou zouden verwoesten. Toen je echter mijn orakelspreuk hoorde, vroeg je niets meer, want je wilde oorlog voeren en je hoopte de eer van de overwinning te krijgen. Het rijk van de Perzen is inderdaad groter dan het rijk van de Lydiërs, maar bekijk dit: de muis lijkt de mensen klein toe, maar de vlooien groot. Ik heb jou dus nooit bedrogen, maar jij hebt de orakelspreuk niet begrepen en de Lydiërs niet voldoende beschermd.'</p>
+  </div>
+</section>
+
+<section class="chapter" id="les18">
+  <h2 class="chapter-title"><span class="ornament">❈</span> <span class="num">18</span> Offer</h2>
+
+  <h3 class="subhead">In soorten en maten</h3>
+  <p>Voor wat hoort wat. In ruil voor de belangrijke informatie die Apollo via de Pythia verstrekte, moest de bezoeker een offer brengen. Offeren was voor de Grieken de normaalste zaak van de wereld. De mens gaf iets aan de god, of deed een belofte iets te zullen geven, in de hoop dat de god er iets voor terug zou doen. Aan alle goden werd bij diverse gelegenheden geofferd, maar wat ze kregen verschilde per god.</p>
+
+  <p>Gewoonlijk was het offer iets eetbaars, want voeding was een kostbare zaak, dus dan kreeg de god iets bijzonders. Kleine offers konden bijvoorbeeld producten van het land zijn: granen, groenten, vruchten, in de oudste tijden zelfs gras en wortels. Ook melk, kaas, honing en olie behoorden tot de gangbare offers. Aan hogere goden of bij belangrijke gelegenheden werd het vlees van een dier geofferd. Van alle soorten voedsel was vlees namelijk het meest kostbaar. De minst eetbare delen van het dier werden op het altaar verbrand, terwijl er wijn of wierook in de vlammen werd gegoten. Van de eetbare delen kregen de priesters een vastgesteld deel; de rest werd door het aanwezige volk opgegeten. De god werd daarbij gezien als gast aan tafel. Dat kunnen we terugzien in de taal: de godin Hera werd bijvoorbeeld 'de geitenetende Hera' genoemd. Naast persoonlijke offers bestonden er ook staatsoffers. Een voorbeeld hiervan is de <span class="greek-word">ἑκατόμβη</span>, een offer van honderd runderen.</p>
+
+  <h3 class="subhead">Offerritueel</h3>
+  <p>Soms moest de priester eerst een ritueel uitvoeren voor hij het dier slachtte; dat hing af van de lokale traditie, van de gelegenheid en van de godheid voor wie het offer bestemd was. Er werd bijvoorbeeld een beetje haar van het dier in het vuur gegooid of de priester moest eerst ritueel zijn handen wassen. De offerdieren moesten perfecte exemplaren zijn, en passend bij de god. Mannelijke dieren voor mannelijke goden en vrouwelijke voor godinnen, en witte dieren voor hemelse goden en zwarte voor goden van de onderwereld.</p>
+
+  <p>Hoe groter of belangrijker de tempel was, des te meer priesters en assistenten waren er nodig. Soms kreeg de priester bij het offeren hulp van openbare aankondigers, plengers om de wijn uit te gieten of toezichthouders. De priester en zijn assistenten bewaakten het heiligdom, hielden het schoon en voerden de rituele reiniging van de bezoekers uit.</p>
+
+  <p>De offers werden niet uitgevoerd door de bezoekers zelf, maar door priesters, op het altaar voor de tempel. De tempel zelf was niet toegankelijk voor het gewone volk. De meeste tempels bestonden uit één centrale ruimte met zuilen rondom aan de buitenkant. In die grote ruimte van de tempel, de <span class="greek-word">ναός</span>, stond een beeld van de god. De tempel werd gezien als woonplaats van de god, die daarom niet zomaar betreden mocht worden.</p>
+
+  <div class="reading">
+    <p class="reading-title">Prometheus en het offer</p>
+    <p class="vert-prose">Prometheus stelde de wetten van het offer vast. Want Zeus had de mensen ooit bevolen de goden te eren met offers. De mensen deden dit zo, maar al snel hadden ze honger, omdat de goden niets van het vlees voor hen overlieten. Daarom bedroog Prometheus, omdat hij een vriend van de mensen was, de goden met een list. Hij bereidde namelijk op de volgende manier een offer voor hen voor: toen hij de offerdieren had gedood, verdeelde hij het vlees over twee huiden. In de ene huid omhulde hij de ingewanden en de botten met vlees, en in de andere huid verborg hij het vlees met ingewanden.</p>
+    <p class="vert-prose">Toen liet hij de huiden zien aan de leider van de goden en beval hem de huiden te verdelen aan de goden en aan de mensen. Zeus herkende de list niet en gaf de goden de huid die vol was met ingewanden. Maar tijdens de maaltijd ontdekte hij het bedrog en werd hij zeer verontwaardigd. Onmiddellijk besloot hij de mensen te vernietigen; hij ontnam hen het vuur en verborg het op de Olympus. Prometheus wilde de mensen echter helpen en ging daarheen. Hij stal het vuur en bracht het opnieuw naar de mensen.</p>
+    <p class="vert-prose">En zwaar was de straf. Want Zeus bond Prometheus vast aan de rotsen, en daar kwam elke dag een arend en pikte zijn lever uit. Sindsdien eten de mensen tijdens het offermaal het vlees, en offeren ze de ingewanden aan de goden.</p>
+  </div>
+</section>
+
+<section class="chapter" id="les19">
+  <h2 class="chapter-title"><span class="ornament">❈</span> <span class="num">19</span> Wijgeschenk</h2>
+
+  <h3 class="subhead">Zichtbare herinnering</h3>
+  <p>De tempel van Apollo en de andere religieuze gebouwen in Delphi bevonden zich in het <span class="greek-word">ἱερόν</span>, het heilige gebied. Het hele gebied was heilige grond. Over het terrein slingerde een processieweg zich tegen de berg op, waarover de bezoeker uiteindelijk de grote tempel van Apollo bereikte. Langs de processieweg stonden vele kleine en grote bouwwerken en beelden. De meeste daarvan waren neergezet als wijgeschenk.</p>
+
+  <p>Wijgeschenken waren bedoeld om de godheid en alle passanten te herinneren aan een speciale gebeurtenis. Het waren geschenken aan goden, maar ze verschilden van gewone offers. Een offer was iets terugkerends, een vast ritueel dat moest worden uitgevoerd; wijgeschenken waren bedoeld als herinnering. Een wijgeschenk werd vrijwillig aangeboden, hoewel dat soms gebeurde op aanraden van een orakel. Voor goden was een wijgeschenk belangrijk, omdat hun gezag ermee werd erkend en vergroot. Alle passanten werden immers herinnerd aan de daden van de god.</p>
+
+  <p>Als een staat een wijgeschenk aanbood, was het iets groots, maar ook een individu kon een god een wijgeschenk aanbieden, bijvoorbeeld als hij op zee aan de dood was ontsnapt of als hij op het punt stond te gaan trouwen. Atleten die de overwinning hadden behaald bij grote wedstrijden, zoals de Pythische Spelen, wijdden vaak de prijs die ze kregen aan een god of godin. Alles ter meerdere eer en glorie van de god die hen had geholpen. In Delphi passeerde de bezoeker bijvoorbeeld diverse standbeelden van mensen, dieren en mythologische wezens.</p>
+
+  <h3 class="subhead">Schathuizen</h3>
+  <p>Op sommige plaatsen stonden zelfs schathuizen met hele verzamelingen van wijgeschenken. Schathuizen werden gebouwd door stadstaten als dank voor een overwinning en om het orakel te bedanken voor het advies, dat natuurlijk tot de overwinning had geleid. De schathuizen bevatten vaak een deel van de buit uit de oorlog en waren gebouwd of versierd met materiaal dat hoorde bij de stad, bijvoorbeeld een bepaald soort marmer dat in de buurt van de stad werd gewonnen.</p>
+
+  <p>Op de muren van de schathuizen stonden inscripties die herinnerden aan daden van inwoners van de stad. Het schathuis van Athene, dat ooit werd opgericht na de overwinning op de Perzen bij Marathon, is in de 20ste eeuw gereconstrueerd op kosten van de stad Athene.</p>
+
+  <p>In het <span class="greek-word">ἱερόν</span> waren naast tempels en wijgeschenken ook andere gebouwen te vinden. Hoog op de heuvel was bijvoorbeeld een theater gebouwd voor de toneelopvoeringen tijdens religieuze festivals. Voor de sportwedstrijden, die ook met religie verbonden waren, lagen er iets verder van de tempels een stadion en een sportschool (<span class="greek-word">γυμνάσιον</span>). Zo kon Apollo op alle mogelijke manieren worden geëerd.</p>
+
+  <div class="reading">
+    <p class="reading-title">ΑΝΑΘΗΜΑ — Nikomachos en Pheidippides</p>
+    <p style="font-size:0.85rem; color:#8a6a4f; margin-top:-0.3rem;">Hier staat de Griekse tekst regel voor regel links, met de Nederlandse vertaling steeds op gelijke hoogte rechts — zo zie je precies welke Griekse regel bij welke Nederlandse regel hoort.</p>
+    <table class="align-table">
+      <tr><td class="lnum">1</td><td class="grk">Ἐν τῇ τῶν Ἀθηνῶν ἀγορᾷ πλῆθος γυναικῶν</td><td class="ned">Op de markt van Athene zocht een menigte vrouwen</td></tr>
+      <tr><td class="lnum">2</td><td class="grk">καὶ τέκνων ἐζήτει τὴν τῆς στρατιᾶς τύχην</td><td class="ned">en kinderen het lot van het leger</td></tr>
+      <tr><td class="lnum">3</td><td class="grk">ἐξευρίσκειν. Οἱ γὰρ υἱοὶ καὶ οἱ πατέρες ἔβησαν εἰς</td><td class="ned">te ontdekken. Want de zonen en de vaders waren gegaan naar</td></tr>
+      <tr><td class="lnum">4</td><td class="grk">τὸν Μαραθῶνα, οὗ οἱ Μῆδοι τοῖς Ἀθηναίοις</td><td class="ned">Marathon, waar de Meden tegen de Atheners</td></tr>
+      <tr><td class="lnum">5</td><td class="grk">ἐπολέμουν.</td><td class="ned">oorlog voerden.</td></tr>
+      <tr><td class="lnum">6</td><td class="grk">Ἦν δ’ ἐν τῇ ἀγορᾷ καὶ Νικόμαχος, παῖς δέκα</td><td class="ned">Er was op de markt ook Nikomachos, een jongen van tien</td></tr>
+      <tr><td class="lnum">7</td><td class="grk">ἐτῶν, σὺν δ’ αὐτῷ ἡ μήτηρ. Ὁ δὲ παῖς ἤκουε</td><td class="ned">jaar, en met hem zijn moeder. En de jongen hoorde</td></tr>
+      <tr><td class="lnum">8</td><td class="grk">τὴν βοὴν τῶν ἀνθρώπων· «Ἡ τῶν Μήδων</td><td class="ned">het geroep van de mensen: 'Het leger van de Meden</td></tr>
+      <tr><td class="lnum">9</td><td class="grk">στρατιὰ ἐστὶ ἄπειρος.» «Οἱ Μῆδοι κρατοῦσιν.»</td><td class="ned">is ontelbaar.' 'De Meden heersen.'</td></tr>
+      <tr><td class="lnum">10</td><td class="grk">«Τί δρᾶν μέλλουσιν; Ἆρα μὴ ἐννοοῦσι τὰς</td><td class="ned">'Wat zullen ze gaan doen? Zijn ze niet van plan</td></tr>
+      <tr><td class="lnum">11</td><td class="grk">Ἀθήνας διαφθεῖραι;» Ὁ δὲ Νικόμαχος τὴν</td><td class="ned">Athene te vernietigen?' En Nikomachos vroeg zijn</td></tr>
+      <tr><td class="lnum">12</td><td class="grk">μητέρα ἠρώτησεν· «Ἆρα μὴ οἱ θεοὶ ἐῶσι</td><td class="ned">moeder: 'Zullen de goden zulke dingen</td></tr>
+      <tr><td class="lnum">13</td><td class="grk">τὰ τοιαῦτα; Ἀεὶ γὰρ ἐτιμήσαμεν τὴν Ἀθηνᾶν</td><td class="ned">toelaten? Want wij hebben altijd Athena geëerd</td></tr>
+      <tr><td class="lnum">14</td><td class="grk">καὶ τὸν Ἀπόλλωνα καί...», ἀλλ’ οὐκ ἐτέλεσε</td><td class="ned">en Apollo en...', maar hij maakte</td></tr>
+      <tr><td class="lnum">15</td><td class="grk">τοὺς λόγους. Ἐξαίφνης γὰρ ἡ μήτηρ αὐτοῦ</td><td class="ned">zijn woorden niet af. Want plotseling zei zijn moeder</td></tr>
+      <tr><td class="lnum">16</td><td class="grk">εἶπεν· «Ἄνδρα ὁρῶ.»</td><td class="ned">'Ik zie een man.'</td></tr>
+      <tr><td class="lnum">17</td><td class="grk">Οἱ δ’ Ἀθηναῖοι ἠγνόουν πότερον Ἀθηναῖος ἦν</td><td class="ned">En de Atheners wisten niet of de man een Athener was</td></tr>
+      <tr><td class="lnum">18</td><td class="grk">ὁ ἀνὴρ ἢ Μῆδος, τέλος δ’ αὐτὸν ἀνέγνωσαν·</td><td class="ned">of een Meder, maar uiteindelijk herkenden ze hem:</td></tr>
+      <tr><td class="lnum">19</td><td class="grk">Φειδιππίδης ἦν, ὁ ἡμεροδρόμος τῶν Ἀθηναίων.</td><td class="ned">het was Pheidippides, de hardloper van de Atheners.</td></tr>
+      <tr><td class="lnum">20</td><td class="grk">Ὁ δὲ Νικόμαχος ἐκάλεσεν αὐτόν· «Ὦ Φειδιππίδη,</td><td class="ned">En Nikomachos riep hem: 'O Pheidippides,</td></tr>
+      <tr><td class="lnum">21</td><td class="grk">ἆρα μὴ ἔδραμες δεῦρο συνεχῶς ἀπὸ τοῦ</td><td class="ned">ben je niet onafgebroken hierheen gerend vanaf</td></tr>
+      <tr><td class="lnum">22</td><td class="grk">Μαραθῶνος;» Ὁ δὲ Φειδιππίδης οὐκ ἤκουεν</td><td class="ned">Marathon?' Maar Pheidippides hoorde</td></tr>
+      <tr><td class="lnum">23</td><td class="grk">τοῦ παιδός, ὁ γὰρ πόνος κατέτριψεν αὐτόν.</td><td class="ned">de jongen niet, want de inspanning had hem uitgeput.</td></tr>
+      <tr><td class="lnum">24</td><td class="grk">Μόγις δ’ ἦκε πρὸς τὸ πλῆθος, ἐν δὲ ἔπεσι δυοῖν</td><td class="ned">Met moeite kwam hij bij de menigte, en in slechts twee woorden</td></tr>
+      <tr><td class="lnum">25</td><td class="grk">μόνον ἤγγειλε· «Χαίρετε. Νικῶμεν.» Ἔπειτα</td><td class="ned">maakte hij zijn boodschap bekend: 'Verheugt u. Wij overwinnen.' Daarna</td></tr>
+      <tr><td class="lnum">26</td><td class="grk">δὲ κατέπεσε καὶ ἀπέθανε.</td><td class="ned">viel hij neer en stierf hij.</td></tr>
+      <tr><td class="lnum">27</td><td class="grk">Ἐλύπει μὲν τοὺς Ἀθηναίους ὁ τοῦ Φειδιππίδου</td><td class="ned">De dood van Pheidippides bedroefde de Atheners,</td></tr>
+      <tr><td class="lnum">28</td><td class="grk">θάνατος, μάλιστα δ’ ἔχαιρον τῇ νίκῃ. Ὁ δὲ</td><td class="ned">maar vooral verheugden ze zich over de overwinning. En</td></tr>
+      <tr><td class="lnum">29</td><td class="grk">Νικόμαχος ἠρώτησεν· «Ἆρ’ οὐ δεῖ τιμᾶν τὴν</td><td class="ned">Nikomachos vroeg: 'Moeten we niet Athena</td></tr>
+      <tr><td class="lnum">30</td><td class="grk">Ἀθηνᾶν καὶ τὸν Ἀπόλλωνα;» καὶ ὁ παῖς ἔπεισε</td><td class="ned">en Apollo eren?' En de jongen overtuigde</td></tr>
+      <tr><td class="lnum">31</td><td class="grk">τοὺς Ἀθηναίους· ἔδοξεν οὖν αὐτοῖς ἱδρῦσαι</td><td class="ned">de Atheners; dus besloten zij om op te richten</td></tr>
+      <tr><td class="lnum">32</td><td class="grk">ἐν Δελφοῖς θησαυρὸν τοῖς τοῦ πολέμου</td><td class="ned">in Delphi een schathuis met de oorlogsbuit</td></tr>
+      <tr><td class="lnum">33</td><td class="grk">ἀκροθινίοις.</td><td class="ned">(de eerstelingen van de oorlog).</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer class="note">Vertaald en samengesteld op basis van het schoolboek-fragment over het orakel van Delphi.</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'delphi-orakel-print-tweaks-v2';
+  const defaults = {font:16, marginX:26, marginTop:26, marginBottom:26, line:1.6};
+  let state = loadState();
+  function loadState(){try{return Object.assign({}, defaults, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'));}catch(e){return Object.assign({}, defaults);}}
+  function saveState(){localStorage.setItem(STORAGE_KEY, JSON.stringify(state));}
+  function clamp(n,min,max){return Math.max(min, Math.min(max, n));}
+  function setVar(name,value){document.documentElement.style.setProperty(name,value);}
+  function updateReadouts(){
+    const map = {
+      font: state.font+'px',
+      marginX: state.marginX+'px',
+      marginTop: state.marginTop+'px',
+      marginBottom: state.marginBottom+'px',
+      line: state.line.toFixed(2)
+    };
+    document.querySelectorAll('[data-readout]').forEach(el => {el.textContent = map[el.dataset.readout] || '';});
+  }
+  function applySettings(){
+    setVar('--tweak-font-size', state.font+'px');
+    setVar('--tweak-margin-x', state.marginX+'px');
+    setVar('--tweak-margin-top', state.marginTop+'px');
+    setVar('--tweak-margin-bottom', state.marginBottom+'px');
+    setVar('--tweak-line-height', state.line.toFixed(2));
+    updateReadouts();
+  }
+  function change(kind, delta){
+    if(kind === 'font') state.font = clamp(state.font + delta, 11, 24);
+    if(kind === 'marginX') state.marginX = clamp(state.marginX + delta, 0, 60);
+    if(kind === 'marginTop') state.marginTop = clamp(state.marginTop + delta, 0, 80);
+    if(kind === 'marginBottom') state.marginBottom = clamp(state.marginBottom + delta, 0, 80);
+    if(kind === 'line') state.line = clamp(+(state.line + delta).toFixed(2), 1.2, 2.2);
+    saveState(); applySettings();
+  }
+  function makeToolbar(){
+    const launcher = document.createElement('button');
+    launcher.className = 'print-tweak-launcher';
+    launcher.type = 'button';
+    launcher.textContent = 'Print Tweak Mode';
+    document.body.appendChild(launcher);
+    const toolbar = document.createElement('aside');
+    toolbar.className = 'print-tweak-toolbar';
+    toolbar.innerHTML = `
+      <h4>Print Tweak Mode</h4>
+      <div class="print-tweak-row"><label>Lettergrootte</label><button data-action="fontDown">-1</button><button data-action="fontUp">+1</button><span class="print-tweak-value" data-readout="font"></span></div>
+      <div class="print-tweak-row"><label>Zijmarges</label><button data-action="marginXDown">-2</button><button data-action="marginXUp">+2</button><span class="print-tweak-value" data-readout="marginX"></span></div>
+      <div class="print-tweak-row"><label>Bovenmarge</label><button data-action="marginTopDown">-2</button><button data-action="marginTopUp">+2</button><span class="print-tweak-value" data-readout="marginTop"></span></div>
+      <div class="print-tweak-row"><label>Ondermarge</label><button data-action="marginBottomDown">-2</button><button data-action="marginBottomUp">+2</button><span class="print-tweak-value" data-readout="marginBottom"></span></div>
+      <div class="print-tweak-row"><label>Regelafstand</label><button data-action="lineDown">-0.05</button><button data-action="lineUp">+0.05</button><span class="print-tweak-value" data-readout="line"></span></div>
+      <div class="print-tweak-actions">
+        <button data-action="reset">Reset</button>
+        <button class="primary" data-action="print">Print</button>
+        <button data-action="close" style="grid-column:1 / -1;">Sluiten</button>
+      </div>
+      <div class="print-tweak-note">Dit paneel verschijnt nooit bij het printen. Bij meerdere pagina's gelden boven-/ondermarge alleen voor de eerste/laatste pagina.</div>`;
+    document.body.appendChild(toolbar);
+    launcher.addEventListener('click', () => {toolbar.classList.add('open'); launcher.style.display='none'; applySettings();});
+    toolbar.addEventListener('click', ev => {
+      const btn = ev.target.closest('button[data-action]'); if(!btn) return;
+      const a = btn.dataset.action;
+      if(a === 'fontDown') change('font', -1);
+      if(a === 'fontUp') change('font', 1);
+      if(a === 'marginXDown') change('marginX', -2);
+      if(a === 'marginXUp') change('marginX', 2);
+      if(a === 'marginTopDown') change('marginTop', -2);
+      if(a === 'marginTopUp') change('marginTop', 2);
+      if(a === 'marginBottomDown') change('marginBottom', -2);
+      if(a === 'marginBottomUp') change('marginBottom', 2);
+      if(a === 'lineDown') change('line', -0.05);
+      if(a === 'lineUp') change('line', 0.05);
+      if(a === 'reset'){state = Object.assign({}, defaults); saveState(); applySettings();}
+      if(a === 'print') window.print();
+      if(a === 'close'){toolbar.classList.remove('open'); launcher.style.display='';}
+    });
+  }
+  document.addEventListener('DOMContentLoaded', () => {makeToolbar(); applySettings();});
+})();
+</script>
+</body>
+</html>
