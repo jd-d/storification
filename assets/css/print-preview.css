@@ -426,13 +426,123 @@ body.pp-active .pp-trigger { display: none; }
   to { transform: rotate(360deg); }
 }
 
+/* ---------- per-page tweak control ---------- */
+.pp-page-tweak-btn {
+  position: absolute;
+  top: -15px;
+  right: 16px;
+  z-index: 6;
+  border: 1px solid #7c3aed;
+  background: rgba(255,255,255,0.96);
+  color: #6d28d9;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+}
+.pp-page-tweak-btn:hover { background: #f5f3ff; }
+.pp-page-tweak-btn.pp-active {
+  background: #7c3aed;
+  color: #fff;
+}
+
+/* a page that currently carries an override */
+.pagedjs_page.pp-page-tweaked {
+  outline: 2px solid rgba(124, 58, 237, 0.5);
+  outline-offset: 2px;
+}
+.pagedjs_page.pp-page-tweaked .pp-page-tweak-btn {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.pp-page-tweak-panel {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 9;
+  width: 240px;
+  max-width: calc(100% - 28px);
+  background: #ffffff;
+  border: 1px solid #c4b5fd;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(76, 29, 149, .28);
+  padding: 12px;
+  font-family: system-ui, sans-serif;
+  color: #2e1065;
+}
+.pp-page-tweak-panel.pp-page-tweak-open { display: block; }
+.pp-page-tweak-head {
+  font-size: 13px;
+  font-weight: 800;
+  color: #6d28d9;
+  margin-bottom: 4px;
+}
+.pp-page-tweak-hint {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #6b5f78;
+  margin: 0 0 8px;
+}
+.pp-page-tweak-row {
+  display: grid;
+  grid-template-columns: 64px 1fr 42px;
+  gap: 6px;
+  align-items: center;
+  margin: 6px 0;
+  font-size: 11px;
+}
+.pp-page-tweak-label { font-weight: 700; color: #4c1d95; }
+.pp-page-tweak-row input[type="range"] { width: 100%; }
+.pp-page-tweak-val {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #6b5f78;
+}
+.pp-page-tweak-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  margin-top: 10px;
+}
+.pp-page-tweak-actions button {
+  border: 1px solid #c4b5fd;
+  background: #f5f3ff;
+  color: #5b21b6;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.pp-page-tweak-actions button:hover { background: #ede9fe; }
+
+/* ---------- transient status notice ---------- */
+.pp-status-notice {
+  color: #fcd34d;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.pp-status-notice.pp-status-notice-show { opacity: 1; }
+
 /* ---------- print: hide everything except pages ---------- */
 @media print {
   .pp-toolbar,
   .pp-sidebar,
   .pp-status,
-  .pp-trigger {
+  .pp-trigger,
+  .pp-page-tweak-btn,
+  .pp-page-tweak-panel {
     display: none !important;
+  }
+  /* preview-only page outline must not print */
+  .pagedjs_page.pp-page-tweaked {
+    outline: none !important;
   }
   .pp-overlay {
     position: static;
