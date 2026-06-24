@@ -40,7 +40,6 @@
     pageSize: 'A4P',   // A4P | A4L | LTP | LTL
     showPageNumbers: false,
     chunkBreaks: {},   // chunkId → { breakBefore: string|null, keepTogether: bool }
-    draggedBreakChunkId: null,
     renderedPageCount: 0,
     pagedLoaded: false,
     rendering: false,
@@ -54,17 +53,23 @@
     pageTweaksClearedNotice: false,
   };
 
-  // Defaults a per-page tweak inherits from until the user changes a control.
-  // Matches the global defaults so opening a page's panel shows neutral values.
-  const PAGE_TWEAK_DEFAULTS = {
-    fontScale: 100,    // % (→ --pp-font-scale)
-    lineHeight: 150,   // % (→ --pp-line-height)
-    spacing: 100,      // % (→ --pp-spacing-scale)
-    marginTop: 15,     // mm
-    marginRight: 15,   // mm
-    marginBottom: 15,  // mm
-    marginLeft: 15,    // mm
-  };
+  // A per-page tweak starts from — and "resets" to — the CURRENT global sidebar
+  // settings, so opening a page's panel shows the values already applied to all
+  // pages rather than arbitrary neutral values. Without this the page visibly
+  // jumps the first time you nudge a slider (it would snap from the global value
+  // back to a hard-coded default). Margins/font changes re-paginate and clear
+  // per-page tweaks, so this snapshot is stable while any per-page tweak lives.
+  function globalTweakSnapshot() {
+    return {
+      fontScale: state.fontSize,     // % (→ --pp-font-scale)
+      lineHeight: state.lineHeight,  // % (→ --pp-line-height)
+      spacing: state.spacing,        // % (→ --pp-spacing-scale)
+      marginTop: state.marginTop,    // mm
+      marginRight: state.marginRight,
+      marginBottom: state.marginBottom,
+      marginLeft: state.marginLeft,
+    };
+  }
 
   /* ========== helpers ========== */
   const qs  = (s, p) => (p || document).querySelector(s);
@@ -197,12 +202,13 @@
 
           <hr class="pp-divider">
           <h3>Force page breaks</h3>
-          <p class="pp-desc">Choose a break mode per block. Drag a forced break marker in the preview to move that start-of-page rule.</p>
+          <p class="pp-desc">Choose a break mode per block, or use the "Start page here" button on a block in the preview.</p>
           <div class="pp-chunk-list" id="ppChunkList"></div>
 
           <hr class="pp-divider">
           <button class="pp-btn-reset" id="ppReset">Reset All</button>
         </aside>
+        <div class="pp-resize-handle" id="ppResizeHandle" title="Drag to resize the panel"></div>
         <div class="pp-preview-area" id="ppPreviewArea">
           <div class="pp-loading"><div class="pp-spinner"></div>Rendering pages&hellip;</div>
         </div>
@@ -498,19 +504,22 @@
   function getPageTweak(pageNumber) {
     const key = String(pageNumber);
     if (!state.pageTweaks[key]) {
-      state.pageTweaks[key] = { ...PAGE_TWEAK_DEFAULTS };
+      state.pageTweaks[key] = globalTweakSnapshot();
     }
     return state.pageTweaks[key];
   }
 
+  // "Default" now means "identical to the current global settings" — such a
+  // page has no real override, so we drop it (it falls back to the global vars).
   function pageTweakIsDefault(tweak) {
-    return PAGE_TWEAK_KEYS.every(k => tweak[k] === PAGE_TWEAK_DEFAULTS[k]);
+    const g = globalTweakSnapshot();
+    return PAGE_TWEAK_KEYS.every(k => tweak[k] === g[k]);
   }
 
   function setPageTweak(pageNumber, key, value) {
     const tweak = getPageTweak(pageNumber);
     tweak[key] = value;
-    // Drop the entry entirely if it's back to neutral, so the page un-marks.
+    // Drop the entry entirely if it matches the global settings, so the page un-marks.
     if (pageTweakIsDefault(tweak)) {
       delete state.pageTweaks[String(pageNumber)];
     }
@@ -759,19 +768,6 @@
     rules.keepTogether = Boolean(keepTogether);
   }
 
-  function moveChunkBreak(fromChunkId, toChunkId) {
-    if (!fromChunkId || !toChunkId || fromChunkId === toChunkId) return;
-    const breakBefore = state.chunkBreaks[fromChunkId]?.breakBefore;
-    if (!breakBefore) return;
-    setChunkBreak(fromChunkId, '');
-    setChunkBreak(toChunkId, breakBefore);
-  }
-
-  function getBreakModeLabel(value) {
-    const match = BREAK_BEFORE_OPTIONS.find(option => option.value === value);
-    return match ? match.label : 'Start on next page';
-  }
-
   function decoratePreview(previewArea) {
     if (!previewArea) return;
 
@@ -791,19 +787,15 @@
       toggle.className = 'pp-chunk-break-toggle';
       toggle.dataset.chunkId = chunkId;
       toggle.textContent = state.chunkBreaks[chunkId]?.breakBefore
-        ? 'Clear break rule'
+        ? 'Reset page break'
         : 'Start page here';
       chunk.appendChild(toggle);
 
+      // A dashed outline (via .pp-break-before) marks where a forced break sits;
+      // the toggle button itself relocates/clears it, so no separate draggable
+      // marker is needed.
       if (state.chunkBreaks[chunkId]?.breakBefore) {
         chunk.classList.add('pp-break-before');
-
-        const marker = document.createElement('div');
-        marker.className = 'pp-break-marker';
-        marker.draggable = true;
-        marker.dataset.chunkId = chunkId;
-        marker.innerHTML = `<span class="pp-break-marker-label">${getBreakModeLabel(state.chunkBreaks[chunkId].breakBefore)}</span><span class="pp-break-marker-hint">Drag to move</span>`;
-        chunk.appendChild(marker);
       }
 
       if (state.chunkBreaks[chunkId]?.keepTogether) {
@@ -836,7 +828,10 @@
     if (!pageNumber) return;
     if (qs('.pp-page-tweak-btn', page)) return; // already decorated this render
 
-    const t = state.pageTweaks[pageNumber] || PAGE_TWEAK_DEFAULTS;
+    // Start the panel from this page's existing override, or — if it has none —
+    // from the current global sidebar settings, so the sliders show what's
+    // already applied to every page.
+    const t = state.pageTweaks[pageNumber] || globalTweakSnapshot();
     const { pct, lh, mm } = PAGE_TWEAK_FMT;
 
     const btn = document.createElement('button');
@@ -1070,13 +1065,16 @@
         if (resetBtn) {
           const pageNumber = resetBtn.dataset.pageNumber;
           resetPageTweak(pageNumber);
+          // Reset the sliders back to the current global settings (the values
+          // this page falls back to once its override is dropped).
+          const g = globalTweakSnapshot();
           const panel = resetBtn.closest('.pp-page-tweak-panel');
           if (panel) {
             qsa('input[data-page-tweak]', panel).forEach(input => {
               const key = input.dataset.pageTweak;
-              input.value = String(PAGE_TWEAK_DEFAULTS[key]);
+              input.value = String(g[key]);
               const val = qs(`[data-page-tweak-val="${key}"]`, panel);
-              if (val) val.textContent = pageTweakDisplay(key, PAGE_TWEAK_DEFAULTS[key]);
+              if (val) val.textContent = pageTweakDisplay(key, g[key]);
             });
           }
           return;
@@ -1095,52 +1093,6 @@
         if (val) val.textContent = pageTweakDisplay(key, value);
       });
 
-      previewArea.addEventListener('dragstart', (e) => {
-        const marker = e.target.closest('.pp-break-marker');
-        if (!marker) return;
-
-        state.draggedBreakChunkId = marker.dataset.chunkId || null;
-        if (e.dataTransfer) {
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', state.draggedBreakChunkId || '');
-        }
-      });
-
-      previewArea.addEventListener('dragend', () => {
-        state.draggedBreakChunkId = null;
-        qsa('.pp-break-drop-target', previewArea).forEach(chunk => {
-          chunk.classList.remove('pp-break-drop-target');
-        });
-      });
-
-      previewArea.addEventListener('dragover', (e) => {
-        const chunk = e.target.closest('.story-chunk[data-chunk-id]');
-        if (!chunk || !state.draggedBreakChunkId) return;
-
-        e.preventDefault();
-        if (chunk.dataset.chunkId !== state.draggedBreakChunkId) {
-          chunk.classList.add('pp-break-drop-target');
-        }
-      });
-
-      previewArea.addEventListener('dragleave', (e) => {
-        const chunk = e.target.closest('.story-chunk[data-chunk-id]');
-        if (!chunk) return;
-        chunk.classList.remove('pp-break-drop-target');
-      });
-
-      previewArea.addEventListener('drop', (e) => {
-        const chunk = e.target.closest('.story-chunk[data-chunk-id]');
-        if (!chunk || !state.draggedBreakChunkId) return;
-
-        e.preventDefault();
-        chunk.classList.remove('pp-break-drop-target');
-
-        const targetChunkId = chunk.dataset.chunkId;
-        moveChunkBreak(state.draggedBreakChunkId, targetChunkId);
-        state.draggedBreakChunkId = null;
-        renderPages(previewArea);
-      });
     }
 
     // reset
@@ -1157,7 +1109,6 @@
       state.pageSize = 'A4P';
       state.showPageNumbers = false;
       state.chunkBreaks = {};
-      state.draggedBreakChunkId = null;
       state.renderedPageCount = 0;
 
       // sync UI
@@ -1173,6 +1124,36 @@
 
       renderPages(qs('#ppPreviewArea'));
     });
+
+    // resizable sidebar
+    const resizeHandle = qs('#ppResizeHandle', overlay);
+    const sidebarEl = qs('.pp-sidebar', overlay);
+    if (resizeHandle && sidebarEl) {
+      const MIN_W = 200, MAX_W = 560;
+      let dragging = false;
+      const onMove = (e) => {
+        if (!dragging) return;
+        const left = sidebarEl.getBoundingClientRect().left;
+        const w = Math.max(MIN_W, Math.min(MAX_W, e.clientX - left));
+        sidebarEl.style.width = w + 'px';
+      };
+      const stop = () => {
+        if (!dragging) return;
+        dragging = false;
+        document.body.classList.remove('pp-resizing');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', stop);
+      };
+      resizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        dragging = true;
+        document.body.classList.add('pp-resizing');
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', stop);
+      });
+      // double-click resets to default width
+      resizeHandle.addEventListener('dblclick', () => { sidebarEl.style.width = ''; });
+    }
 
     // ESC key
     document.addEventListener('keydown', onEsc);
