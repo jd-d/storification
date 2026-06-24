@@ -537,11 +537,20 @@ body.pp-active .pp-trigger { display: none; }
   .pp-status,
   .pp-trigger,
   .pp-page-tweak-btn,
-  .pp-page-tweak-panel {
+  .pp-page-tweak-panel,
+  .pp-chunk-break-toggle,
+  .pp-break-marker {
     display: none !important;
   }
-  /* preview-only page outline must not print */
-  .pagedjs_page.pp-page-tweaked {
+  /* preview-only page labels/outlines must not print */
+  .pagedjs_page::before,
+  .pagedjs_page::after {
+    display: none !important;
+    content: none !important;
+  }
+  .pagedjs_page.pp-page-tweaked,
+  .pp-overlay .story-chunk,
+  .pp-overlay .story-chunk.pp-break-before {
     outline: none !important;
   }
   .pp-overlay {
@@ -555,9 +564,6 @@ body.pp-active .pp-trigger { display: none; }
     padding: 0;
     background: none;
     overflow: visible;
-  }
-  .pagedjs_page::after {
-    display: none;
   }
   .pagedjs_page {
     box-shadow: none;
