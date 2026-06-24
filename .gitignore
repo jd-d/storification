@@ -10,3 +10,4 @@ TODO.md
 TODO_STORIFICATION_WINDOWS.txt
 /.playwright-mcp/
 /print-preview-*.png
+pywinauto-mcp.log
