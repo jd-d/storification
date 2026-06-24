@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="nl" style="--tweak-font-size:12.6px; --tweak-line-height:1.18; --tweak-columns:6; --tweak-margin-x:8mm; --tweak-margin-y:7mm; --tweak-gap:10px;">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Grieks naar Nederlands - zelftoets printblad</title>
+<html lang="nl" style="--tweak-font-size: 13.1px; --tweak-line-height: 1.15; --tweak-columns: 5; --tweak-margin-x: 7mm; --tweak-margin-y: 7mm; --tweak-gap: 10px;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grieks naar Nederlands - zelftoets printblad selectie</title>
 <style>
   * { box-sizing: border-box; }
   :root {
@@ -185,6 +184,104 @@
     color: #b0a9bf;
     font-size: 10px;
   }
+
+  .entry { position: relative; }
+  .row-remove {
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid #e2d8f5;
+    background: rgba(255,255,255,.92);
+    color: #8d2d5a;
+    border-radius: 999px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 800;
+    opacity: .48;
+    z-index: 2;
+  }
+  .row-remove:hover {
+    opacity: 1;
+    background: #fff0f5;
+    border-color: #ffb3c8;
+    color: #c2255c;
+  }
+  .removed-panel {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    width: min(440px, calc(100vw - 28px));
+    max-height: min(560px, calc(100vh - 28px));
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #d8cdf4;
+    border-radius: 16px;
+    box-shadow: 0 12px 34px rgba(54,38,110,.28);
+  }
+  .removed-panel.open { display: flex; }
+  .removed-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .removed-panel h2 {
+    margin: 0;
+    font-size: 15px;
+    color: #39246e;
+  }
+  .removed-panel-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .removed-list {
+    display: grid;
+    gap: 6px;
+    overflow: auto;
+    padding-right: 2px;
+  }
+  .removed-item {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 7px;
+    border: 1px solid #eee8fa;
+    border-left: 3px solid var(--c, #ccc);
+    border-radius: 10px;
+    background: #fffafc;
+    font-size: 12px;
+  }
+  .removed-item .removed-lesson {
+    color: #888;
+    font-weight: 700;
+  }
+  .removed-item .removed-greek {
+    font-family: "Gentium Plus", "Cambria", "Georgia", serif;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  .removed-empty {
+    padding: 12px;
+    color: #6b5f78;
+    background: #f8f5ff;
+    border: 1px dashed #d8cdf4;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
   /* lesson colour accents */
   .L2  { --c: #ff6b6b; }
   .L3  { --c: #ffa94d; }
@@ -206,7 +303,7 @@
   @page { size: A4 landscape; margin: 0; }
   @media print {
     html, body { background: #fff; }
-    .topbar, .toolbar { display: none !important; }
+    .topbar, .toolbar, .row-remove, .removed-panel { display: none !important; }
     #pages { display: block; padding: 0; }
     .print-page {
       width: 297mm;
@@ -228,344 +325,361 @@
   </div>
 
   <div class="toolbar" aria-label="Printinstellingen">
-    <span class="control"><strong>Letter</strong><button type="button" data-action="font-down">A-</button><output id="fontOut"></output><button type="button" data-action="font-up">A+</button></span>
-    <span class="control"><strong>Kolommen</strong><button type="button" data-action="cols-down">-</button><output id="colsOut"></output><button type="button" data-action="cols-up">+</button></span>
-    <span class="control"><strong>Regel</strong><button type="button" data-action="line-down">-</button><output id="lineOut"></output><button type="button" data-action="line-up">+</button></span>
-    <span class="control"><strong>Marge</strong><button type="button" data-action="margin-down">-</button><output id="marginOut"></output><button type="button" data-action="margin-up">+</button></span>
-    <span class="page-note" id="pageOut"></span>
+    <span class="control"><strong>Letter</strong><button type="button" data-action="font-down">A-</button><output id="fontOut">13.1px</output><button type="button" data-action="font-up">A+</button></span>
+    <span class="control"><strong>Kolommen</strong><button type="button" data-action="cols-down">-</button><output id="colsOut">5</output><button type="button" data-action="cols-up">+</button></span>
+    <span class="control"><strong>Regel</strong><button type="button" data-action="line-down">-</button><output id="lineOut">1.15</output><button type="button" data-action="line-up">+</button></span>
+    <span class="control"><strong>Marge</strong><button type="button" data-action="margin-down">-</button><output id="marginOut">7mm</output><button type="button" data-action="margin-up">+</button></span>
+    <span class="page-note" id="pageOut">2 pagina's</span>
+    <button type="button" data-action="removed-menu">Verwijderd: <span id="removedCount">0</span></button>
     <button type="button" data-action="reset">Reset</button>
+    <button type="button" data-action="save-new-html">Save as new HTML</button>
     <button type="button" class="primary" data-action="print">Print</button>
   </div>
+
+  <aside class="removed-panel" id="removedPanel" aria-label="Verwijderde woordparen" aria-hidden="true">
+    <div class="removed-panel-header">
+      <h2>Verwijderde paren</h2>
+      <div class="removed-panel-actions">
+        <button type="button" data-action="restore-all">Alles terug</button>
+        <button type="button" data-action="close-removed">Sluit</button>
+      </div>
+    </div>
+    <div class="removed-list" id="removedList"></div>
+  </aside>
 
   <main id="pages" aria-live="polite"></main>
 
   <template id="entrySource">
-<div class="entry L2"><span class="l">2</span><span class="g">ὁ ἄνθρωπος</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">γάρ</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἡ γῆ</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">δέ, δ’</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">τὸ δένδρον</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">εἰσί(ν)</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἐνταῦθα</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἔπειτα</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">τὸ ἔργον</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἐστί(ν)</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἡ θεά</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ὁ θεός</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">καί</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἡ μάχη</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ὁ, ἡ, τό</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">οὐ / οὐκ / οὐχ</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ἡ πέτρα</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">ὁ ποταμός</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">πρῶτον</span><span class="d blank"> </span></div>
-<div class="entry L2"><span class="l">2</span><span class="g">τότε</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ἄγω</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ἀεί</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ἀλλά, ἀλλ’</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">αὐτίκα</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ὁ βίος</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ὁ ἥλιος</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">τὸ θηρίον</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ὁ ἵππος</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">κατά, κατ’, καθ’ + acc</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">λέγω</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">μέν ... δέ</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">νοέω</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">νῦν</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">ὀνομάζω</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">τὸ πεδίον</span><span class="d blank"> </span></div>
-<div class="entry L3"><span class="l">3</span><span class="g">φέρω</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ἡ ἀδελφή</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ὁ ἀδελφός</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ὁ δόλος</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">εἰς + acc</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ἔχω</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ὁ θρόνος</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ἡ κόρη</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">οὖν</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">οὕτω(ς)</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">πρός + acc</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">τέλος</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">τὸ τέκνον</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">τίκτω</span><span class="d blank"> </span></div>
-<div class="entry L4"><span class="l">4</span><span class="g">ὁ υἱός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ ἀσπίς, ἀσπίδος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">βλέπω</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ γυνή, γυναικός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">διά, δι’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὸ δόρυ, δόρατος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἐγγύς + gen</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἐκ / ἐξ + gen</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ὁ Ἕλλην, Ἕλληνος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ ἐσθής, ἐσθῆτος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ὁ ἡγεμών, ἡγεμόνος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἤδη</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ θυγάτηρ, θυγατρός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ κεφαλή</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">μάλα, μάλ’</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ μήτηρ, μητρός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">μόνον</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὸ ὄνομα, ὀνόματος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὰ ὅπλα</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ὁ πατήρ, πατρός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὸ πρᾶγμα, πράγματος</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὸ πῦρ, πυρός</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">ἡ τέχνη</span><span class="d blank"> </span></div>
-<div class="entry L6"><span class="l">6</span><span class="g">τὸ φῶς, φωτός</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὁ ἀνήρ, ἀνδρός</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἀντί, ἀντ’, ἀνθ’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἡ ἀρετή</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἡ βοήθεια</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">βοηθέω + dat</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">τὸ δῶρον</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἐθέλω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">εἰ</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἐν + dat</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὁ ἥρως, ἥρωος</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">κτείνω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὁ/ἡ παῖς, παιδός</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">παρέχω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">φαίνω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">φεύγω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὁ φόβος</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">χαίρω</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ἡ χώρα</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὡς</span><span class="d blank"> </span></div>
-<div class="entry L7"><span class="l">7</span><span class="g">ὡς τάχιστα</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">αὐτός, αὐτή, αὐτόν</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">αὐτοῦ/αὐτῆς/αὐτοῦ</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἐγώ/ἐμοῦ/ἐμοί/ἐμέ</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἡ Ἑλλάς, Ἑλλάδος</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἐπί, ἐπ’, ἐφ’ + dat</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἡμεῖς/ἡμῶν/ἡμῖν/ἡμᾶς</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἡ θάλαττα</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὁ κίνδυνος</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">θαυμάζω</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὁ λιμήν, λιμένος</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὅτι</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">τὸ πλοῖον</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ποιέω</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἡ σοφία</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὁ στόλος</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">σύ/σοῦ/σοί/σέ</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">σύν + dat</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ἡ τιμή</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὑμεῖς/ὑμῶν/ὑμῖν/ὑμᾶς</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὁ φίλος</span><span class="d blank"> </span></div>
-<div class="entry L8"><span class="l">8</span><span class="g">ὦ</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ἁρπάζω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">αὖθις</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ὁ γέρων, γέροντος</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">τὸ δεῖπνον</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">διαφθείρω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ἡ δίκη</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">διώκω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ἥκω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">κατά, κατ’, καθ’ + acc</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ὁ λόγος</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">ἡ ὁδός</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">οὗ</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">οὐκέτι</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">παρασκευάζω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">πέμπω</span><span class="d blank"> </span></div>
-<div class="entry L9"><span class="l">9</span><span class="g">περί + gen</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ἀγανακτέω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ἀκούω + gen, acc</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">γιγνώσκω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">εἰμί</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ἔτι</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">κωλύω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">λαμβάνω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">λύω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">μέλλω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">μετέχω + gen</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">μή + imp</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ὁ οἶκος</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ὁ οἶνος</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">ὅτι</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">οὔποτε</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">πίνω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">πράττω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">πῶς</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">σῴζω</span><span class="d blank"> </span></div>
-<div class="entry L11"><span class="l">11</span><span class="g">τάχα</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἀπό, ἀπ’, ἀφ’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">διά, δι’ + acc</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔθανον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">εἶδον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">εἶπον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">εἶχον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔλαβον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἐπεί / ἐπειδή</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἐπί, ἐπ’, ἐφ’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔσχον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔτραπον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔτυχον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">εὑρίσκω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔφυγον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ηὗρον</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">θνῄσκω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">λείπω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">μένω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ὁράω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">τρέπω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">τυγχάνω + gen</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">λέγω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">λαμβάνω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">ἔχω</span><span class="d blank"> </span></div>
-<div class="entry L12"><span class="l">12</span><span class="g">φεύγω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἀπέθανον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἀποθνῄσκω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἀποκτείνω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">βάλλω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔβαλον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔδραμον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔλιπον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἐλπίζω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔμαθον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔπαθον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἔπεσον</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">μανθάνω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ἡ νίκη</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">νομίζω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ὀφείλω + inf</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">πάσχω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">περί + acc</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">πίπτω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">ὁ πόλεμος</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">τό σῶμα, σώματος</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">τρέχω</span><span class="d blank"> </span></div>
-<div class="entry L13"><span class="l">13</span><span class="g">λείπω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">αἱρέω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἆρα</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">βαίνω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">δύο</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">εἷλον</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἐξαίφνης</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἔπιον</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἤγαγον</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἤνεγκον</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ὁ θάνατος</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">θαυμάζω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">μετά, μετ’, μεθ’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">οἱ μέν ... οἱ δέ ...</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">πάρειμι</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">πιστεύω + dat</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ποτε</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">τό ὕδωρ, ὕδατος</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">φυλάττω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">πίνω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">ἄγω</span><span class="d blank"> </span></div>
-<div class="entry L14"><span class="l">14</span><span class="g">φέρω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">γελάω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">δή</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">δοκέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">ἐρωτάω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">ζητέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">καὶ δή καί</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">καλέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">κατά-</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">κατά, κατ’, καθ’ + gen</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">οἰκέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">τὸ πνεῦμα, πνεύματος</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">πολλάκις</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">ῥέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">σκοπέω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">σφόδρα</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">τί</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">τιμάω</span><span class="d blank"> </span></div>
-<div class="entry L16"><span class="l">16</span><span class="g">ὑπέρ + gen</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἀγνοέω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἡ ἀλήθεια</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἡ ἀρχή</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">γελάω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">δεῦρο</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">διότι</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἐγέλασα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἔκρυψα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἐλπίζω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἔξεστι(ν) + inf</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἔπεμψα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἔψευσα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἐπιθυμέω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἐφύλαξα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἤλπισα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">θύω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">κρύπτω + acc (+ acc)</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">μάλιστα</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">νικάω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">οὐδείς, οὐδενός</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">οὐδέν, οὐδενός</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">πέμπω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">πολεμέω (+ dat)</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">συμβουλεύω + dat</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ἡ τύχη</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">φυλάττω</span><span class="d blank"> </span></div>
-<div class="entry L17"><span class="l">17</span><span class="g">ψεύδω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἀπέκτεινα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἀποκτείνω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἀφαιρέω + acc + acc</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἀφεῖλον</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">βαίνω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">βουλεύω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">γιγνώσκω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">διαφθείρω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">διέφθειρα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔβην</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔγνων</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔκλεψα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔνειμα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἐσθίω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔταξα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">εὐθύς</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ἔφηνα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">κελεύω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">κλέπτω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">νέμω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">ὁ νόμος</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">παρασκευάζω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">παρεσκεύασα</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">πρός + dat</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">τάττω</span><span class="d blank"> </span></div>
-<div class="entry L18"><span class="l">18</span><span class="g">φαίνω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἀγγέλλω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἡ ἀγορά</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">αἱ Ἀθῆναι</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ὁ Ἀθηναῖος</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἀναγιγνώσκω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἀνέγνων</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἆρ’ οὐ(κ);</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἆρα μή;</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">δοκέω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">δράω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἐάω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἔδοξα</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἐκάλεσα</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἔπεισα</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἐτέλεσα</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἤγγειλα</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">καλέω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">κρατέω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">λυπέω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">πείθω</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">ἡ στρατιά</span><span class="d blank"> </span></div>
-<div class="entry L19"><span class="l">19</span><span class="g">τελέω</span><span class="d blank"> </span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ὁ ἄνθρωπος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">γάρ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἡ γῆ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">δέ, δ’</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">τὸ δένδρον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">εἰσί(ν)</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἐνταῦθα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἔπειτα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">τὸ ἔργον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἐστί(ν)</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἡ θεά</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ὁ θεός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">καί</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἡ μάχη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ὁ, ἡ, τό</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">οὐ / οὐκ / οὐχ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ἡ πέτρα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">ὁ ποταμός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">πρῶτον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L2"><span class="l">2</span><span class="g">τότε</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ἄγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ἀεί</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ἀλλά, ἀλλ’</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">αὐτίκα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ὁ βίος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ὁ ἥλιος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">τὸ θηρίον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ὁ ἵππος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">κατά, κατ’, καθ’ + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">λέγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">μέν ... δέ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">νοέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">νῦν</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">ὀνομάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">τὸ πεδίον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L3"><span class="l">3</span><span class="g">φέρω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ἡ ἀδελφή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ὁ ἀδελφός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ὁ δόλος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">εἰς + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ἔχω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ὁ θρόνος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ἡ κόρη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">οὖν</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">οὕτω(ς)</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">πρός + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">τέλος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">τὸ τέκνον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">τίκτω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L4"><span class="l">4</span><span class="g">ὁ υἱός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ ἀσπίς, ἀσπίδος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">βλέπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ γυνή, γυναικός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">διά, δι’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὸ δόρυ, δόρατος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἐγγύς + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἐκ / ἐξ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ὁ Ἕλλην, Ἕλληνος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ ἐσθής, ἐσθῆτος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ὁ ἡγεμών, ἡγεμόνος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἤδη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ θυγάτηρ, θυγατρός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ κεφαλή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">μάλα, μάλ’</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ μήτηρ, μητρός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">μόνον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὸ ὄνομα, ὀνόματος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὰ ὅπλα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ὁ πατήρ, πατρός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὸ πρᾶγμα, πράγματος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὸ πῦρ, πυρός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">ἡ τέχνη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L6"><span class="l">6</span><span class="g">τὸ φῶς, φωτός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὁ ἀνήρ, ἀνδρός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἀντί, ἀντ’, ἀνθ’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἡ ἀρετή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἡ βοήθεια</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">βοηθέω + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">τὸ δῶρον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἐθέλω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">εἰ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἐν + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὁ ἥρως, ἥρωος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">κτείνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὁ/ἡ παῖς, παιδός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">παρέχω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">φαίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">φεύγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὁ φόβος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">χαίρω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ἡ χώρα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὡς</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L7"><span class="l">7</span><span class="g">ὡς τάχιστα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">αὐτός, αὐτή, αὐτόν</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">αὐτοῦ/αὐτῆς/αὐτοῦ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἐγώ/ἐμοῦ/ἐμοί/ἐμέ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἡ Ἑλλάς, Ἑλλάδος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἐπί, ἐπ’, ἐφ’ + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἡμεῖς/ἡμῶν/ἡμῖν/ἡμᾶς</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἡ θάλαττα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὁ κίνδυνος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">θαυμάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὁ λιμήν, λιμένος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὅτι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">τὸ πλοῖον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ποιέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἡ σοφία</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὁ στόλος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">σύ/σοῦ/σοί/σέ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">σύν + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ἡ τιμή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὑμεῖς/ὑμῶν/ὑμῖν/ὑμᾶς</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὁ φίλος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L8"><span class="l">8</span><span class="g">ὦ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ἁρπάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">αὖθις</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ὁ γέρων, γέροντος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">τὸ δεῖπνον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">διαφθείρω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ἡ δίκη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">διώκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ἥκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">κατά, κατ’, καθ’ + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ὁ λόγος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">ἡ ὁδός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">οὗ</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">οὐκέτι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">παρασκευάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">πέμπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L9"><span class="l">9</span><span class="g">περί + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ἀγανακτέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ἀκούω + gen, acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">γιγνώσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">εἰμί</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ἔτι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">κωλύω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">λαμβάνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">λύω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">μέλλω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">μετέχω + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">μή + imp</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ὁ οἶκος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ὁ οἶνος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">ὅτι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">οὔποτε</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">πίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">πράττω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">πῶς</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">σῴζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L11"><span class="l">11</span><span class="g">τάχα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἀπό, ἀπ’, ἀφ’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">διά, δι’ + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔθανον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">εἶδον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">εἶπον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">εἶχον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔλαβον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἐπεί / ἐπειδή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἐπί, ἐπ’, ἐφ’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔσχον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔτραπον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔτυχον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">εὑρίσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔφυγον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ηὗρον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">θνῄσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">λείπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">μένω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ὁράω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">τρέπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">τυγχάνω + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">λέγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">λαμβάνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">ἔχω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L12"><span class="l">12</span><span class="g">φεύγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἀπέθανον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἀποθνῄσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἀποκτείνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">βάλλω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔβαλον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔδραμον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔλιπον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἐλπίζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔμαθον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔπαθον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἔπεσον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">μανθάνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ἡ νίκη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">νομίζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ὀφείλω + inf</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">πάσχω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">περί + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">πίπτω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">ὁ πόλεμος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">τό σῶμα, σώματος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">τρέχω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L13"><span class="l">13</span><span class="g">λείπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">αἱρέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἆρα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">βαίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">δύο</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">εἷλον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἐξαίφνης</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἔπιον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἤγαγον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἤνεγκον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ὁ θάνατος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">θαυμάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">μετά, μετ’, μεθ’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">οἱ μέν ... οἱ δέ ...</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">πάρειμι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">πιστεύω + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ποτε</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">τό ὕδωρ, ὕδατος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">φυλάττω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">πίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">ἄγω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L14"><span class="l">14</span><span class="g">φέρω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">γελάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">δή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">δοκέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">ἐρωτάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">ζητέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">καὶ δή καί</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">καλέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">κατά-</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">κατά, κατ’, καθ’ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">οἰκέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">τὸ πνεῦμα, πνεύματος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">πολλάκις</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">ῥέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">σκοπέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">σφόδρα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">τί</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">τιμάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L16"><span class="l">16</span><span class="g">ὑπέρ + gen</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἀγνοέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἡ ἀλήθεια</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἡ ἀρχή</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">γελάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">δεῦρο</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">διότι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἐγέλασα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἔκρυψα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἐλπίζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἔξεστι(ν) + inf</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἔπεμψα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἔψευσα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἐπιθυμέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἐφύλαξα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἤλπισα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">θύω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">κρύπτω + acc (+ acc)</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">μάλιστα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">νικάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">οὐδείς, οὐδενός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">οὐδέν, οὐδενός</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">πέμπω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">πολεμέω (+ dat)</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">συμβουλεύω + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ἡ τύχη</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">φυλάττω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L17"><span class="l">17</span><span class="g">ψεύδω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἀπέκτεινα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἀποκτείνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἀφαιρέω + acc + acc</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἀφεῖλον</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">βαίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">βουλεύω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">γιγνώσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">διαφθείρω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">διέφθειρα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔβην</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔγνων</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔκλεψα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔνειμα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἐσθίω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔταξα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">εὐθύς</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ἔφηνα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">κελεύω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">κλέπτω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">νέμω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">ὁ νόμος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">παρασκευάζω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">παρεσκεύασα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">πρός + dat</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">τάττω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L18"><span class="l">18</span><span class="g">φαίνω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἀγγέλλω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἡ ἀγορά</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">αἱ Ἀθῆναι</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ὁ Ἀθηναῖος</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἀναγιγνώσκω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἀνέγνων</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἆρ’ οὐ(κ);</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἆρα μή;</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">δοκέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">δράω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἐάω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἔδοξα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἐκάλεσα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἔπεισα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἐτέλεσα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἤγγειλα</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">καλέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">κρατέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">λυπέω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">πείθω</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">ἡ στρατιά</span><span class="d blank">&nbsp;</span></div>
+<div class="entry L19"><span class="l">19</span><span class="g">τελέω</span><span class="d blank">&nbsp;</span></div>
   </template>
 
 <script>
 (function () {
-  const defaults = { font: 12.6, line: 1.18, cols: 6, margin: 7, gap: 10 };
+  const defaults = { font: 13.1, line: 1.15, cols: 5, margin: 7, gap: 10, removed: [] };
   const limits = {
     font: [8, 22],
     line: [1.02, 1.55],
     cols: [2, 8],
     margin: [3, 18]
   };
-  const key = 'greek-nl-selftest-print-v1';
+  const key = 'greek-nl-selftest-print-v2-mqs5km75';
+  const legacyKey = 'greek-nl-selftest-print-v2-mqs5km75-legacy';
   const root = document.documentElement;
   const pages = document.getElementById('pages');
   const source = document.getElementById('entrySource');
+  const removedPanel = document.getElementById('removedPanel');
+  const removedList = document.getElementById('removedList');
+  const removedCount = document.getElementById('removedCount');
   const outs = {
     font: document.getElementById('fontOut'),
     line: document.getElementById('lineOut'),
@@ -575,14 +689,25 @@
   };
   let state = loadState();
   let scheduled = false;
+  let sourceEntries = [];
 
   function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 
+  function normalizeState(raw) {
+    const next = Object.assign({}, defaults, raw || {});
+    next.removed = Array.isArray(next.removed) ? next.removed.slice() : [];
+    return next;
+  }
+
   function loadState() {
     try {
-      return Object.assign({}, defaults, JSON.parse(localStorage.getItem(key) || '{}'));
+      const modern = localStorage.getItem(key);
+      if (modern) return normalizeState(JSON.parse(modern));
+      const legacy = localStorage.getItem(legacyKey);
+      if (legacy) return normalizeState(JSON.parse(legacy));
+      return normalizeState({});
     } catch (e) {
-      return Object.assign({}, defaults);
+      return normalizeState({});
     }
   }
 
@@ -590,11 +715,39 @@
     localStorage.setItem(key, JSON.stringify(state));
   }
 
+  function entryId(el, index) {
+    const lesson = (el.querySelector('.l') && el.querySelector('.l').textContent.trim()) || '';
+    const greek = (el.querySelector('.g') && el.querySelector('.g').textContent.trim()) || '';
+    return 'entry-' + index + '-' + lesson + '-' + greek.replace(/\s+/g, '-');
+  }
+
+  function readSourceEntries() {
+    sourceEntries = Array.from(source.content.querySelectorAll('.entry')).map((el, index) => {
+      const clone = el.cloneNode(true);
+      const id = entryId(clone, index);
+      clone.dataset.entryId = id;
+      clone.dataset.entryIndex = String(index);
+      return {
+        id,
+        index,
+        lesson: (clone.querySelector('.l') && clone.querySelector('.l').textContent.trim()) || '',
+        greek: (clone.querySelector('.g') && clone.querySelector('.g').textContent.trim()) || '',
+        className: clone.className,
+        node: clone
+      };
+    });
+  }
+
+  function removedSet() {
+    return new Set(state.removed || []);
+  }
+
   function applyState() {
     state.font = clamp(Number(state.font) || defaults.font, limits.font[0], limits.font[1]);
     state.line = clamp(Number(state.line) || defaults.line, limits.line[0], limits.line[1]);
     state.cols = Math.round(clamp(Number(state.cols) || defaults.cols, limits.cols[0], limits.cols[1]));
     state.margin = clamp(Number(state.margin) || defaults.margin, limits.margin[0], limits.margin[1]);
+    state.removed = Array.isArray(state.removed) ? state.removed.filter(id => sourceEntries.some(e => e.id === id)) : [];
     root.style.setProperty('--tweak-font-size', state.font.toFixed(1) + 'px');
     root.style.setProperty('--tweak-line-height', state.line.toFixed(2));
     root.style.setProperty('--tweak-columns', String(state.cols));
@@ -605,10 +758,33 @@
     outs.line.textContent = state.line.toFixed(2);
     outs.cols.textContent = String(state.cols);
     outs.margin.textContent = state.margin.toFixed(0) + 'mm';
+    updateRemovedUI();
+  }
+
+  function addRemoveButton(item) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'row-remove';
+    btn.setAttribute('aria-label', 'Verwijder dit woordpaar');
+    btn.title = 'Verwijder dit paar';
+    btn.textContent = '×';
+    btn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      removeEntry(item.dataset.entryId);
+    });
+    item.appendChild(btn);
   }
 
   function getEntries() {
-    return Array.from(source.content.querySelectorAll('.entry')).map(el => el.cloneNode(true));
+    const hidden = removedSet();
+    return sourceEntries
+      .filter(entry => !hidden.has(entry.id))
+      .map(entry => {
+        const clone = entry.node.cloneNode(true);
+        clone.dataset.entryId = entry.id;
+        return clone;
+      });
   }
 
   function makePage(pageNo) {
@@ -648,6 +824,7 @@
       let added = 0;
       while (i < entries.length) {
         const item = entries[i].cloneNode(true);
+        addRemoveButton(item);
         flow.appendChild(item);
         if (overflows(flow)) {
           flow.removeChild(item);
@@ -657,13 +834,17 @@
         added += 1;
       }
       if (added === 0 && i < entries.length) {
-        flow.appendChild(entries[i].cloneNode(true));
+        const item = entries[i].cloneNode(true);
+        addRemoveButton(item);
+        flow.appendChild(item);
         i += 1;
       }
       pageNo += 1;
       if (pageNo > 20) break;
     }
-    outs.page.textContent = (pageNo - 1) + ' pagina' + ((pageNo - 1) === 1 ? '' : "'s");
+    const count = pageNo - 1;
+    outs.page.textContent = count + ' pagina' + (count === 1 ? '' : "'s");
+    updateRemovedUI();
   }
 
   function schedulePaginate() {
@@ -675,8 +856,125 @@
     }
   }
 
+  function removeEntry(id) {
+    if (!id) return;
+    const hidden = removedSet();
+    hidden.add(id);
+    state.removed = sourceEntries.filter(entry => hidden.has(entry.id)).map(entry => entry.id);
+    schedulePaginate();
+  }
+
+  function restoreEntry(id) {
+    state.removed = (state.removed || []).filter(existing => existing !== id);
+    schedulePaginate();
+  }
+
+  function restoreAll() {
+    state.removed = [];
+    schedulePaginate();
+  }
+
+  function updateRemovedUI() {
+    if (!removedList || !removedCount) return;
+    const hidden = removedSet();
+    const removedEntries = sourceEntries.filter(entry => hidden.has(entry.id));
+    removedCount.textContent = String(removedEntries.length);
+    removedList.innerHTML = '';
+    if (!removedEntries.length) {
+      const empty = document.createElement('div');
+      empty.className = 'removed-empty';
+      empty.textContent = 'Nog niets verwijderd. Klik op het kleine kruisje naast een woord om het uit deze printversie te halen.';
+      removedList.appendChild(empty);
+      return;
+    }
+    removedEntries.forEach(entry => {
+      const row = document.createElement('div');
+      row.className = 'removed-item ' + entry.className.replace(/\bentry\b/g, '').trim();
+      row.innerHTML = '<span class="removed-lesson">Les ' + entry.lesson + '</span><span class="removed-greek"></span><button type="button">Terug</button>';
+      row.querySelector('.removed-greek').textContent = entry.greek;
+      row.querySelector('button').addEventListener('click', () => restoreEntry(entry.id));
+      removedList.appendChild(row);
+    });
+  }
+
+  function toggleRemovedPanel(force) {
+    const open = typeof force === 'boolean' ? force : !removedPanel.classList.contains('open');
+    removedPanel.classList.toggle('open', open);
+    removedPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    updateRemovedUI();
+  }
+
+
+  function htmlEscapeAttr(value) {
+    return String(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function saveAsNewHTML() {
+    applyState();
+    const keptEntries = sourceEntries.filter(entry => !removedSet().has(entry.id));
+    const clone = document.documentElement.cloneNode(true);
+    clone.style.setProperty('--tweak-font-size', state.font.toFixed(1) + 'px');
+    clone.style.setProperty('--tweak-line-height', state.line.toFixed(2));
+    clone.style.setProperty('--tweak-columns', String(state.cols));
+    clone.style.setProperty('--tweak-margin-x', state.margin.toFixed(0) + 'mm');
+    clone.style.setProperty('--tweak-margin-y', state.margin.toFixed(0) + 'mm');
+    clone.style.setProperty('--tweak-gap', state.gap + 'px');
+
+    const clonePages = clone.querySelector('#pages');
+    if (clonePages) clonePages.innerHTML = '';
+
+    const clonePanel = clone.querySelector('#removedPanel');
+    if (clonePanel) {
+      clonePanel.classList.remove('open');
+      clonePanel.setAttribute('aria-hidden', 'true');
+      const cloneList = clonePanel.querySelector('#removedList');
+      if (cloneList) cloneList.innerHTML = '';
+    }
+
+    const cloneCount = clone.querySelector('#removedCount');
+    if (cloneCount) cloneCount.textContent = '0';
+
+    const cloneSource = clone.querySelector('#entrySource');
+    if (cloneSource) {
+      cloneSource.innerHTML = '\n' + keptEntries.map(entry => {
+        const node = entry.node.cloneNode(true);
+        node.removeAttribute('data-entry-id');
+        node.removeAttribute('data-entry-index');
+        node.querySelectorAll('.row-remove').forEach(btn => btn.remove());
+        return node.outerHTML;
+      }).join('\n') + '\n  ';
+    }
+
+    clone.querySelectorAll('.row-remove').forEach(btn => btn.remove());
+
+    const scripts = clone.querySelectorAll('script');
+    const script = scripts[scripts.length - 1];
+    if (script) {
+      const exportKey = 'greek-nl-selftest-print-v2-' + Date.now().toString(36);
+      script.textContent = script.textContent
+        .replace(/const defaults = \{ font: [^;]+;\n/, 'const defaults = { font: ' + state.font.toFixed(1) + ', line: ' + state.line.toFixed(2) + ', cols: ' + state.cols + ', margin: ' + state.margin.toFixed(0) + ', gap: ' + state.gap + ', removed: [] };\n')
+        .replace(/const key = '[^']+';/, "const key = '" + exportKey + "';")
+        .replace(/const legacyKey = '[^']+';/, "const legacyKey = '" + exportKey + "-legacy';");
+    }
+
+    const title = clone.querySelector('title');
+    if (title) title.textContent = 'Grieks naar Nederlands - zelftoets printblad selectie';
+
+    const kept = keptEntries.length;
+    const total = sourceEntries.length;
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    const filename = 'vocab-greek-nl-selftest-selection-' + kept + '-of-' + total + '-' + stamp + '.html';
+    const blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
   document.querySelector('.toolbar').addEventListener('click', (ev) => {
-    const action = ev.target && ev.target.getAttribute('data-action');
+    const action = ev.target && ev.target.closest('[data-action]') && ev.target.closest('[data-action]').getAttribute('data-action');
     if (!action) return;
     if (action === 'font-down') state.font -= 0.5;
     if (action === 'font-up') state.font += 0.5;
@@ -686,13 +984,28 @@
     if (action === 'line-up') state.line += 0.03;
     if (action === 'margin-down') state.margin -= 1;
     if (action === 'margin-up') state.margin += 1;
-    if (action === 'reset') state = Object.assign({}, defaults);
+    if (action === 'removed-menu') { toggleRemovedPanel(); return; }
+    if (action === 'reset') state = Object.assign({}, defaults, { removed: state.removed || [] });
+    if (action === 'save-new-html') { saveAsNewHTML(); return; }
     if (action === 'print') { window.print(); return; }
     schedulePaginate();
   });
 
+  removedPanel.addEventListener('click', (ev) => {
+    const action = ev.target && ev.target.closest('[data-action]') && ev.target.closest('[data-action]').getAttribute('data-action');
+    if (!action) return;
+    if (action === 'restore-all') restoreAll();
+    if (action === 'close-removed') toggleRemovedPanel(false);
+  });
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') toggleRemovedPanel(false);
+  });
+
   window.addEventListener('resize', schedulePaginate);
+  readSourceEntries();
   applyState();
+  saveState();
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(paginate);
   } else {
@@ -700,5 +1013,6 @@
   }
 }());
 </script>
-</body>
-</html>
+
+
+</body></html>
