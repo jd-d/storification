@@ -32,6 +32,7 @@
     lineHeight: 150,   // % → 1.5
     imageScale: 100,   // %
     spacing: 100,      // %
+    columnCount: 1,    // 1-6, applied to elements tagged .pp-cols
     marginAll: 15,     // mm
     marginTop: 15,     // mm
     marginRight: 15,   // mm
@@ -64,6 +65,7 @@
       fontScale: state.fontSize,     // % (→ --pp-font-scale)
       lineHeight: state.lineHeight,  // % (→ --pp-line-height)
       spacing: state.spacing,        // % (→ --pp-spacing-scale)
+      columnCount: state.columnCount, // 1-6 (→ --pp-column-count)
       marginTop: state.marginTop,    // mm
       marginRight: state.marginRight,
       marginBottom: state.marginBottom,
@@ -158,6 +160,10 @@
           <label>Spacing <span class="pp-val" data-for="spacing">${state.spacing}%</span></label>
           <p class="pp-desc">Gaps between content blocks</p>
           <input type="range" min="40" max="160" value="${state.spacing}" data-tweak="spacing">
+
+          <label>Columns <span class="pp-val" data-for="columnCount">${state.columnCount}</span></label>
+          <p class="pp-desc">Splits content tagged as columnar (e.g. vocab lists) into side-by-side columns</p>
+          <input type="range" min="1" max="6" step="1" value="${state.columnCount}" data-tweak="columnCount">
 
           <hr class="pp-divider">
           <h3>Images</h3>
@@ -292,7 +298,15 @@
         --pp-line-height: ${lh};
         --pp-spacing-scale: ${sp};
         --pp-image-scale: ${img};
+        --pp-column-count: ${state.columnCount};
         color: inherit;
+      }
+
+      /* opt-in: any block tagged .pp-cols flows into N side-by-side columns */
+      .pp-preview-root .pp-cols,
+      .pagedjs_pages .pp-cols {
+        column-count: var(--pp-column-count);
+        column-gap: 10px;
       }
 
       .pp-preview-root,
@@ -497,7 +511,7 @@
   // move and "page 3" is no longer the same content.
 
   const PAGE_TWEAK_KEYS = [
-    'fontScale', 'lineHeight', 'spacing',
+    'fontScale', 'lineHeight', 'spacing', 'columnCount',
     'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
   ];
 
@@ -560,9 +574,10 @@
       //    between it and the text).
       // Setting both is harmless where one doesn't apply, and covers both layouts.
       const fontDecls = [];
-      if (t.fontScale != null)  fontDecls.push(`--pp-font-scale:${t.fontScale / 100};`);
-      if (t.lineHeight != null) fontDecls.push(`--pp-line-height:${t.lineHeight / 100};`);
-      if (t.spacing != null)    fontDecls.push(`--pp-spacing-scale:${t.spacing / 100};`);
+      if (t.fontScale != null)   fontDecls.push(`--pp-font-scale:${t.fontScale / 100};`);
+      if (t.lineHeight != null)  fontDecls.push(`--pp-line-height:${t.lineHeight / 100};`);
+      if (t.spacing != null)     fontDecls.push(`--pp-spacing-scale:${t.spacing / 100};`);
+      if (t.columnCount != null) fontDecls.push(`--pp-column-count:${t.columnCount};`);
       if (fontDecls.length) {
         rules.push(`${sel} .pagedjs_page_content,${sel} .pp-preview-root{${fontDecls.join('')}}`);
       }
@@ -862,6 +877,7 @@
     pct: v => v + '%',
     lh: v => (v / 100).toFixed(2),
     mm: v => v + 'mm',
+    count: v => String(v),
   };
 
   function addPageTweakControls(page) {
@@ -873,7 +889,7 @@
     // from the current global sidebar settings, so the sliders show what's
     // already applied to every page.
     const t = state.pageTweaks[pageNumber] || globalTweakSnapshot();
-    const { pct, lh, mm } = PAGE_TWEAK_FMT;
+    const { pct, lh, mm, count } = PAGE_TWEAK_FMT;
 
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -891,6 +907,7 @@
       ${pageTweakRow(pageNumber, 'fontScale', 'Font', 70, 140, 1, t.fontScale, pct)}
       ${pageTweakRow(pageNumber, 'lineHeight', 'Line height', 100, 220, 5, t.lineHeight, lh)}
       ${pageTweakRow(pageNumber, 'spacing', 'Spacing', 40, 180, 5, t.spacing, pct)}
+      ${pageTweakRow(pageNumber, 'columnCount', 'Columns', 1, 6, 1, t.columnCount, count)}
       ${pageTweakRow(pageNumber, 'marginTop', 'Margin top', 0, 40, 1, t.marginTop, mm)}
       ${pageTweakRow(pageNumber, 'marginRight', 'Margin right', 0, 40, 1, t.marginRight, mm)}
       ${pageTweakRow(pageNumber, 'marginBottom', 'Margin bottom', 0, 40, 1, t.marginBottom, mm)}
@@ -905,6 +922,7 @@
   function pageTweakDisplay(key, value) {
     if (key === 'lineHeight') return PAGE_TWEAK_FMT.lh(value);
     if (key.startsWith('margin')) return PAGE_TWEAK_FMT.mm(value);
+    if (key === 'columnCount') return PAGE_TWEAK_FMT.count(value);
     return PAGE_TWEAK_FMT.pct(value);
   }
 
@@ -1015,6 +1033,8 @@
             valSpan.textContent = (state[key] / 100).toFixed(1);
           } else if (key.startsWith('margin')) {
             valSpan.textContent = state[key] + 'mm';
+          } else if (key === 'columnCount') {
+            valSpan.textContent = String(state[key]);
           } else {
             valSpan.textContent = state[key] + '%';
           }
@@ -1142,12 +1162,13 @@
       state.lineHeight = 150;
       state.imageScale = 100;
       state.spacing = 100;
+      state.columnCount = pageDefaults.columnCount != null ? pageDefaults.columnCount : 1;
       state.marginAll = 15;
       state.marginTop = 15;
       state.marginRight = 15;
       state.marginBottom = 15;
       state.marginLeft = 15;
-      state.pageSize = 'A4P';
+      state.pageSize = pageDefaults.pageSize || 'A4P';
       state.showPageNumbers = false;
       state.chunkBreaks = {};
       state.renderedPageCount = 0;
@@ -1216,10 +1237,29 @@
     document.body.appendChild(btn);
   }
 
+  /* ========== page-supplied defaults ========== */
+  // A page opts into non-default starting settings via data attributes on its
+  // #document-root (e.g. data-pp-page-size="A4L" data-pp-columns="3"), without
+  // touching this shared engine's state for every other story. Read once at
+  // init; reset uses the same values so "Reset All" returns to THIS page's
+  // baseline rather than the engine's generic default.
+  const pageDefaults = {};
+  function readPageDefaults() {
+    const root = qs('#document-root') || qs('.page-wrapper');
+    if (!root) return;
+    const ps = root.dataset.ppPageSize;
+    if (ps && PAGE_DIMS[ps]) pageDefaults.pageSize = ps;
+    const cols = Number(root.dataset.ppColumns);
+    if (cols >= 1 && cols <= 6) pageDefaults.columnCount = cols;
+    if (pageDefaults.pageSize) state.pageSize = pageDefaults.pageSize;
+    if (pageDefaults.columnCount != null) state.columnCount = pageDefaults.columnCount;
+  }
+
   /* ========== init ========== */
   function init() {
     // only init if there's content to preview
     if (!qs('#document-root') && !qs('.page-wrapper')) return;
+    readPageDefaults();
     createTrigger();
   }
 
