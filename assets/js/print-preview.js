@@ -621,9 +621,47 @@
   /* ========== render pages ========== */
   let currentPreviewer = null;
 
+  // Re-rendering wipes and rebuilds the preview, which would jump the scroll to
+  // the top. Chunk ids survive re-pagination, so we record which chunk is at the
+  // top of the viewport before the rebuild and put it back afterwards (falling
+  // back to a proportional scroll for content without chunk markup).
+  function captureScrollAnchor(previewArea) {
+    if (!previewArea || !qsa('.pagedjs_page', previewArea).length) return null;
+    const containerTop = previewArea.getBoundingClientRect().top;
+    let best = null, bestTop = Infinity;
+    qsa('.story-chunk[data-chunk-id]', previewArea).forEach(ch => {
+      const top = ch.getBoundingClientRect().top - containerTop;
+      if (top >= -40 && top < bestTop) { bestTop = top; best = ch; }
+    });
+    if (best) return { chunkId: best.dataset.chunkId, offset: bestTop };
+    const max = previewArea.scrollHeight - previewArea.clientHeight;
+    return { ratio: max > 0 ? previewArea.scrollTop / max : 0 };
+  }
+
+  function restoreScrollAnchor(previewArea, anchor) {
+    if (!previewArea || !anchor) return;
+    if (anchor.chunkId) {
+      const safe = (window.CSS && CSS.escape) ? CSS.escape(anchor.chunkId) : anchor.chunkId.replace(/["\\]/g, '\\$&');
+      const el = previewArea.querySelector(`.story-chunk[data-chunk-id="${safe}"]`);
+      if (el) {
+        const containerTop = previewArea.getBoundingClientRect().top;
+        const elTop = el.getBoundingClientRect().top - containerTop;
+        previewArea.scrollTop += elTop - anchor.offset;
+        return;
+      }
+    }
+    if (anchor.ratio != null) {
+      const max = previewArea.scrollHeight - previewArea.clientHeight;
+      previewArea.scrollTop = anchor.ratio * max;
+    }
+  }
+
   async function renderPages(previewArea) {
     if (state.rendering) return;
     state.rendering = true;
+
+    // Remember the scroll position (by topmost visible chunk) before the rebuild.
+    const scrollAnchor = captureScrollAnchor(previewArea);
 
     // Re-pagination invalidates every per-page tweak (page boundaries move), so
     // clear them and remember whether we need to tell the user.
@@ -679,6 +717,9 @@
         showStatusNotice('Per-page tweaks were reset because the pages were re-laid-out.');
         state.pageTweaksClearedNotice = false;
       }
+
+      // Return the user to roughly where they were before the rebuild.
+      restoreScrollAnchor(previewArea, scrollAnchor);
 
     } catch (err) {
       console.error('Print preview render error', err);
